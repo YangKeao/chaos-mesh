@@ -27,6 +27,9 @@ jobs:
         run: |
           bash install.sh --local kind
 
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+
       - name: Run integration test
         run: |
           bash test/integration_test/run.sh
