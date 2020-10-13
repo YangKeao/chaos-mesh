@@ -23,6 +23,7 @@ jobs:
         uses: helm/kind-action@v1.0.0-rc.1
 
       - name: Install Chaos Mesh
+        uses: mxschmitt/action-tmate@v3
         run: |
           bash install.sh --local kind
 
