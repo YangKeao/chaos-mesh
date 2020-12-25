@@ -13,6 +13,8 @@
 
 package chaosdaemon
 
+import pb "github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
+
 // BadRequest represents the grpc reqeust is invalid
 // +thaterror:error=grpc request invalid: {{.Err.Error()}}
 // +thaterror:wrap=EmptyDNSServerError
@@ -24,24 +26,23 @@ type BadRequest struct {
 // +thaterror:error=DnsServer in the request is empty
 type EmptyDNSServerError struct{}
 
-// IptablesError represents the error while executing iptables command
+// IptablesError represents the error in iptables service
 // +thaterror:transparent
 // +thaterror:wrap=CommandExecuteError
 type IptablesError struct {
 	Err error
 }
 
-// IPSetError represents the error while executing ipset command
+// UnknownChainDirection represents the chain direction is unknown
+// +thaterror:error=unknown chain directon: {{.Direction}}
+type UnknownChainDirection struct {
+	Direction pb.Chain_Direction
+}
+
+// IPSetError represents the error in ipset service
 // +thaterror:transparent
 // +thaterror:wrap=CommandExecuteError
 type IPSetError struct {
-	Err error
-}
-
-// TcError represents the error while executing tc command
-// +thaterror:transparent
-// +thaterror:wrap=CommandExecuteError
-type TcError struct {
 	Err error
 }
 
@@ -60,6 +61,7 @@ type CommandExecuteError struct {
 // +thaterror:transparent
 // +thaterror:wrap=BadContainerState
 // +thaterror:wrap=InvalidPidError
+// +thaterror:wrap=github.com/YangKeao/thaterror/error.Anyhow
 type ContainerClientError struct {
 	Err error
 }
