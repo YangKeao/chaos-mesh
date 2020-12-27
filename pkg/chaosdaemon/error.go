@@ -15,8 +15,8 @@ package chaosdaemon
 
 // InvalidRequest means the content of the request is not valid
 // +thaterror:error=grpc Request is invalid: Error: : {{.Err.Error()}}
-// +thaterror:from=DNSServerShouldNotBeEmpty
-// +thaterror:from=UnknownChainDirection
+// +thaterror:wrap=DNSServerShouldNotBeEmpty
+// +thaterror:wrap=UnknownChainDirection
 type InvalidRequest struct {
 	Err error
 }
@@ -25,9 +25,20 @@ type InvalidRequest struct {
 // +thaterror:error="DnsServer field shouldn't be empty"
 type DNSServerShouldNotBeEmpty struct{}
 
-// IptablesError represents all possible error in a iptables server
-// +thaterror:error=iptables error: {{.Err.Error()}}
-// +thaterror:from=UnknownChainDirection
+// BadRequest represents the grpc reqeust is invalid
+// +thaterror:error=grpc request invalid: {{.Err.Error()}}
+// +thaterror:wrap=EmptyDNSServerError
+type BadRequest struct {
+	Err error
+}
+
+// EmptyDNSServerError represents the DnsServer field is empty for a SetDNSServer grpc request
+// +thaterror:error=DnsServer in the request is empty
+type EmptyDNSServerError struct{}
+
+// IptablesError represents the error in iptables service
+// +thaterror:transparent
+// +thaterror:wrap=CommandExecuteError
 type IptablesError struct {
 	Err error
 }
@@ -37,4 +48,44 @@ type IptablesError struct {
 // +thaterror:error=unknown chain direction {{.Direction}}
 type UnknownChainDirection struct {
 	Direction int32
+}
+
+// IPSetError represents the error in ipset service
+// +thaterror:transparent
+// +thaterror:wrap=CommandExecuteError
+type IPSetError struct {
+	Err error
+}
+
+// CommandExecuteError represents an error occured during the execution
+// +thaterror:error:start
+// Command {{.Command}} failed with return value {{.Ret}} and output:
+// {{.Output}}
+// +thaterror:error:stop
+type CommandExecuteError struct {
+	Ret     int32
+	Output  string
+	Command string
+}
+
+// ContainerClientError represents an error returned by container client
+// +thaterror:transparent
+// +thaterror:wrap=BadContainerState
+// +thaterror:wrap=InvalidPidError
+// +thaterror:wrap="github.com/YangKeao/thaterror/error".Anyhow
+type ContainerClientError struct {
+	Err error
+}
+
+// InvalidPidError means the container client gets an Pid 0
+// +thaterror:error=invalid pid for container: {{.ContainerID}}
+type InvalidPidError struct {
+	ContainerID string
+}
+
+// BadContainerState means the container state is bad
+// +thaterror:error=the status of container {{.ContainerID}} is {{.State}}
+type BadContainerState struct {
+	State       string
+	ContainerID string
 }
