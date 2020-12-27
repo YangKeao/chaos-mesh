@@ -14,8 +14,6 @@
 package v1alpha1
 
 import (
-	"fmt"
-
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
@@ -67,14 +65,14 @@ func (in *KernelChaos) Validate() error {
 	allErrs = append(allErrs, in.ValidatePodMode(specField)...)
 
 	if len(allErrs) > 0 {
-		return fmt.Errorf(allErrs.ToAggregate().Error())
+		return allErrs.ToAggregate()
 	}
 	return nil
 }
 
 // ValidateScheduler validates the scheduler and duration
 func (in *KernelChaos) ValidateScheduler(spec *field.Path) field.ErrorList {
-	return ValidateScheduler(in, spec)
+	return ValidateScheduler(in, spec, false)
 }
 
 // ValidatePodMode validates the value with podmode

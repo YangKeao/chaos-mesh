@@ -35,14 +35,14 @@ const (
 )
 
 // ValidateScheduler validates the InnerSchedulerObject
-func ValidateScheduler(schedulerObject InnerSchedulerObject, spec *field.Path) field.ErrorList {
+func ValidateScheduler(schedulerObject InnerSchedulerObject, spec *field.Path, tolerateEmptyDuration bool) field.ErrorList {
 
 	allErrs := field.ErrorList{}
 
 	schedulerField := spec.Child("scheduler")
 	durationField := spec.Child("duration")
 	duration, err := schedulerObject.GetDuration()
-	if err != nil {
+	if err != nil && tolerateEmptyDuration == false {
 		allErrs = append(allErrs, field.Invalid(durationField, nil,
 			fmt.Sprintf("parse duration field error:%s", err)))
 	}

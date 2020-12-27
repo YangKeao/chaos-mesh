@@ -69,7 +69,7 @@ func (in *JVMChaos) Validate() error {
 
 // ValidateScheduler validates the scheduler and duration
 func (in *JVMChaos) ValidateScheduler(spec *field.Path) field.ErrorList {
-	return ValidateScheduler(in, spec)
+	return ValidateScheduler(in, spec, false)
 }
 
 // ValidatePodMode validates the value with podmode

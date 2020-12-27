@@ -70,14 +70,14 @@ func (in *TimeChaos) Validate() error {
 	allErrs = append(allErrs, in.Spec.validateTimeOffset(specField.Child("timeOffset"))...)
 
 	if len(allErrs) > 0 {
-		return fmt.Errorf(allErrs.ToAggregate().Error())
+		return allErrs.ToAggregate()
 	}
 	return nil
 }
 
 // ValidateScheduler validates the scheduler and duration
 func (in *TimeChaos) ValidateScheduler(spec *field.Path) field.ErrorList {
-	return ValidateScheduler(in, spec)
+	return ValidateScheduler(in, spec, false)
 }
 
 // ValidatePodMode validates the value with podmode

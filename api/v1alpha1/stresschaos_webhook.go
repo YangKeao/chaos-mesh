@@ -14,8 +14,6 @@
 package v1alpha1
 
 import (
-	"fmt"
-
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -75,7 +73,7 @@ func (in *StressChaos) Validate() error {
 	errs = append(errs, in.ValidatePodMode(root)...)
 	errs = append(errs, in.ValidateScheduler(root.Child("spec"))...)
 	if len(errs) > 0 {
-		return fmt.Errorf(errs.ToAggregate().Error())
+		return errs.ToAggregate()
 	}
 	return nil
 }
@@ -87,7 +85,7 @@ func (in *StressChaos) ValidatePodMode(spec *field.Path) field.ErrorList {
 
 // ValidateScheduler validates whether scheduler is well defined
 func (in *StressChaos) ValidateScheduler(spec *field.Path) field.ErrorList {
-	return ValidateScheduler(in, spec)
+	return ValidateScheduler(in, spec, false)
 }
 
 // Validate validates the scheduler and duration
