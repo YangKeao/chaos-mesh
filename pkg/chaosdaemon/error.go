@@ -61,7 +61,7 @@ type IPSetError struct {
 // +thaterror:error:start
 // Command {{.Command}} failed with return value {{.Ret}} and output:
 // {{.Output}}
-// +thaterror:error:stop
+// +thaterror:error:end
 type CommandExecuteError struct {
 	Ret     int32
 	Output  string
