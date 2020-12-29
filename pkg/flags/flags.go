@@ -33,14 +33,16 @@ func (s *MapStringStringFlag) String() string {
 }
 
 // Set implements the flag.Var interface
-func (s *MapStringStringFlag) Set(value string) error {
+func (s *MapStringStringFlag) Set(value string) *BadFormat {
 	if s.Values == nil {
 		s.Values = map[string]string{}
 	}
 	for _, p := range strings.Split(value, ",") {
 		fields := strings.Split(p, "=")
 		if len(fields) != 2 {
-			return fmt.Errorf("%s is incorrectly formatted! should be key=value[,key2=value2]", p)
+			return &BadFormat{
+				Value: value,
+			}
 		}
 		s.Values[fields[0]] = fields[1]
 	}

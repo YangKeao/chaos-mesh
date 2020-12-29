@@ -11,14 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package chaosbuilder
 
 import (
 	"bytes"
 	"text/template"
 )
 
-const testImport = `
+const TestImport = `
 import (
 	"reflect"
 	"testing"
@@ -29,7 +29,7 @@ import (
 )
 `
 
-const testInit = `
+const TestInit = `
 func init() {
 	faker.AddProvider("ioMethods", func(v reflect.Value) (interface{}, error) {
 		return []IoMethod{LookUp}, nil
@@ -37,7 +37,7 @@ func init() {
 }
 `
 
-const testTemplate = `
+const TestTemplate = `
 func Test{{.Type}}IsDeleted(t *testing.T) {
 	g := NewGomegaWithT(t)
 
@@ -160,8 +160,8 @@ func Test{{.Type}}ListChaos(t *testing.T) {
 }
 `
 
-func generateTest(name string) string {
-	tmpl, err := template.New("test").Parse(testTemplate)
+func GenerateTest(name string) string {
+	tmpl, err := template.New("test").Parse(TestTemplate)
 	if err != nil {
 		log.Error(err, "fail to build template")
 		return ""

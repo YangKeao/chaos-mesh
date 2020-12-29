@@ -39,16 +39,18 @@ func (timer *Timer) Pid() int {
 // TimeResult represents a get time result with an error
 type TimeResult struct {
 	Time  *time.Time
-	Error error
+	Error *Error
 }
 
 // StartTimer will start a timer process
-func StartTimer() (*Timer, error) {
+func StartTimer() (*Timer, *Error) {
 	process := exec.Command("./bin/test/timer")
 
 	stdout, err := process.StdoutPipe()
 	if err != nil {
-		return nil, err
+		return nil, errorWrap(&ProcessStartError{
+			Err: err,
+		})
 	}
 	stdoutScanner := bufio.NewScanner(stdout)
 
@@ -61,13 +63,21 @@ func StartTimer() (*Timer, error) {
 			sec, err := strconv.ParseInt(sections[0], 10, 64)
 			if err != nil {
 				output <- TimeResult{
-					Error: err,
+					Error: errorWrap(&ParseIntFailed{
+						S:       sections[0],
+						Base:    10,
+						Bitsize: 64,
+					}),
 				}
 			}
 			nsec, err := strconv.ParseInt(sections[1], 10, 64)
 			if err != nil {
 				output <- TimeResult{
-					Error: err,
+					Error: errorWrap(&ParseIntFailed{
+						S:       sections[0],
+						Base:    10,
+						Bitsize: 64,
+					}),
 				}
 			}
 
@@ -78,19 +88,25 @@ func StartTimer() (*Timer, error) {
 		}
 		if err := stdoutScanner.Err(); err != nil {
 			output <- TimeResult{
-				Error: err,
+				Error: errorWrap(&IOError{
+					Err: err,
+				}),
 			}
 		}
 	}()
 
 	stdin, err := process.StdinPipe()
 	if err != nil {
-		return nil, err
+		return nil, errorWrap(&ProcessStartError{
+			Err: err,
+		})
 	}
 
 	err = process.Start()
 	if err != nil {
-		return nil, err
+		return nil, errorWrap(&ProcessStartError{
+			Err: err,
+		})
 	}
 
 	return &Timer{
@@ -102,10 +118,12 @@ func StartTimer() (*Timer, error) {
 }
 
 // GetTime will run `time.Now()` in timer
-func (timer *Timer) GetTime() (*time.Time, error) {
+func (timer *Timer) GetTime() (*time.Time, *Error) {
 	_, err := fmt.Fprintf(timer.Stdin, "\n")
 	if err != nil {
-		return nil, err
+		return nil, errorWrap(&IOError{
+			Err: err,
+		})
 	}
 
 	result := <-timer.TimeChan
@@ -117,8 +135,10 @@ func (timer *Timer) GetTime() (*time.Time, error) {
 }
 
 // Stop stops the process
-func (timer *Timer) Stop() error {
+func (timer *Timer) Stop() *Error {
 	_, err := fmt.Fprintf(timer.Stdin, "STOP\n")
 
-	return err
+	return errorWrap(&IOError{
+		Err: err,
+	})
 }

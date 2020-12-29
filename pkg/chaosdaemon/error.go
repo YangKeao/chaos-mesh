@@ -14,9 +14,9 @@
 package chaosdaemon
 
 // InvalidRequest means the content of the request is not valid
-// +thaterror:error=grpc Request is invalid: Error: : {{.Err.Error()}}
-// +thaterror:wrap=DNSServerShouldNotBeEmpty
-// +thaterror:wrap=UnknownChainDirection
+// +thaterror:error=grpc Request is invalid: Error: {{.Err.Error()}}
+// +thaterror:wrap=*DNSServerShouldNotBeEmpty
+// +thaterror:wrap=*UnknownChainDirection
 type InvalidRequest struct {
 	Err error
 }
@@ -27,7 +27,7 @@ type DNSServerShouldNotBeEmpty struct{}
 
 // BadRequest represents the grpc reqeust is invalid
 // +thaterror:error=grpc request invalid: {{.Err.Error()}}
-// +thaterror:wrap=EmptyDNSServerError
+// +thaterror:wrap=*EmptyDNSServerError
 type BadRequest struct {
 	Err error
 }
@@ -38,7 +38,7 @@ type EmptyDNSServerError struct{}
 
 // IptablesError represents the error in iptables service
 // +thaterror:transparent
-// +thaterror:wrap=CommandExecuteError
+// +thaterror:wrap=*CommandExecuteError
 type IptablesError struct {
 	Err error
 }
@@ -52,7 +52,7 @@ type UnknownChainDirection struct {
 
 // IPSetError represents the error in ipset service
 // +thaterror:transparent
-// +thaterror:wrap=CommandExecuteError
+// +thaterror:wrap=*CommandExecuteError
 type IPSetError struct {
 	Err error
 }
@@ -70,8 +70,8 @@ type CommandExecuteError struct {
 
 // ContainerClientError represents an error returned by container client
 // +thaterror:transparent
-// +thaterror:wrap=BadContainerState
-// +thaterror:wrap=InvalidPidError
+// +thaterror:wrap=*BadContainerState
+// +thaterror:wrap=*InvalidPidError
 // +thaterror:wrap="github.com/YangKeao/thaterror/error".Anyhow
 type ContainerClientError struct {
 	Err error

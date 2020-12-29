@@ -22,6 +22,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/chaos-mesh/chaos-mesh/pkg/chaosbuilder"
 	"github.com/pingcap/errors"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
@@ -29,10 +30,6 @@ import (
 var (
 	log = zap.Logger(true)
 )
-
-type metadata struct {
-	Type string
-}
 
 const codeHeader = `// Copyright 2020 Chaos Mesh Authors.
 //
@@ -51,9 +48,9 @@ package v1alpha1
 `
 
 func main() {
-	implCode := codeHeader + implImport
+	implCode := codeHeader + chaosbuilder.ImplImport
 
-	testCode := codeHeader + testImport
+	testCode := codeHeader + chaosbuilder.TestImport
 	initImpl := ""
 
 	filepath.Walk("./api/v1alpha1", func(path string, info os.FileInfo, err error) error {
@@ -103,9 +100,9 @@ func main() {
 							return err
 						}
 
-						implCode += generateImpl(baseType.Name.Name)
-						testCode += generateTest(baseType.Name.Name)
-						initImpl += generateInit(baseType.Name.Name)
+						implCode += chaosbuilder.GenerateImpl(baseType.Name.Name)
+						testCode += chaosbuilder.GenerateTest(baseType.Name.Name)
+						initImpl += chaosbuilder.GenerateInit(baseType.Name.Name)
 						continue out
 					}
 				}
@@ -127,7 +124,7 @@ func init() {
 	}
 	fmt.Fprint(file, implCode)
 
-	testCode += testInit
+	testCode += chaosbuilder.TestInit
 	file, err = os.Create("./api/v1alpha1/zz_generated.chaosmesh_test.go")
 	if err != nil {
 		log.Error(err, "fail to create file")

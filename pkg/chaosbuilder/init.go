@@ -11,14 +11,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package chaosbuilder
 
 import (
 	"bytes"
 	"text/template"
+
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 )
 
-const initTemplate = `
+var (
+	log = zap.Logger(true)
+)
+
+const InitTemplate = `
 	SchemeBuilder.Register(&{{.Type}}{}, &{{.Type}}List{})
 	all.register(Kind{{.Type}}, &ChaosKind{
 		Chaos:     &{{.Type}}{},
@@ -26,8 +32,8 @@ const initTemplate = `
 	})
 `
 
-func generateInit(name string) string {
-	tmpl, err := template.New("ini").Parse(initTemplate)
+func GenerateInit(name string) string {
+	tmpl, err := template.New("ini").Parse(InitTemplate)
 	if err != nil {
 		log.Error(err, "fail to build template")
 		panic(err)

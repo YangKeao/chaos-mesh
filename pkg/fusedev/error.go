@@ -13,7 +13,16 @@
 
 package fusedev
 
-// GrantAccess appends 'c 10:229 rwm' to devices.allow
-func GrantAccess() *Error {
-	panic("unimplemented")
+// Error means fail to operate the fuse device
+// +thaterror:error=fail to operate the fuse device: Error: {{.Err.Error()}}
+// +thaterror:wrap=*IOError
+type Error struct {
+	Err error
+}
+
+// IOError represents an error during the IO operation
+// +thaterror:error=io failed: Error: {{.Err.Error()}}
+// +thaterror:wrap="github.com/YangKeao/thaterror/error".Anyhow
+type IOError struct {
+	Err error
 }

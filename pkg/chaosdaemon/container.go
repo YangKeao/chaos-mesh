@@ -23,6 +23,7 @@ import (
 )
 
 // ContainerKill kills container according to container id in the req
+// +thaterror:ignore
 func (s *DaemonServer) ContainerKill(ctx context.Context, req *pb.ContainerRequest) (*empty.Empty, error) {
 	log.Info("Container Kill", "request", req)
 
@@ -42,6 +43,7 @@ func (s *DaemonServer) ContainerKill(ctx context.Context, req *pb.ContainerReque
 	return &empty.Empty{}, nil
 }
 
+// +thaterror:ignore
 func (s *DaemonServer) ContainerGetPid(ctx context.Context, req *pb.ContainerRequest) (*pb.ContainerResponse, error) {
 	log.Info("container GetPid", "request", req)
 

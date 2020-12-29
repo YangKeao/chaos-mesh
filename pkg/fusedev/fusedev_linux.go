@@ -19,17 +19,17 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pingcap/errors"
+	"github.com/YangKeao/thaterror/errors"
 )
 
 // GrantAccess appends 'c 10:229 rwm' to devices.allow
-func GrantAccess() error {
+func GrantAccess() *Error {
 	pid := os.Getpid()
 	cgroupPath := fmt.Sprintf("/proc/%d/cgroup", pid)
 
 	cgroupFile, err := os.Open(cgroupPath)
 	if err != nil {
-		return err
+		return errorWrap(iOErrorWrap(errors.Anyhow(err)))
 	}
 	defer cgroupFile.Close()
 
@@ -51,7 +51,7 @@ func GrantAccess() error {
 	}
 
 	if err := cgroupScanner.Err(); err != nil {
-		return err
+		return errorWrap(iOErrorWrap(errors.Anyhow(err)))
 	}
 
 	if len(deviceCgroupPath) == 0 {
@@ -61,7 +61,7 @@ func GrantAccess() error {
 	deviceCgroupPath = "/sys/fs/cgroup/devices" + deviceCgroupPath + "/devices.allow"
 	f, err := os.OpenFile(deviceCgroupPath, os.O_WRONLY, 0)
 	if err != nil {
-		return err
+		return errorWrap(iOErrorWrap(errors.Anyhow(err)))
 	}
 	defer f.Close()
 
@@ -69,7 +69,7 @@ func GrantAccess() error {
 	content := "c 10:229 rwm"
 	_, err = f.WriteString(content)
 	if err != nil {
-		return err
+		return errorWrap(iOErrorWrap(errors.Anyhow(err)))
 	}
 
 	return nil

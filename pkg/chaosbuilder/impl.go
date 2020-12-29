@@ -11,14 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package main
+package chaosbuilder
 
 import (
 	"bytes"
 	"text/template"
 )
 
-const implImport = `
+const ImplImport = `
 import (
 	"reflect"
 	"time"
@@ -147,7 +147,7 @@ func (in *{{.Type}}List) ListChaos() []*ChaosInstance {
 }
 `
 
-func generateImpl(name string) string {
+func GenerateImpl(name string) string {
 	tmpl, err := template.New("impl").Parse(implTemplate)
 	if err != nil {
 		log.Error(err, "fail to build template")
@@ -164,4 +164,8 @@ func generateImpl(name string) string {
 	}
 
 	return buf.String()
+}
+
+type metadata struct {
+	Type string
 }

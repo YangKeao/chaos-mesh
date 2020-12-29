@@ -1,4 +1,4 @@
-// Copyright 2020 Chaos Mesh Authors.
+// Copyright 2019 Chaos Mesh Authors.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,9 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package fusedev
+package flags
 
-// GrantAccess appends 'c 10:229 rwm' to devices.allow
-func GrantAccess() *Error {
-	panic("unimplemented")
+// BadFormat represents the format of argument is bad
+// +thaterror:error=the format of {{.Value}} is incorrect! should be key=value[,key2=value2]
+type BadFormat struct {
+	Value string
 }

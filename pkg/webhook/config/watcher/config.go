@@ -13,10 +13,6 @@
 
 package watcher
 
-import (
-	"github.com/pingcap/errors"
-)
-
 // Config is a configuration struct for the Watcher type
 type Config struct {
 	// ClusterScoped means control Chaos Object in cluster level(all namespace);
@@ -45,15 +41,15 @@ func NewConfig() *Config {
 }
 
 // Verify will verify the parameter configuration is correct
-func (c *Config) Verify() error {
+func (c *Config) Verify() *Error {
 	if len(c.TemplateLabels) == 0 {
-		return errors.New("envconfig:\"TEMPLATE_LABELS\" template labels must be set")
+		return errorWrap(&EmptyTemplateLabels{})
 	}
 	if len(c.ConfigLabels) == 0 {
-		return errors.New("envconfig:\"CONFIGMAP_LABELS\" conf labels must be set")
+		return errorWrap(&EmptyConfigMapLabels{})
 	}
 	if !c.ClusterScoped && len(c.TargetNamespace) == 0 {
-		return errors.New("envconfig:\"TARGET_NAMESPACE\" conf labels must be set while CLUSTER_SCOPED is false")
+		return errorWrap(&EmptyTargetNamespace{})
 	}
 	return nil
 }

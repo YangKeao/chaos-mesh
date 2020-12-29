@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// +thaterror:ignore
 package v1alpha1
 
 import (

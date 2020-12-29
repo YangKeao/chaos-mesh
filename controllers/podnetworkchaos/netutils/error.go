@@ -11,24 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package chaosdaemon
+package netutils
 
-import (
-	"context"
-
-	"github.com/chaos-mesh/chaos-mesh/pkg/mock"
-)
-
-func applyTc(ctx context.Context, pid uint32, args ...string) error {
-	// Mock point to return error in unit test
-	if err := mock.On("TcApplyError"); err != nil {
-		if e, ok := err.(error); ok {
-			return e
-		}
-		if ignore, ok := err.(bool); ok && ignore {
-			return nil
-		}
-	}
-
-	panic("unimplemented")
+// DNSLookupFailed means fail to lookup domain
+// +thaterror:error=fail to lookup domain: Name: {{.Name}} Error: {{.Err.Error()}}
+type DNSLookupFailed struct {
+	Name string
+	Err  error
 }

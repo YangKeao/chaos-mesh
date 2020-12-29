@@ -25,7 +25,7 @@ func IPToCidr(ip string) string {
 }
 
 // ResolveCidrs converts multiple cidrs/ips/domains into cidr
-func ResolveCidrs(names []string) ([]string, error) {
+func ResolveCidrs(names []string) ([]string, *DNSLookupFailed) {
 	cidrs := []string{}
 	for _, target := range names {
 		// TODO: resolve ip on every pods but not in controller, in case the dns server of these pods differ
@@ -41,7 +41,7 @@ func ResolveCidrs(names []string) ([]string, error) {
 }
 
 // ResolveCidr converts cidr/ip/domain into cidr
-func ResolveCidr(name string) ([]string, error) {
+func ResolveCidr(name string) ([]string, *DNSLookupFailed) {
 	_, ipnet, err := net.ParseCIDR(name)
 	if err == nil {
 		return []string{ipnet.String()}, nil
@@ -53,7 +53,10 @@ func ResolveCidr(name string) ([]string, error) {
 
 	addrs, err := net.LookupIP(name)
 	if err != nil {
-		return nil, err
+		return nil, &DNSLookupFailed{
+			Err:  err,
+			Name: name,
+		}
 	}
 
 	cidrs := []string{}
