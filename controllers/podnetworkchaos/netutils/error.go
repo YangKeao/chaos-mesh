@@ -13,6 +13,12 @@
 
 package netutils
 
+import (
+	"context"
+
+	"github.com/chaos-mesh/chaos-mesh/pkg/mock"
+)
+
 // DNSLookupFailed means fail to lookup domain
 // +thaterror:error=fail to lookup domain: Name: {{.Name}} Error: {{.Err.Error()}}
 type DNSLookupFailed struct {

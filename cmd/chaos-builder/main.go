@@ -28,7 +28,7 @@ import (
 )
 
 var (
-	log = zap.Logger(true)
+	log = zap.New(zap.UseDevMode(true))
 )
 
 const codeHeader = `// Copyright 2020 Chaos Mesh Authors.
