@@ -41,7 +41,7 @@ func (s *DaemonServer) SetDNSServer(ctx context.Context,
 		// set dns server to the chaos dns server's address
 
 		if len(req.DnsServer) == 0 {
-			return &empty.Empty{}, invalidRequestWrap(&DNSServerShouldNotBeEmpty{})
+			return &empty.Empty{}, fmt.Errorf("invalid set dns server request %v", req)
 		}
 
 		// backup the /etc/resolv.conf

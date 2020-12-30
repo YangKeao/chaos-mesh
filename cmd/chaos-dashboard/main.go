@@ -67,15 +67,15 @@ func main() {
 
 	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
 
-	dashboardConfig, err := config.EnvironChaosDashboard()
-	if err != nil {
-		log.Error(err, "main: invalid ChaosDashboardConfig")
+	dashboardConfig, envErr := config.EnvironChaosDashboard()
+	if envErr != nil {
+		log.Error(envErr, "main: invalid ChaosDashboardConfig")
 		os.Exit(1)
 	}
 
-	persistTTLConfigParsed, err := config.ParsePersistTTLConfig(dashboardConfig.PersistTTL)
-	if err != nil {
-		log.Error(err, "main: invalid PersistTTLConfig")
+	persistTTLConfigParsed, parseTTLError := config.ParsePersistTTLConfig(dashboardConfig.PersistTTL)
+	if parseTTLError != nil {
+		log.Error(parseTTLError, "main: invalid PersistTTLConfig")
 		os.Exit(1)
 	}
 

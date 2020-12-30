@@ -33,3 +33,9 @@ type EmptyConfigMapLabels struct{}
 // EmptyTargetNamespace represents that "TARGET_NAMESPACE" is empty
 // +thaterror:error=envconfig:"TARGET_NAMESPACE" conf labels must be set while CLUSTER_SCOPED is false
 type EmptyTargetNamespace struct{}
+
+// FailToRenderTemplate represents the error while executing template
+// +thaterror:err=fail to render template: Err: {{.Err}}
+type FailToRenderTemplate struct {
+	Err error
+}

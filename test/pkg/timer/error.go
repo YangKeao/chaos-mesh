@@ -15,24 +15,10 @@ package timer
 
 // Error represents error while getting time from the timer
 // +thaterror:error=failed to get time from timer output: Err: {{.Err}}
-// +thaterror:wrap=*ParseIntFailed
-// +thaterror:wrap=*IOError
+// +thaterror:wrap="pkg/commonerror".*ParseIntError
+// +thaterror:wrap="pkg/commonerror".*IOError
 // +thaterror:wrap=*ProcessStartError
 type Error struct {
-	Err error
-}
-
-// ParseIntFailed represents error from `ParseInt`
-// +thaterror:error=failed to parse int: S: {{.S}}, Base: {{.Base}}, Bitsize: {{.Bitsize}}
-type ParseIntFailed struct {
-	S       string
-	Base    int
-	Bitsize int
-}
-
-// IOError represents error while reading/scanning from the output
-// +thaterror:transparent
-type IOError struct {
 	Err error
 }
 

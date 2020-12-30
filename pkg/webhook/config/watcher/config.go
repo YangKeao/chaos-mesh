@@ -43,13 +43,13 @@ func NewConfig() *Config {
 // Verify will verify the parameter configuration is correct
 func (c *Config) Verify() *Error {
 	if len(c.TemplateLabels) == 0 {
-		return errorWrap(&EmptyTemplateLabels{})
+		return ErrorWrap(&EmptyTemplateLabels{})
 	}
 	if len(c.ConfigLabels) == 0 {
-		return errorWrap(&EmptyConfigMapLabels{})
+		return ErrorWrap(&EmptyConfigMapLabels{})
 	}
 	if !c.ClusterScoped && len(c.TargetNamespace) == 0 {
-		return errorWrap(&EmptyTargetNamespace{})
+		return ErrorWrap(&EmptyTargetNamespace{})
 	}
 	return nil
 }

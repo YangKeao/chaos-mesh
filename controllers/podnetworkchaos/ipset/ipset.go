@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// +thaterror:ignore
 package ipset
 
 import (
@@ -59,6 +60,8 @@ func GenerateIPSetName(networkchaos *v1alpha1.NetworkChaos, namePostFix string) 
 
 // FlushIPSets makes grpc calls to chaosdaemon to save ipset
 func FlushIPSets(ctx context.Context, c client.Client, pod *v1.Pod, ipsets []*pb.IPSet) error {
+	var err error
+
 	pbClient, err := daemonClient.NewChaosDaemonClient(ctx, c, pod, config.ControllerCfg.ChaosDaemonPort)
 	if err != nil {
 		return err

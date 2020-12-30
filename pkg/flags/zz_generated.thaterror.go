@@ -17,6 +17,3 @@ func (err *BadFormat) Error() string {
 	}
 	return buf.String()
 }
-func (err *BadFormat) Unwrap() error {
-	return nil
-}

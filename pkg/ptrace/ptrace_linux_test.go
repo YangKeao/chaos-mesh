@@ -78,7 +78,9 @@ var _ = Describe("PTrace", func() {
 	})
 
 	AfterEach(func() {
-		err := program.Detach()
+		var err error
+
+		err = program.Detach()
 		Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
 
 		err = t.Stop()
@@ -86,6 +88,8 @@ var _ = Describe("PTrace", func() {
 	})
 
 	It("should mmap slice successfully", func() {
+		var err error
+
 		Expect(program.Pid()).Should(Equal(t.Pid()))
 
 		helloWorld := []byte("Hello World")
@@ -104,6 +108,8 @@ var _ = Describe("PTrace", func() {
 	})
 
 	It("should ptrace write slice successfully", func() {
+		var err error
+
 		helloWorld := []byte("Hello World")
 		addr, err := program.Mmap(uint64(len(helloWorld)), 0)
 		Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
@@ -118,6 +124,8 @@ var _ = Describe("PTrace", func() {
 	})
 
 	It("should write uint64 successfully", func() {
+		var err error
+
 		number := rand.Uint64()
 		size := uint64(unsafe.Sizeof(number))
 		expectBuf := make([]byte, size)
@@ -136,7 +144,9 @@ var _ = Describe("PTrace", func() {
 	})
 
 	It("should be able to detach and reattach", func() {
-		err := program.Detach()
+		var err error
+
+		err = program.Detach()
 		Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
 
 		program, err = Trace(t.Pid())

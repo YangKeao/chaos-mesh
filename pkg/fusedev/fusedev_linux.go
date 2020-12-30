@@ -19,7 +19,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/YangKeao/thaterror/errors"
+	commonerror "github.com/chaos-mesh/chaos-mesh/pkg/commonerror"
 )
 
 // GrantAccess appends 'c 10:229 rwm' to devices.allow
@@ -29,7 +29,9 @@ func GrantAccess() *Error {
 
 	cgroupFile, err := os.Open(cgroupPath)
 	if err != nil {
-		return errorWrap(iOErrorWrap(errors.Anyhow(err)))
+		return ErrorWrap(&commonerror.IOError{
+			Err: err,
+		})
 	}
 	defer cgroupFile.Close()
 
@@ -42,7 +44,9 @@ func GrantAccess() *Error {
 			parts = strings.SplitN(text, ":", 3)
 		)
 		if len(parts) < 3 {
-			return errors.Errorf("invalid cgroup entry: %q", text)
+			return ErrorWrap(&InvalidCgroupEntry{
+				Text: text,
+			})
 		}
 
 		if parts[1] == "devices" {
@@ -51,17 +55,21 @@ func GrantAccess() *Error {
 	}
 
 	if err := cgroupScanner.Err(); err != nil {
-		return errorWrap(iOErrorWrap(errors.Anyhow(err)))
+		return ErrorWrap(&commonerror.IOError{
+			Err: err,
+		})
 	}
 
 	if len(deviceCgroupPath) == 0 {
-		return errors.Errorf("fail to find device cgroup")
+		return ErrorWrap(&DeviceCgroupNotFound{})
 	}
 
 	deviceCgroupPath = "/sys/fs/cgroup/devices" + deviceCgroupPath + "/devices.allow"
 	f, err := os.OpenFile(deviceCgroupPath, os.O_WRONLY, 0)
 	if err != nil {
-		return errorWrap(iOErrorWrap(errors.Anyhow(err)))
+		return ErrorWrap(&commonerror.IOError{
+			Err: err,
+		})
 	}
 	defer f.Close()
 
@@ -69,7 +77,9 @@ func GrantAccess() *Error {
 	content := "c 10:229 rwm"
 	_, err = f.WriteString(content)
 	if err != nil {
-		return errorWrap(iOErrorWrap(errors.Anyhow(err)))
+		return ErrorWrap(&commonerror.IOError{
+			Err: err,
+		})
 	}
 
 	return nil

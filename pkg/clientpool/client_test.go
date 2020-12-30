@@ -29,6 +29,8 @@ func TestClientPool(t *testing.T) {
 	g := NewWithT(t)
 
 	t.Run("client pool", func(t *testing.T) {
+		var err error
+
 		defer mock.With("MockCreateK8sClient", func(config *rest.Config, options pkgclient.Options) (pkgclient.Client, error) {
 			return nil, nil
 		})()

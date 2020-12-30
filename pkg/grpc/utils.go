@@ -18,13 +18,13 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
 
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
+	"github.com/chaos-mesh/chaos-mesh/pkg/commonerror"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -38,7 +38,7 @@ var RPCTimeout = DefaultRPCTimeout
 var log = ctrl.Log.WithName("util")
 
 // CreateGrpcConnection create a grpc connection with given port
-func CreateGrpcConnection(ctx context.Context, c client.Client, pod *v1.Pod, port int) (*grpc.ClientConn, error) {
+func CreateGrpcConnection(ctx context.Context, c client.Client, pod *v1.Pod, port int) (*grpc.ClientConn, *CreateConnectionError) {
 	nodeName := pod.Spec.NodeName
 	log.Info("Creating client to chaos-daemon", "node", nodeName)
 
@@ -49,23 +49,35 @@ func CreateGrpcConnection(ctx context.Context, c client.Client, pod *v1.Pod, por
 		Name:      "chaos-daemon",
 	}, &endpoints)
 	if err != nil {
-		return nil, err
+		return nil, CreateConnectionErrorWrap(&commonerror.KubernetesError{
+			Err: err,
+		})
 	}
 
 	daemonIP := findIPOnEndpoints(&endpoints, nodeName)
 	if len(daemonIP) == 0 {
-		return nil, errors.Errorf("cannot find daemonIP on node %s in related Endpoints %v", nodeName, endpoints)
+		return nil, CreateConnectionErrorWrap(&FailToFindEndpointIP{
+			NodeName:  nodeName,
+			Endpoints: endpoints,
+		})
 	}
-	return CreateGrpcConnectionWithAddress(daemonIP, port)
+
+	conn, grpcError := CreateGrpcConnectionWithAddress(daemonIP, port)
+	if err != nil {
+		return nil, CreateConnectionErrorWrap(grpcError)
+	}
+	return conn, nil
 }
 
 // CreateGrpcConnectionWithAddress create a grpc connection with given port and address
-func CreateGrpcConnectionWithAddress(address string, port int) (*grpc.ClientConn, error) {
+func CreateGrpcConnectionWithAddress(address string, port int) (*grpc.ClientConn, *GrpcError) {
 	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", address, port),
 		grpc.WithInsecure(),
 		grpc.WithUnaryInterceptor(TimeoutClientInterceptor))
 	if err != nil {
-		return nil, err
+		return nil, &GrpcError{
+			Err: err,
+		}
 	}
 	return conn, nil
 }
@@ -83,6 +95,7 @@ func findIPOnEndpoints(e *v1.Endpoints, nodeName string) string {
 }
 
 // TimeoutClientInterceptor wraps the RPC with a timeout.
+// +thaterror:ignore
 func TimeoutClientInterceptor(ctx context.Context, method string, req, reply interface{},
 	cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 	ctx, cancel := context.WithTimeout(ctx, RPCTimeout)
@@ -92,6 +105,7 @@ func TimeoutClientInterceptor(ctx context.Context, method string, req, reply int
 
 // TimeoutServerInterceptor ensures the context is intact before handling over the
 // request to application.
+// +thaterror:ignore
 func TimeoutServerInterceptor(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	if ctx.Err() != nil {

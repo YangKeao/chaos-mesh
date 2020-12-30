@@ -14,7 +14,6 @@
 package config
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"sync"
@@ -22,13 +21,9 @@ import (
 	"github.com/ghodss/yaml"
 
 	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/pkg/commonerror"
 
 	corev1 "k8s.io/api/core/v1"
-)
-
-var (
-	errMissingName         = fmt.Errorf(`name field is required for template args config`)
-	errMissingTemplateName = fmt.Errorf(`template field is required for template args config`)
 )
 
 const (
@@ -106,12 +101,14 @@ func (c *Config) RequestInitAnnotationKey() string {
 }
 
 // GetRequestedConfig returns the InjectionConfig given a requested key
-func (c *Config) GetRequestedConfig(namespace, key string) (*InjectionConfig, error) {
+func (c *Config) GetRequestedConfig(namespace, key string) (*InjectionConfig, *Error) {
 	c.RLock()
 	defer c.RUnlock()
 
 	if _, ok := c.Injections[namespace]; !ok {
-		return nil, fmt.Errorf("no injection config at ns %s", namespace)
+		return nil, ErrorWrap(&NotFound{
+			Namespace: namespace,
+		})
 	}
 
 	for _, conf := range c.Injections[namespace] {
@@ -120,27 +117,34 @@ func (c *Config) GetRequestedConfig(namespace, key string) (*InjectionConfig, er
 		}
 	}
 
-	return nil, fmt.Errorf("no injection config found for key %s at ns %s", key, namespace)
+	return nil, ErrorWrap(&NotFound{
+		Namespace: namespace,
+		Key:       key,
+	})
 }
 
 // LoadTemplateArgs takes an io.Reader and parses out an template args
-func LoadTemplateArgs(reader io.Reader) (*TemplateArgs, error) {
+func LoadTemplateArgs(reader io.Reader) (*TemplateArgs, *Error) {
 	data, err := ioutil.ReadAll(reader)
 	if err != nil {
-		return nil, err
+		return nil, ErrorWrap(&commonerror.IOError{
+			Err: err,
+		})
 	}
 
 	var cfg TemplateArgs
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, err
+		return nil, ErrorWrap(&commonerror.UnmarshalError{
+			Err: err,
+		})
 	}
 
 	if cfg.Name == "" {
-		return nil, errMissingName
+		return nil, ErrorWrap(&MissingName{})
 	}
 
 	if cfg.Template == "" {
-		return nil, errMissingTemplateName
+		return nil, ErrorWrap(&MissingTemplateName{})
 	}
 
 	return &cfg, nil

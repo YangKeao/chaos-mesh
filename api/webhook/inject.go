@@ -59,12 +59,14 @@ func (v *PodInjector) Handle(ctx context.Context, req admission.Request) admissi
 }
 
 // InjectClient is pod injector client
+// +thaterror:ignore
 func (v *PodInjector) InjectClient(c client.Client) error {
 	v.client = c
 	return nil
 }
 
 // InjectDecoder is pod injector decoder
+// +thaterror:ignore
 func (v *PodInjector) InjectDecoder(d *admission.Decoder) error {
 	v.decoder = d
 	return nil

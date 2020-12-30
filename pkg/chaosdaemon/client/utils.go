@@ -28,7 +28,7 @@ import (
 // ChaosDaemonClientInterface represents the ChaosDaemonClient, it's used to simply unit test
 type ChaosDaemonClientInterface interface {
 	chaosdaemon.ChaosDaemonClient
-	Close() error
+	Close() *grpcUtils.GrpcError
 }
 
 // GrpcChaosDaemonClient would act like chaosdaemon.ChaosDaemonClient with a Close method
@@ -37,17 +37,19 @@ type GrpcChaosDaemonClient struct {
 	conn *grpc.ClientConn
 }
 
-func (c *GrpcChaosDaemonClient) Close() error {
-	return c.conn.Close()
+func (c *GrpcChaosDaemonClient) Close() *grpcUtils.GrpcError {
+	return &grpcUtils.GrpcError{
+		Err: c.conn.Close(),
+	}
 }
 
 // NewChaosDaemonClient would create ChaosDaemonClient
-func NewChaosDaemonClient(ctx context.Context, c client.Client, pod *v1.Pod, port int) (ChaosDaemonClientInterface, error) {
+func NewChaosDaemonClient(ctx context.Context, c client.Client, pod *v1.Pod, port int) (ChaosDaemonClientInterface, *grpcUtils.CreateConnectionError) {
 	if cli := mock.On("MockChaosDaemonClient"); cli != nil {
 		return cli.(ChaosDaemonClientInterface), nil
 	}
 	if err := mock.On("NewChaosDaemonClientError"); err != nil {
-		return nil, err.(error)
+		return nil, err.(*grpcUtils.CreateConnectionError)
 	}
 
 	cc, err := grpcUtils.CreateGrpcConnection(ctx, c, pod, port)
@@ -61,12 +63,12 @@ func NewChaosDaemonClient(ctx context.Context, c client.Client, pod *v1.Pod, por
 }
 
 // NewChaosDaemonClientLocally would create ChaosDaemonClient in localhost
-func NewChaosDaemonClientLocally(port int) (ChaosDaemonClientInterface, error) {
+func NewChaosDaemonClientLocally(port int) (ChaosDaemonClientInterface, *grpcUtils.GrpcError) {
 	if cli := mock.On("MockChaosDaemonClient"); cli != nil {
 		return cli.(ChaosDaemonClientInterface), nil
 	}
 	if err := mock.On("NewChaosDaemonClientError"); err != nil {
-		return nil, err.(error)
+		return nil, err.(*grpcUtils.GrpcError)
 	}
 
 	cc, err := grpcUtils.CreateGrpcConnectionWithAddress("localhost", port)

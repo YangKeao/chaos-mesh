@@ -11,11 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package netutils
+package mapreader
 
-// DNSLookupFailed means fail to lookup domain
-// +thaterror:error=fail to lookup domain: Name: {{.Name}} Error: {{.Err.Error()}}
-type DNSLookupFailed struct {
-	Name string
-	Err  error
+// Error is the error returned by the map reader
+// +thaterror:transparent
+// +thaterror:wrap="pkg/commonerror".*IOError
+// +thaterror:wrap="pkg/commonerror".*ParseIntError
+type Error struct {
+	Err error
 }

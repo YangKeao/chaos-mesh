@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// +thaterror:ignore
 package time
 
 import (
@@ -70,6 +71,8 @@ var fakeImage = []byte{
 
 // ModifyTime modifies time of target process
 func ModifyTime(pid int, deltaSec int64, deltaNsec int64, clockIdsMask uint64) error {
+	var err error
+
 	// Mock point to return error in unit test
 	if err := mock.On("ModifyTimeError"); err != nil {
 		if e, ok := err.(error); ok {

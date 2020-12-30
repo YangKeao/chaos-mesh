@@ -17,6 +17,3 @@ func (err *DNSLookupFailed) Error() string {
 	}
 	return buf.String()
 }
-func (err *DNSLookupFailed) Unwrap() error {
-	return nil
-}

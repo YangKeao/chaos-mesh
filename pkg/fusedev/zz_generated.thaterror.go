@@ -2,7 +2,6 @@ package fusedev
 
 import (
 	"bytes"
-	error1 "github.com/YangKeao/thaterror/error"
 	"text/template"
 )
 
@@ -18,48 +17,43 @@ func (err *Error) Error() string {
 	}
 	return buf.String()
 }
-func errorWrap(err error) *Error {
-	switch err.(type) {
-	case *IOError:
-		return &Error{Err: err}
-	default:
-		panic("unexpected error type")
-	}
+
+type ErrorWrapUnion interface {
+	PkgfusedevError()
+	error
+}
+
+func (err *InvalidCgroupEntry) PkgfusedevError()   {}
+func (err *DeviceCgroupNotFound) PkgfusedevError() {}
+func ErrorWrap(err ErrorWrapUnion) *Error {
+	return &Error{Err: err}
 }
 func (err *Error) Unwrap() error {
-	switch err.Err.(type) {
-	case *IOError:
-		return err.Err
-	default:
-		panic("unexpected error type")
-	}
+	return err.Err
 }
 
 var (
-	IOErrorErrorTmpl = template.Must(template.New("IOErrorErrorTmpl").Parse("io failed: Error: {{.Err.Error()}}"))
+	InvalidCgroupEntryErrorTmpl = template.Must(template.New("InvalidCgroupEntryErrorTmpl").Parse("invalid cgroup entry: {{.Text}}"))
 )
 
-func (err *IOError) Error() string {
+func (err *InvalidCgroupEntry) Error() string {
 	buf := new(bytes.Buffer)
-	tmplErr := IOErrorErrorTmpl.Execute(buf, err)
+	tmplErr := InvalidCgroupEntryErrorTmpl.Execute(buf, err)
 	if tmplErr != nil {
 		panic("fail to render error template")
 	}
 	return buf.String()
 }
-func iOErrorWrap(err error) *IOError {
-	switch err.(type) {
-	case error1.Anyhow:
-		return &IOError{Err: err}
-	default:
-		panic("unexpected error type")
+
+var (
+	DeviceCgroupNotFoundErrorTmpl = template.Must(template.New("DeviceCgroupNotFoundErrorTmpl").Parse("fail to find device cgroup"))
+)
+
+func (err *DeviceCgroupNotFound) Error() string {
+	buf := new(bytes.Buffer)
+	tmplErr := DeviceCgroupNotFoundErrorTmpl.Execute(buf, err)
+	if tmplErr != nil {
+		panic("fail to render error template")
 	}
-}
-func (err *IOError) Unwrap() error {
-	switch err.Err.(type) {
-	case error1.Anyhow:
-		return err.Err
-	default:
-		panic("unexpected error type")
-	}
+	return buf.String()
 }

@@ -126,6 +126,8 @@ func (r *endpoint) Object() v1alpha1.InnerObject {
 // KillContainer kills container according to containerID
 // Use client in chaos-daemon
 func (r *endpoint) KillContainer(ctx context.Context, pod *v1.Pod, containerID string) error {
+	var err error
+
 	r.Log.Info("Try to kill container", "namespace", pod.Namespace, "podName", pod.Name, "containerID", containerID)
 
 	pbClient, err := client.NewChaosDaemonClient(ctx, r.Client, pod, config.ControllerCfg.ChaosDaemonPort)

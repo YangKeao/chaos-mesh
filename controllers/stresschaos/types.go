@@ -151,6 +151,8 @@ func (r *endpoint) cleanFinalizersAndRecover(ctx context.Context, chaos *v1alpha
 }
 
 func (r *endpoint) recoverPod(ctx context.Context, pod *v1.Pod, chaos *v1alpha1.StressChaos) error {
+	var err error
+
 	r.Log.Info("Try to recover pod", "namespace", pod.Namespace, "name", pod.Name)
 	daemonClient, err := client.NewChaosDaemonClient(ctx, r.Client,
 		pod, config.ControllerCfg.ChaosDaemonPort)
@@ -202,6 +204,8 @@ func (r *endpoint) applyAllPods(ctx context.Context, pods []v1.Pod, chaos *v1alp
 }
 
 func (r *endpoint) applyPod(ctx context.Context, pod *v1.Pod, chaos *v1alpha1.StressChaos, instancesLock *sync.RWMutex) error {
+	var err error
+
 	r.Log.Info("Try to apply stress chaos", "namespace",
 		pod.Namespace, "name", pod.Name)
 	daemonClient, err := client.NewChaosDaemonClient(ctx, r.Client,

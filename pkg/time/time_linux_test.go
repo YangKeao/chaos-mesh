@@ -71,6 +71,8 @@ var _ = Describe("ModifyTime", func() {
 
 	Context("Modify Time", func() {
 		It("should move forward successfully", func() {
+			var err error
+
 			Expect(t).NotTo(BeNil())
 
 			now, err := t.GetTime()
@@ -90,6 +92,8 @@ var _ = Describe("ModifyTime", func() {
 		})
 
 		It("should move backward successfully", func() {
+			var err error
+
 			Expect(t).NotTo(BeNil())
 
 			now, err := t.GetTime()
@@ -109,6 +113,8 @@ var _ = Describe("ModifyTime", func() {
 		})
 
 		It("should handle nsec overflow", func() {
+			var err error
+
 			Expect(t).NotTo(BeNil())
 
 			now, err := t.GetTime()

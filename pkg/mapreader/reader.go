@@ -19,7 +19,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pkg/errors"
+	commonerror "github.com/chaos-mesh/chaos-mesh/pkg/commonerror"
 )
 
 // Entry is one line in /proc/pid/maps
@@ -33,10 +33,12 @@ type Entry struct {
 
 // Read parse /proc/[pid]/maps and return a list of entry
 // The format of /proc/[pid]/maps can be found in `man proc`.
-func Read(pid int) ([]Entry, error) {
+func Read(pid int) ([]Entry, *Error) {
 	data, err := ioutil.ReadFile(fmt.Sprintf("/proc/%d/maps", pid))
 	if err != nil {
-		return nil, errors.WithStack(err)
+		return nil, ErrorWrap(&commonerror.IOError{
+			Err: err,
+		})
 	}
 
 	lines := strings.Split(string(data), "\n")
@@ -57,18 +59,30 @@ func Read(pid int) ([]Entry, error) {
 		addresses := strings.Split(sections[0], "-")
 		startAddress, err := strconv.ParseUint(addresses[0], 16, 64)
 		if err != nil {
-			return nil, errors.WithStack(err)
+			return nil, ErrorWrap(&commonerror.ParseIntError{
+				S:       addresses[0],
+				Base:    16,
+				Bitsize: 64,
+			})
 		}
 		endAddresses, err := strconv.ParseUint(addresses[1], 16, 64)
 		if err != nil {
-			return nil, errors.WithStack(err)
+			return nil, ErrorWrap(&commonerror.ParseIntError{
+				S:       addresses[1],
+				Base:    16,
+				Bitsize: 64,
+			})
 		}
 
 		privilege := sections[1]
 
 		paddingSize, err := strconv.ParseUint(sections[2], 16, 64)
 		if err != nil {
-			return nil, errors.WithStack(err)
+			return nil, ErrorWrap(&commonerror.ParseIntError{
+				S:       addresses[2],
+				Base:    16,
+				Bitsize: 64,
+			})
 		}
 
 		entries = append(entries, Entry{

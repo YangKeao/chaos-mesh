@@ -14,7 +14,6 @@
 package clientpool
 
 import (
-	"errors"
 	"net/http"
 	"strings"
 	"sync"
@@ -31,7 +30,7 @@ import (
 var K8sClients Clients
 
 type Clients interface {
-	Client(token string) (pkgclient.Client, error)
+	Client(token string) (pkgclient.Client, *CreateClientError)
 	Num() int
 	Contains(token string) bool
 }
@@ -47,7 +46,7 @@ func NewLocalClient(client pkgclient.Client) Clients {
 }
 
 // Client returns the local k8s client
-func (c *LocalClient) Client(token string) (pkgclient.Client, error) {
+func (c *LocalClient) Client(token string) (pkgclient.Client, *CreateClientError) {
 	return c.client, nil
 }
 
@@ -71,10 +70,13 @@ type ClientsPool struct {
 }
 
 // New creates a new Clients
-func NewClientPool(localConfig *rest.Config, scheme *runtime.Scheme, maxClientNum int) (Clients, error) {
+func NewClientPool(localConfig *rest.Config, scheme *runtime.Scheme, maxClientNum int) (Clients, *LRUError) {
 	clients, err := lru.New(maxClientNum)
 	if err != nil {
-		return nil, err
+		return nil, &LRUError{
+			Err:  err,
+			Size: maxClientNum,
+		}
 	}
 
 	return &ClientsPool{
@@ -85,12 +87,12 @@ func NewClientPool(localConfig *rest.Config, scheme *runtime.Scheme, maxClientNu
 }
 
 // Client returns a k8s client according to the token
-func (c *ClientsPool) Client(token string) (pkgclient.Client, error) {
+func (c *ClientsPool) Client(token string) (pkgclient.Client, *CreateClientError) {
 	c.Lock()
 	defer c.Unlock()
 
 	if len(token) == 0 {
-		return nil, errors.New("token is empty")
+		return nil, CreateClientErrorWrap(&EmptyTokenError{})
 	}
 
 	value, ok := c.clients.Get(token)
@@ -112,7 +114,13 @@ func (c *ClientsPool) Client(token string) (pkgclient.Client, error) {
 		Scheme: c.scheme,
 	})
 	if err != nil {
-		return nil, err
+		return nil, CreateClientErrorWrap(&KubernetesCreateClientError{
+			Err:    err,
+			Config: config,
+			Options: pkgclient.Options{
+				Scheme: c.scheme,
+			},
+		})
 	}
 
 	_ = c.clients.Add(token, client)

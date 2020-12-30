@@ -11,11 +11,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package netutils
+package config
 
-// DNSLookupFailed means fail to lookup domain
-// +thaterror:error=fail to lookup domain: Name: {{.Name}} Error: {{.Err.Error()}}
-type DNSLookupFailed struct {
-	Name string
-	Err  error
+// +thaterror:transparent
+type EnvConfigError struct {
+	Err error
+}
+
+// +thaterror:wrap="pkg/commonerror".*ParseDurationError
+// +thaterror:wrap=EnvConfigError
+type ParsePersistTTLConfigError struct {
+	Err error
 }

@@ -35,11 +35,15 @@ type DB struct {
 }
 
 // NewDBStore returns a new DB
-func NewDBStore(lc fx.Lifecycle, conf *config.ChaosDashboardConfig) (*DB, error) {
+func NewDBStore(lc fx.Lifecycle, conf *config.ChaosDashboardConfig) (*DB, *OpenDatabaseError) {
 	gormDB, err := gorm.Open(conf.Database.Driver, conf.Database.Datasource)
 	if err != nil {
 		log.Error(err, "failed to open DB", "driver", conf.Database.Driver, "datasource", conf.Database.Datasource)
-		return nil, err
+		return nil, &OpenDatabaseError{
+			Err:        err,
+			Driver:     conf.Database.Driver,
+			Datasource: conf.Database.Datasource,
+		}
 	}
 
 	db := &DB{

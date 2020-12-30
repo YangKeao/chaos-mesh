@@ -38,6 +38,7 @@ import (
 
 	"github.com/pkg/errors"
 
+	"github.com/chaos-mesh/chaos-mesh/pkg/commonerror"
 	"github.com/chaos-mesh/chaos-mesh/pkg/mapreader"
 )
 
@@ -72,17 +73,17 @@ func (p *TracedProgram) Pid() int {
 	return p.pid
 }
 
-func waitPid(pid int) error {
+func waitPid(pid int) *WaitPidError {
 	ret := waitpid(pid)
 	if ret == pid {
 		return nil
 	}
 
-	return errors.Errorf(waitPidErrorMessage, ret)
+	return &WaitPidError{}
 }
 
 // Trace ptrace all threads of a process
-func Trace(pid int) (*TracedProgram, error) {
+func Trace(pid int) (*TracedProgram, *TraceError) {
 	traceSuccess := false
 
 	tidMap := make(map[int]bool)
@@ -91,7 +92,9 @@ func Trace(pid int) (*TracedProgram, error) {
 		threads, err := ioutil.ReadDir(fmt.Sprintf("/proc/%d/task", pid))
 		if err != nil {
 			log.Error(err, "read failed", "pid", pid)
-			return nil, errors.WithStack(err)
+			return nil, TraceErrorWrap(&commonerror.IOError{
+				Err: err,
+			})
 		}
 
 		// judge whether `threads` is a subset of `tidMap`
@@ -99,9 +102,13 @@ func Trace(pid int) (*TracedProgram, error) {
 
 		tids := make(map[int]bool)
 		for _, thread := range threads {
-			tid64, err := strconv.ParseInt(thread.Name(), 10, 32)
-			if err != nil {
-				return nil, errors.WithStack(err)
+			tid64, parseErr := strconv.ParseInt(thread.Name(), 10, 32)
+			if parseErr != nil {
+				return nil, TraceErrorWrap(&commonerror.ParseIntError{
+					S:       thread.Name(),
+					Base:    10,
+					Bitsize: 32,
+				})
 			}
 			tid := int(tid64)
 
@@ -112,8 +119,8 @@ func Trace(pid int) (*TracedProgram, error) {
 			}
 			subset = false
 
-			err = syscall.PtraceAttach(tid)
-			if err != nil {
+			attachErr := syscall.PtraceAttach(tid)
+			if attachErr != nil {
 				_, ok := retryCount[tid]
 				if !ok {
 					retryCount[tid] = 1
@@ -125,26 +132,30 @@ func Trace(pid int) (*TracedProgram, error) {
 					continue
 				}
 
-				if !strings.Contains(err.Error(), "no such process") {
-					log.Error(err, "attach failed", "tid", tid)
-					return nil, errors.WithStack(err)
+				if !errors.Is(attachErr, syscall.ESRCH) {
+					log.Error(attachErr, "attach failed", "tid", tid)
+					return nil, TraceErrorWrap(&PtraceError{
+						Err:       attachErr,
+						Tid:       tid,
+						Operation: syscall.PTRACE_ATTACH,
+					})
 				}
 				continue
 			}
 			defer func() {
 				if !traceSuccess {
-					err = syscall.PtraceDetach(tid)
-					if err != nil {
-						if !strings.Contains(err.Error(), "no such process") {
-							log.Error(err, "detach failed", "tid", tid)
+					detachErr := syscall.PtraceDetach(tid)
+					if detachErr != nil {
+						if !strings.Contains(detachErr.Error(), "no such process") {
+							log.Error(detachErr, "detach failed", "tid", tid)
 						}
 					}
 				}
 			}()
 
-			err = waitPid(tid)
-			if err != nil {
-				return nil, errors.WithStack(err)
+			waitErr := waitPid(tid)
+			if waitErr != nil {
+				return nil, TraceErrorWrap(waitErr)
 			}
 
 			log.Info("attach successfully", "tid", tid)
@@ -165,7 +176,7 @@ func Trace(pid int) (*TracedProgram, error) {
 
 	entries, err := mapreader.Read(pid)
 	if err != nil {
-		return nil, err
+		return nil, TraceErrorWrap(err)
 	}
 
 	program := &TracedProgram{
@@ -182,16 +193,20 @@ func Trace(pid int) (*TracedProgram, error) {
 }
 
 // Detach detaches from all threads of the processes
-func (p *TracedProgram) Detach() error {
+func (p *TracedProgram) Detach() *PtraceError {
 	for _, tid := range p.tids {
 		log.Info("detaching", "tid", tid)
 
 		err := syscall.PtraceDetach(tid)
 
 		if err != nil {
-			if !strings.Contains(err.Error(), "no such process") {
+			if !errors.Is(err, syscall.ESRCH) {
 				log.Error(err, "detach failed", "tid", tid)
-				return errors.WithStack(err)
+				return &PtraceError{
+					Err:       err,
+					Tid:       tid,
+					Operation: syscall.PTRACE_DETACH,
+				}
 			}
 		}
 	}
@@ -201,62 +216,90 @@ func (p *TracedProgram) Detach() error {
 }
 
 // Protect will backup regs and rip into fields
-func (p *TracedProgram) Protect() error {
+func (p *TracedProgram) Protect() *PtraceError {
 	err := syscall.PtraceGetRegs(p.pid, p.backupRegs)
 	if err != nil {
-		return errors.WithStack(err)
+		return &PtraceError{
+			Err:       err,
+			Tid:       p.pid,
+			Operation: syscall.PTRACE_GETREGS,
+		}
 	}
 
 	_, err = syscall.PtracePeekData(p.pid, uintptr(p.backupRegs.Rip), p.backupCode)
 	if err != nil {
-		return errors.WithStack(err)
+		return &PtraceError{
+			Err:       err,
+			Tid:       p.pid,
+			Operation: syscall.PTRACE_PEEKDATA,
+		}
 	}
 
 	return nil
 }
 
 // Restore will restore regs and rip from fields
-func (p *TracedProgram) Restore() error {
+func (p *TracedProgram) Restore() *PtraceError {
 	err := syscall.PtraceSetRegs(p.pid, p.backupRegs)
 	if err != nil {
-		return errors.WithStack(err)
+		return &PtraceError{
+			Err:       err,
+			Tid:       p.pid,
+			Operation: syscall.PTRACE_SETREGS,
+		}
 	}
 
 	_, err = syscall.PtracePokeData(p.pid, uintptr(p.backupRegs.Rip), p.backupCode)
 	if err != nil {
-		return errors.WithStack(err)
+		return &PtraceError{
+			Err:       err,
+			Tid:       p.pid,
+			Operation: syscall.PTRACE_POKEDATA,
+		}
 	}
 
 	return nil
 }
 
 // Wait waits until the process stops
-func (p *TracedProgram) Wait() error {
+func (p *TracedProgram) Wait() *WaitPidError {
 	return waitPid(p.pid)
 }
 
 // Step moves one step forward
-func (p *TracedProgram) Step() error {
+func (p *TracedProgram) Step() *StepError {
 	err := syscall.PtraceSingleStep(p.pid)
 	if err != nil {
-		return errors.WithStack(err)
+		return StepErrorWrap(&PtraceError{
+			Err:       err,
+			Tid:       p.pid,
+			Operation: syscall.PTRACE_POKEDATA,
+		})
 	}
 
-	return p.Wait()
+	if err := p.Wait(); err != nil {
+		return StepErrorWrap(err)
+	}
+
+	return nil
 }
 
 // Syscall runs a syscall at main thread of process
-func (p *TracedProgram) Syscall(number uint64, args ...uint64) (uint64, error) {
-	err := p.Protect()
-	if err != nil {
-		return 0, err
+func (p *TracedProgram) Syscall(number uint64, args ...uint64) (uint64, *SyscallError) {
+	ptraceErr := p.Protect()
+	if ptraceErr != nil {
+		return 0, SyscallErrorWrap(ptraceErr)
 	}
 
 	var regs syscall.PtraceRegs
 
-	err = syscall.PtraceGetRegs(p.pid, &regs)
-	if err != nil {
-		return 0, err
+	syscallErr := syscall.PtraceGetRegs(p.pid, &regs)
+	if syscallErr != nil {
+		return 0, SyscallErrorWrap(&PtraceError{
+			Tid:       p.pid,
+			Err:       syscallErr,
+			Operation: syscall.PTRACE_GETREGS,
+		})
 	}
 	regs.Rax = number
 	for index, arg := range args {
@@ -274,43 +317,60 @@ func (p *TracedProgram) Syscall(number uint64, args ...uint64) (uint64, error) {
 		} else if index == 5 {
 			regs.R9 = arg
 		} else {
-			return 0, fmt.Errorf("too many arguments for a syscall")
+			return 0, SyscallErrorWrap(&TooManyArguments{
+				Arguments: args,
+			})
 		}
 	}
-	err = syscall.PtraceSetRegs(p.pid, &regs)
-	if err != nil {
-		return 0, err
+	syscallErr = syscall.PtraceSetRegs(p.pid, &regs)
+	if syscallErr != nil {
+		return 0, SyscallErrorWrap(&PtraceError{
+			Tid:       p.pid,
+			Err:       syscallErr,
+			Operation: syscall.PTRACE_SETREGS,
+		})
 	}
 
 	ip := make([]byte, ptrSize)
 
 	// We only support x86-64 platform now, so using hard coded `LittleEndian` here is ok.
 	binary.LittleEndian.PutUint16(ip, 0x050f)
-	_, err = syscall.PtracePokeData(p.pid, uintptr(p.backupRegs.Rip), ip)
-	if err != nil {
-		return 0, err
+	_, syscallErr = syscall.PtracePokeData(p.pid, uintptr(p.backupRegs.Rip), ip)
+	if syscallErr != nil {
+		return 0, SyscallErrorWrap(&PtraceError{
+			Tid:       p.pid,
+			Err:       syscallErr,
+			Operation: syscall.PTRACE_POKEDATA,
+		})
 	}
 
-	err = p.Step()
-	if err != nil {
-		return 0, err
+	if err := p.Step(); err != nil {
+		return 0, SyscallErrorWrap(err)
 	}
 
-	err = syscall.PtraceGetRegs(p.pid, &regs)
-	if err != nil {
-		return 0, err
+	syscallErr = syscall.PtraceGetRegs(p.pid, &regs)
+	if syscallErr != nil {
+		return 0, SyscallErrorWrap(&PtraceError{
+			Tid:       p.pid,
+			Err:       syscallErr,
+			Operation: syscall.PTRACE_GETREGS,
+		})
 	}
 
-	return regs.Rax, p.Restore()
+	ptraceErr = p.Restore()
+	if ptraceErr != nil {
+		return 0, SyscallErrorWrap(ptraceErr)
+	}
+	return regs.Rax, nil
 }
 
 // Mmap runs mmap syscall
-func (p *TracedProgram) Mmap(length uint64, fd uint64) (uint64, error) {
+func (p *TracedProgram) Mmap(length uint64, fd uint64) (uint64, *SyscallError) {
 	return p.Syscall(syscall.SYS_MMAP, 0, length, syscall.PROT_READ|syscall.PROT_WRITE|syscall.PROT_EXEC, syscall.MAP_ANON|syscall.MAP_PRIVATE, fd, 0)
 }
 
 // ReadSlice reads from addr and return a slice
-func (p *TracedProgram) ReadSlice(addr uint64, size uint64) (*[]byte, error) {
+func (p *TracedProgram) ReadSlice(addr uint64, size uint64) (*[]byte, *ProcessVMError) {
 	buffer := make([]byte, size)
 
 	localIov := C.struct_iovec{
@@ -326,7 +386,10 @@ func (p *TracedProgram) ReadSlice(addr uint64, size uint64) (*[]byte, error) {
 	// process_vm_readv syscall number is 310
 	_, _, errno := syscall.Syscall6(310, uintptr(p.pid), uintptr(unsafe.Pointer(&localIov)), uintptr(1), uintptr(unsafe.Pointer(&remoteIov)), uintptr(1), uintptr(0))
 	if errno != 0 {
-		return nil, errors.WithStack(errno)
+		return nil, &ProcessVMError{
+			Errno: errno,
+			Pid:   p.pid,
+		}
 	}
 	// TODO: check size and warn
 
@@ -334,7 +397,7 @@ func (p *TracedProgram) ReadSlice(addr uint64, size uint64) (*[]byte, error) {
 }
 
 // WriteSlice writes a buffer into addr
-func (p *TracedProgram) WriteSlice(addr uint64, buffer []byte) error {
+func (p *TracedProgram) WriteSlice(addr uint64, buffer []byte) *ProcessVMError {
 	size := len(buffer)
 
 	localIov := C.struct_iovec{
@@ -350,7 +413,10 @@ func (p *TracedProgram) WriteSlice(addr uint64, buffer []byte) error {
 	// process_vm_writev syscall number is 311
 	_, _, errno := syscall.Syscall6(311, uintptr(p.pid), uintptr(unsafe.Pointer(&localIov)), uintptr(1), uintptr(unsafe.Pointer(&remoteIov)), uintptr(1), uintptr(0))
 	if errno != 0 {
-		return errors.WithStack(errno)
+		return &ProcessVMError{
+			Errno: errno,
+			Pid:   p.pid,
+		}
 	}
 	// TODO: check size and warn
 
@@ -373,7 +439,7 @@ func alignBuffer(buffer []byte) []byte {
 }
 
 // PtraceWriteSlice uses ptrace rather than process_vm_write to write a buffer into addr
-func (p *TracedProgram) PtraceWriteSlice(addr uint64, buffer []byte) error {
+func (p *TracedProgram) PtraceWriteSlice(addr uint64, buffer []byte) *PtraceError {
 	wroteSize := 0
 
 	buffer = alignBuffer(buffer)
@@ -385,7 +451,11 @@ func (p *TracedProgram) PtraceWriteSlice(addr uint64, buffer []byte) error {
 		_, err := syscall.PtracePokeData(p.pid, addr, data)
 		if err != nil {
 			err = errors.WithStack(err)
-			return errors.WithMessagef(err, "write to addr %x with %+v failed", addr, data)
+			return &PtraceError{
+				Tid:       p.pid,
+				Err:       err,
+				Operation: syscall.PTRACE_POKEDATA,
+			}
 		}
 
 		wroteSize += ptrSize
@@ -395,28 +465,32 @@ func (p *TracedProgram) PtraceWriteSlice(addr uint64, buffer []byte) error {
 }
 
 // GetLibBuffer reads an entry
-func (p *TracedProgram) GetLibBuffer(entry *mapreader.Entry) (*[]byte, error) {
+func (p *TracedProgram) GetLibBuffer(entry *mapreader.Entry) (*[]byte, *ELFOperationError) {
 	if entry.PaddingSize > 0 {
-		return nil, fmt.Errorf("entry with padding size is not supported")
+		return nil, ELFOperationErrorWrap(&EntryWithPaddingSize{})
 	}
 
 	size := entry.EndAddress - entry.StartAddress
 
-	return p.ReadSlice(entry.StartAddress, size)
+	bytes, err := p.ReadSlice(entry.StartAddress, size)
+	if err != nil {
+		return nil, ELFOperationErrorWrap(err)
+	}
+	return bytes, nil
 }
 
 // MmapSlice mmaps a slice and return it's addr
-func (p *TracedProgram) MmapSlice(slice []byte) (*mapreader.Entry, error) {
+func (p *TracedProgram) MmapSlice(slice []byte) (*mapreader.Entry, *MmapSliceError) {
 	size := uint64(len(slice))
 
-	addr, err := p.Mmap(size, 0)
-	if err != nil {
-		return nil, errors.WithStack(err)
+	addr, syscallErr := p.Mmap(size, 0)
+	if syscallErr != nil {
+		return nil, MmapSliceErrorWrap(syscallErr)
 	}
 
-	err = p.WriteSlice(addr, slice)
-	if err != nil {
-		return nil, errors.WithStack(err)
+	processVmErr := p.WriteSlice(addr, slice)
+	if processVmErr != nil {
+		return nil, MmapSliceErrorWrap(processVmErr)
 	}
 
 	return &mapreader.Entry{
@@ -429,16 +503,20 @@ func (p *TracedProgram) MmapSlice(slice []byte) (*mapreader.Entry, error) {
 }
 
 // FindSymbolInEntry finds symbol in entry through parsing elf
-func (p *TracedProgram) FindSymbolInEntry(symbolName string, entry *mapreader.Entry) (uint64, error) {
+func (p *TracedProgram) FindSymbolInEntry(symbolName string, entry *mapreader.Entry) (uint64, *ELFOperationError) {
+	var err error
+
 	libBuffer, err := p.GetLibBuffer(entry)
 	if err != nil {
-		return 0, err
+		return 0, err.(*ELFOperationError)
 	}
 
 	reader := bytes.NewReader(*libBuffer)
 	vdsoElf, err := elf.NewFile(reader)
 	if err != nil {
-		return 0, errors.WithStack(err)
+		return 0, ELFOperationErrorWrap(&ELFError{
+			Err: err,
+		})
 	}
 
 	loadOffset := uint64(0)
@@ -454,7 +532,9 @@ func (p *TracedProgram) FindSymbolInEntry(symbolName string, entry *mapreader.En
 
 	symbols, err := vdsoElf.DynamicSymbols()
 	if err != nil {
-		return 0, errors.WithStack(err)
+		return 0, ELFOperationErrorWrap(&ELFError{
+			Err: err,
+		})
 	}
 	for _, symbol := range symbols {
 		if symbol.Name == symbolName {
@@ -463,7 +543,7 @@ func (p *TracedProgram) FindSymbolInEntry(symbolName string, entry *mapreader.En
 			return entry.StartAddress + (offset - loadOffset), nil
 		}
 	}
-	return 0, fmt.Errorf("cannot find symbol")
+	return 0, ELFOperationErrorWrap(&FailToFindSymbol{})
 }
 
 // WriteUint64ToAddr writes uint64 to addr

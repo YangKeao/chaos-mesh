@@ -61,8 +61,10 @@ type ChaosControllerConfig struct {
 }
 
 // EnvironChaosController returns the settings from the environment.
-func EnvironChaosController() (ChaosControllerConfig, error) {
+func EnvironChaosController() (ChaosControllerConfig, *EnvConfigError) {
 	cfg := ChaosControllerConfig{}
 	err := envconfig.Process("", &cfg)
-	return cfg, err
+	return cfg, &EnvConfigError{
+		Err: err,
+	}
 }

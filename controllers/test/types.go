@@ -20,10 +20,10 @@ import (
 	"github.com/golang/protobuf/ptypes/empty"
 	"google.golang.org/grpc"
 
-	chaosdaemon "github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
-	"github.com/chaos-mesh/chaos-mesh/pkg/mock"
-
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/client"
+	chaosdaemon "github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
+	grpcUtils "github.com/chaos-mesh/chaos-mesh/pkg/grpc"
+	"github.com/chaos-mesh/chaos-mesh/pkg/mock"
 )
 
 // Assert *MockChaosDaemonClient implements chaosdaemon.ChaosDaemonClientInterface.
@@ -49,9 +49,9 @@ func (c *MockChaosDaemonClient) ContainerGetPid(ctx context.Context, in *chaosda
 	return nil, mockError("ContainerGetPid")
 }
 
-func mockError(name string) error {
+func mockError(name string) *grpcUtils.GrpcError {
 	if err := mock.On(fmt.Sprintf("Mock%sError", name)); err != nil {
-		return err.(error)
+		return err.(*grpcUtils.GrpcError)
 	}
 	return nil
 }
@@ -88,6 +88,6 @@ func (c *MockChaosDaemonClient) SetTcs(ctx context.Context, in *chaosdaemon.TcsR
 	return nil, mockError("SetTcs")
 }
 
-func (c *MockChaosDaemonClient) Close() error {
+func (c *MockChaosDaemonClient) Close() *grpcUtils.GrpcError {
 	return mockError("CloseChaosDaemonClient")
 }

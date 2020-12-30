@@ -15,14 +15,19 @@ package fusedev
 
 // Error means fail to operate the fuse device
 // +thaterror:error=fail to operate the fuse device: Error: {{.Err.Error()}}
-// +thaterror:wrap=*IOError
+// +thaterror:wrap="pkg/commonerror".*IOError
+// +thaterror:wrap=*InvalidCgroupEntry
+// +thaterror:wrap=*DeviceCgroupNotFound
 type Error struct {
 	Err error
 }
 
-// IOError represents an error during the IO operation
-// +thaterror:error=io failed: Error: {{.Err.Error()}}
-// +thaterror:wrap="github.com/YangKeao/thaterror/error".Anyhow
-type IOError struct {
-	Err error
+// InvalidCgroupEntry represents the cgroup entry is not expected
+// +thaterror:error=invalid cgroup entry: {{.Text}}
+type InvalidCgroupEntry struct {
+	Text string
 }
+
+// DeviceCgroupNotFound means failed to find device cgroup
+// +thaterror:error=fail to find device cgroup
+type DeviceCgroupNotFound struct{}

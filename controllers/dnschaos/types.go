@@ -171,6 +171,8 @@ func (r *endpoint) cleanFinalizersAndRecover(ctx context.Context, chaos *v1alpha
 }
 
 func (r *endpoint) recoverPod(ctx context.Context, pod *v1.Pod) error {
+	var err error
+
 	r.Log.Info("Try to recover pod", "namespace", pod.Namespace, "name", pod.Name)
 
 	daemonClient, err := client.NewChaosDaemonClient(ctx, r.Client,
@@ -229,6 +231,8 @@ func (r *endpoint) applyAllPods(ctx context.Context, pods []v1.Pod, chaos *v1alp
 }
 
 func (r *endpoint) applyPod(ctx context.Context, pod *v1.Pod, dnsServerIP string) error {
+	var err error
+
 	r.Log.Info("Try to apply dns chaos", "namespace",
 		pod.Namespace, "name", pod.Name)
 	daemonClient, err := client.NewChaosDaemonClient(ctx, r.Client,

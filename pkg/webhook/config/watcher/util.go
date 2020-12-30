@@ -18,14 +18,16 @@ import (
 	"html/template"
 )
 
-func renderTemplateWithArgs(tpl *template.Template, args map[string]string) ([]byte, error) {
+func renderTemplateWithArgs(tpl *template.Template, args map[string]string) ([]byte, *FailToRenderTemplate) {
 	model := make(map[string]interface{}, len(args))
 	for k, v := range args {
 		model[k] = v
 	}
 	buff := new(bytes.Buffer)
 	if err := tpl.Execute(buff, model); err != nil {
-		return nil, err
+		return nil, &FailToRenderTemplate{
+			Err: err,
+		}
 	}
 	return buff.Bytes(), nil
 }

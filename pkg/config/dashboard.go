@@ -18,6 +18,7 @@ import (
 
 	"github.com/kelseyhightower/envconfig"
 
+	"github.com/chaos-mesh/chaos-mesh/pkg/commonerror"
 	"github.com/chaos-mesh/chaos-mesh/pkg/ttlcontroller"
 )
 
@@ -60,27 +61,35 @@ type DatabaseConfig struct {
 }
 
 // EnvironChaosDashboard returns the settings from the environment.
-func EnvironChaosDashboard() (*ChaosDashboardConfig, error) {
+func EnvironChaosDashboard() (*ChaosDashboardConfig, *EnvConfigError) {
 	cfg := ChaosDashboardConfig{}
 	err := envconfig.Process("", &cfg)
-	return &cfg, err
+	return &cfg, &EnvConfigError{
+		Err: err,
+	}
 }
 
 // ParsePersistTTLConfig parse PersistTTLConfig to persistTTLConfigParsed.
-func ParsePersistTTLConfig(config *PersistTTLConfig) (*ttlcontroller.TTLconfig, error) {
+func ParsePersistTTLConfig(config *PersistTTLConfig) (*ttlcontroller.TTLconfig, *ParsePersistTTLConfigError) {
 	SyncPeriod, err := time.ParseDuration(config.SyncPeriod)
 	if err != nil {
-		return nil, err
+		return nil, ParsePersistTTLConfigErrorWrap(&commonerror.ParseDurationError{
+			S: config.SyncPeriod,
+		})
 	}
 
 	Event, err := time.ParseDuration(config.Event)
 	if err != nil {
-		return nil, err
+		return nil, ParsePersistTTLConfigErrorWrap(&commonerror.ParseDurationError{
+			S: config.Event,
+		})
 	}
 
 	Experiment, err := time.ParseDuration(config.Experiment)
 	if err != nil {
-		return nil, err
+		return nil, ParsePersistTTLConfigErrorWrap(&commonerror.ParseDurationError{
+			S: config.Experiment,
+		})
 	}
 
 	return &ttlcontroller.TTLconfig{

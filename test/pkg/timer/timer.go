@@ -21,6 +21,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	commonerror "github.com/chaos-mesh/chaos-mesh/pkg/commonerror"
 )
 
 // Timer represents a running timer process
@@ -48,7 +50,7 @@ func StartTimer() (*Timer, *Error) {
 
 	stdout, err := process.StdoutPipe()
 	if err != nil {
-		return nil, errorWrap(&ProcessStartError{
+		return nil, ErrorWrap(&ProcessStartError{
 			Err: err,
 		})
 	}
@@ -63,7 +65,7 @@ func StartTimer() (*Timer, *Error) {
 			sec, err := strconv.ParseInt(sections[0], 10, 64)
 			if err != nil {
 				output <- TimeResult{
-					Error: errorWrap(&ParseIntFailed{
+					Error: ErrorWrap(&commonerror.ParseIntError{
 						S:       sections[0],
 						Base:    10,
 						Bitsize: 64,
@@ -73,7 +75,7 @@ func StartTimer() (*Timer, *Error) {
 			nsec, err := strconv.ParseInt(sections[1], 10, 64)
 			if err != nil {
 				output <- TimeResult{
-					Error: errorWrap(&ParseIntFailed{
+					Error: ErrorWrap(&commonerror.ParseIntError{
 						S:       sections[0],
 						Base:    10,
 						Bitsize: 64,
@@ -88,7 +90,7 @@ func StartTimer() (*Timer, *Error) {
 		}
 		if err := stdoutScanner.Err(); err != nil {
 			output <- TimeResult{
-				Error: errorWrap(&IOError{
+				Error: ErrorWrap(&commonerror.IOError{
 					Err: err,
 				}),
 			}
@@ -97,14 +99,14 @@ func StartTimer() (*Timer, *Error) {
 
 	stdin, err := process.StdinPipe()
 	if err != nil {
-		return nil, errorWrap(&ProcessStartError{
+		return nil, ErrorWrap(&ProcessStartError{
 			Err: err,
 		})
 	}
 
 	err = process.Start()
 	if err != nil {
-		return nil, errorWrap(&ProcessStartError{
+		return nil, ErrorWrap(&ProcessStartError{
 			Err: err,
 		})
 	}
@@ -121,7 +123,7 @@ func StartTimer() (*Timer, *Error) {
 func (timer *Timer) GetTime() (*time.Time, *Error) {
 	_, err := fmt.Fprintf(timer.Stdin, "\n")
 	if err != nil {
-		return nil, errorWrap(&IOError{
+		return nil, ErrorWrap(&commonerror.IOError{
 			Err: err,
 		})
 	}
@@ -138,7 +140,7 @@ func (timer *Timer) GetTime() (*time.Time, *Error) {
 func (timer *Timer) Stop() *Error {
 	_, err := fmt.Fprintf(timer.Stdin, "STOP\n")
 
-	return errorWrap(&IOError{
+	return ErrorWrap(&commonerror.IOError{
 		Err: err,
 	})
 }

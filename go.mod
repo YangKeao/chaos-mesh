@@ -3,7 +3,7 @@ module github.com/chaos-mesh/chaos-mesh
 require (
 	code.cloudfoundry.org/bytefmt v0.0.0-20200131002437-cf55d5288a48
 	github.com/DATA-DOG/go-sqlmock v1.5.0
-	github.com/YangKeao/thaterror v0.0.0-20201228081930-54653d3f3bd5
+	github.com/YangKeao/thaterror v0.0.0-20201228083704-8fde6f2f1126
 	github.com/bxcodec/faker v2.0.1+incompatible
 	github.com/chaos-mesh/k8s_dns_chaos v0.0.0-20200922120555-7ced93637075
 	github.com/containerd/cgroups v0.0.0-20200404012852-53ba5634dc0f
@@ -27,6 +27,7 @@ require (
 	github.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect
 	github.com/golang/mock v1.4.4 // indirect
 	github.com/golang/protobuf v1.4.2
+	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.2.0
 	github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0
 	github.com/grpc-ecosystem/grpc-gateway v1.14.1 // indirect
@@ -62,20 +63,13 @@ require (
 	go.uber.org/fx v1.12.0
 	go.uber.org/zap v1.15.0
 	golang.org/x/lint v0.0.0-20200302205851-738671d3881b // indirect
-<<<<<<< HEAD
 	golang.org/x/net v0.0.0-20201021035429-f5854403a974
+	golang.org/x/net/http2/h2demo v0.0.0-20201224014010-6772e930b67b // indirect
 	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
-	golang.org/x/time v0.0.0-20191024005414-555d28b269f0 // indirect
-	golang.org/x/tools v0.0.0-20201226215659-b1c90890d22a
-=======
-	golang.org/x/net v0.0.0-20200320220750-118fecf932d8
-	golang.org/x/sync v0.0.0-20190911185100-cd5d95a43a6e
-	golang.org/x/sys v0.0.0-20200409092240-59c9f1ba88fa // indirect
 	golang.org/x/time v0.0.0-20191024005414-555d28b269f0
-	golang.org/x/tools v0.0.0-20200309202150-20ab64c0d93f
->>>>>>> upstream/master
+	golang.org/x/tools v0.0.0-20201226215659-b1c90890d22a
+	golang.org/x/tools/gopls v0.6.1 // indirect
 	google.golang.org/grpc v1.27.0
-	honnef.co/go/tools v0.0.1-2020.1.3 // indirect
 	k8s.io/api v0.17.0
 	k8s.io/apiextensions-apiserver v0.17.0
 	k8s.io/apimachinery v0.17.0

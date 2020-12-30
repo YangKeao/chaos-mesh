@@ -65,7 +65,7 @@ func main() {
 		log.Error(err, "fail to grant access to /dev/fuse")
 	}
 
-	if err = chaosdaemon.StartServer(conf, reg); err != nil {
+	if err := chaosdaemon.StartServer(conf, reg); err != nil {
 		log.Error(err, "failed to start chaos-daemon server")
 		os.Exit(1)
 	}

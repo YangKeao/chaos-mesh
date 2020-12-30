@@ -51,6 +51,8 @@ const (
 // Inject do pod template config inject
 func Inject(res *v1beta1.AdmissionRequest, cli client.Client, cfg *config.Config, controllerCfg *controllerCfg.ChaosControllerConfig, metrics *metrics.ChaosCollector) *v1beta1.AdmissionResponse {
 	var pod corev1.Pod
+	var err error
+
 	if err := json.Unmarshal(res.Object.Raw, &pod); err != nil {
 		log.Error(err, "Could not unmarshal raw object")
 		return &v1beta1.AdmissionResponse{
