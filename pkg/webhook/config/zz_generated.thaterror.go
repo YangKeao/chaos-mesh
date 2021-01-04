@@ -6,32 +6,6 @@ import (
 )
 
 var (
-	MissingTemplateNameErrorTmpl = template.Must(template.New("MissingTemplateNameErrorTmpl").Parse("template field is required for template args config"))
-)
-
-func (err *MissingTemplateName) Error() string {
-	buf := new(bytes.Buffer)
-	tmplErr := MissingTemplateNameErrorTmpl.Execute(buf, err)
-	if tmplErr != nil {
-		panic("fail to render error template")
-	}
-	return buf.String()
-}
-
-var (
-	MissingNameErrorTmpl = template.Must(template.New("MissingNameErrorTmpl").Parse("name field is required for template args config"))
-)
-
-func (err *MissingName) Error() string {
-	buf := new(bytes.Buffer)
-	tmplErr := MissingNameErrorTmpl.Execute(buf, err)
-	if tmplErr != nil {
-		panic("fail to render error template")
-	}
-	return buf.String()
-}
-
-var (
 	ErrorErrorTmpl = template.Must(template.New("ErrorErrorTmpl").Parse(""))
 )
 
@@ -55,8 +29,8 @@ func (err *MissingName) PkgwebhookconfigError()         {}
 func ErrorWrap(err ErrorWrapUnion) *Error {
 	return &Error{Err: err}
 }
-func (err *Error) Unwrap() error {
-	return err.Err
+func (err *Error) Unwrap() ErrorWrapUnion {
+	return err.Err.(ErrorWrapUnion)
 }
 
 var (
@@ -66,6 +40,32 @@ var (
 func (err *NotFound) Error() string {
 	buf := new(bytes.Buffer)
 	tmplErr := NotFoundErrorTmpl.Execute(buf, err)
+	if tmplErr != nil {
+		panic("fail to render error template")
+	}
+	return buf.String()
+}
+
+var (
+	MissingTemplateNameErrorTmpl = template.Must(template.New("MissingTemplateNameErrorTmpl").Parse("template field is required for template args config"))
+)
+
+func (err *MissingTemplateName) Error() string {
+	buf := new(bytes.Buffer)
+	tmplErr := MissingTemplateNameErrorTmpl.Execute(buf, err)
+	if tmplErr != nil {
+		panic("fail to render error template")
+	}
+	return buf.String()
+}
+
+var (
+	MissingNameErrorTmpl = template.Must(template.New("MissingNameErrorTmpl").Parse("name field is required for template args config"))
+)
+
+func (err *MissingName) Error() string {
+	buf := new(bytes.Buffer)
+	tmplErr := MissingNameErrorTmpl.Execute(buf, err)
 	if tmplErr != nil {
 		panic("fail to render error template")
 	}

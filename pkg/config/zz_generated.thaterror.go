@@ -31,6 +31,6 @@ func (err EnvConfigError) PkgconfigParsePersistTTLConfigError() {}
 func ParsePersistTTLConfigErrorWrap(err ParsePersistTTLConfigErrorWrapUnion) *ParsePersistTTLConfigError {
 	return &ParsePersistTTLConfigError{Err: err}
 }
-func (err *ParsePersistTTLConfigError) Unwrap() error {
-	return err.Err
+func (err *ParsePersistTTLConfigError) Unwrap() ParsePersistTTLConfigErrorWrapUnion {
+	return err.Err.(ParsePersistTTLConfigErrorWrapUnion)
 }

@@ -44,8 +44,8 @@ func (err *EmptyTokenError) PkgclientpoolCreateClientError()             {}
 func CreateClientErrorWrap(err CreateClientErrorWrapUnion) *CreateClientError {
 	return &CreateClientError{Err: err}
 }
-func (err *CreateClientError) Unwrap() error {
-	return err.Err
+func (err *CreateClientError) Unwrap() CreateClientErrorWrapUnion {
+	return err.Err.(CreateClientErrorWrapUnion)
 }
 
 var (

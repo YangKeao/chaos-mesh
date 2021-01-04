@@ -27,8 +27,8 @@ func (err *ProcessStartError) TestpkgtimerError() {}
 func ErrorWrap(err ErrorWrapUnion) *Error {
 	return &Error{Err: err}
 }
-func (err *Error) Unwrap() error {
-	return err.Err
+func (err *Error) Unwrap() ErrorWrapUnion {
+	return err.Err.(ErrorWrapUnion)
 }
 func (err *ProcessStartError) Error() string {
 	return err.Error()

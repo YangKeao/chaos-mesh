@@ -5,35 +5,71 @@ import (
 	"text/template"
 )
 
-func (err *TraceError) Error() string {
+func (err *ELFError) Error() string {
 	return err.Error()
 }
 
-type TraceErrorWrapUnion interface {
-	PkgptraceTraceError()
-	error
-}
-
-func (err *PtraceError) PkgptraceTraceError()  {}
-func (err *WaitPidError) PkgptraceTraceError() {}
-func TraceErrorWrap(err TraceErrorWrapUnion) *TraceError {
-	return &TraceError{Err: err}
-}
-func (err *TraceError) Unwrap() error {
-	return err.Err
-}
-
 var (
-	PtraceErrorErrorTmpl = template.Must(template.New("PtraceErrorErrorTmpl").Parse("fail to ptrace({{.Operation}}) on process {{.Tid}}"))
+	FailToFindSymbolErrorTmpl = template.Must(template.New("FailToFindSymbolErrorTmpl").Parse("cannot find symbol"))
 )
 
-func (err *PtraceError) Error() string {
+func (err *FailToFindSymbol) Error() string {
 	buf := new(bytes.Buffer)
-	tmplErr := PtraceErrorErrorTmpl.Execute(buf, err)
+	tmplErr := FailToFindSymbolErrorTmpl.Execute(buf, err)
 	if tmplErr != nil {
 		panic("fail to render error template")
 	}
 	return buf.String()
+}
+func (err *SyscallError) Error() string {
+	return err.Error()
+}
+
+type SyscallErrorWrapUnion interface {
+	PkgptraceSyscallError()
+	error
+}
+
+func (err *PtraceError) PkgptraceSyscallError()      {}
+func (err *StepError) PkgptraceSyscallError()        {}
+func (err *TooManyArguments) PkgptraceSyscallError() {}
+func SyscallErrorWrap(err SyscallErrorWrapUnion) *SyscallError {
+	return &SyscallError{Err: err}
+}
+func (err *SyscallError) Unwrap() SyscallErrorWrapUnion {
+	return err.Err.(SyscallErrorWrapUnion)
+}
+
+var (
+	ProcessVMErrorErrorTmpl = template.Must(template.New("ProcessVMErrorErrorTmpl").Parse("process_vm_readv returned an error: {{.Errno}}"))
+)
+
+func (err *ProcessVMError) Error() string {
+	buf := new(bytes.Buffer)
+	tmplErr := ProcessVMErrorErrorTmpl.Execute(buf, err)
+	if tmplErr != nil {
+		panic("fail to render error template")
+	}
+	return buf.String()
+}
+func (err *ELFOperationError) Error() string {
+	return err.Error()
+}
+
+type ELFOperationErrorWrapUnion interface {
+	PkgptraceELFOperationError()
+	error
+}
+
+func (err *ProcessVMError) PkgptraceELFOperationError()       {}
+func (err *EntryWithPaddingSize) PkgptraceELFOperationError() {}
+func (err ELFError) PkgptraceELFOperationError()              {}
+func (err *FailToFindSymbol) PkgptraceELFOperationError()     {}
+func ELFOperationErrorWrap(err ELFOperationErrorWrapUnion) *ELFOperationError {
+	return &ELFOperationError{Err: err}
+}
+func (err *ELFOperationError) Unwrap() ELFOperationErrorWrapUnion {
+	return err.Err.(ELFOperationErrorWrapUnion)
 }
 
 var (
@@ -62,39 +98,34 @@ func (err *ProcessVMError) PkgptraceMmapSliceError() {}
 func MmapSliceErrorWrap(err MmapSliceErrorWrapUnion) *MmapSliceError {
 	return &MmapSliceError{Err: err}
 }
-func (err *MmapSliceError) Unwrap() error {
-	return err.Err
+func (err *MmapSliceError) Unwrap() MmapSliceErrorWrapUnion {
+	return err.Err.(MmapSliceErrorWrapUnion)
 }
-func (err *ELFError) Error() string {
-	return err.Error()
-}
-func (err *ELFOperationError) Error() string {
+func (err *TraceError) Error() string {
 	return err.Error()
 }
 
-type ELFOperationErrorWrapUnion interface {
-	PkgptraceELFOperationError()
+type TraceErrorWrapUnion interface {
+	PkgptraceTraceError()
 	error
 }
 
-func (err *ProcessVMError) PkgptraceELFOperationError()       {}
-func (err *EntryWithPaddingSize) PkgptraceELFOperationError() {}
-func (err ELFError) PkgptraceELFOperationError()              {}
-func (err *FailToFindSymbol) PkgptraceELFOperationError()     {}
-func ELFOperationErrorWrap(err ELFOperationErrorWrapUnion) *ELFOperationError {
-	return &ELFOperationError{Err: err}
+func (err *PtraceError) PkgptraceTraceError()  {}
+func (err *WaitPidError) PkgptraceTraceError() {}
+func TraceErrorWrap(err TraceErrorWrapUnion) *TraceError {
+	return &TraceError{Err: err}
 }
-func (err *ELFOperationError) Unwrap() error {
-	return err.Err
+func (err *TraceError) Unwrap() TraceErrorWrapUnion {
+	return err.Err.(TraceErrorWrapUnion)
 }
 
 var (
-	FailToFindSymbolErrorTmpl = template.Must(template.New("FailToFindSymbolErrorTmpl").Parse("cannot find symbol"))
+	PtraceErrorErrorTmpl = template.Must(template.New("PtraceErrorErrorTmpl").Parse("fail to ptrace({{.Operation}}) on process {{.Tid}}"))
 )
 
-func (err *FailToFindSymbol) Error() string {
+func (err *PtraceError) Error() string {
 	buf := new(bytes.Buffer)
-	tmplErr := FailToFindSymbolErrorTmpl.Execute(buf, err)
+	tmplErr := PtraceErrorErrorTmpl.Execute(buf, err)
 	if tmplErr != nil {
 		panic("fail to render error template")
 	}
@@ -114,26 +145,8 @@ func (err *PtraceError) PkgptraceStepError()  {}
 func StepErrorWrap(err StepErrorWrapUnion) *StepError {
 	return &StepError{Err: err}
 }
-func (err *StepError) Unwrap() error {
-	return err.Err
-}
-func (err *SyscallError) Error() string {
-	return err.Error()
-}
-
-type SyscallErrorWrapUnion interface {
-	PkgptraceSyscallError()
-	error
-}
-
-func (err *PtraceError) PkgptraceSyscallError()      {}
-func (err *StepError) PkgptraceSyscallError()        {}
-func (err *TooManyArguments) PkgptraceSyscallError() {}
-func SyscallErrorWrap(err SyscallErrorWrapUnion) *SyscallError {
-	return &SyscallError{Err: err}
-}
-func (err *SyscallError) Unwrap() error {
-	return err.Err
+func (err *StepError) Unwrap() StepErrorWrapUnion {
+	return err.Err.(StepErrorWrapUnion)
 }
 
 var (
@@ -143,19 +156,6 @@ var (
 func (err *TooManyArguments) Error() string {
 	buf := new(bytes.Buffer)
 	tmplErr := TooManyArgumentsErrorTmpl.Execute(buf, err)
-	if tmplErr != nil {
-		panic("fail to render error template")
-	}
-	return buf.String()
-}
-
-var (
-	ProcessVMErrorErrorTmpl = template.Must(template.New("ProcessVMErrorErrorTmpl").Parse("process_vm_readv returned an error: {{.Errno}}"))
-)
-
-func (err *ProcessVMError) Error() string {
-	buf := new(bytes.Buffer)
-	tmplErr := ProcessVMErrorErrorTmpl.Execute(buf, err)
 	if tmplErr != nil {
 		panic("fail to render error template")
 	}

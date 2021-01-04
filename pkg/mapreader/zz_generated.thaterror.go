@@ -12,7 +12,7 @@ type ErrorWrapUnion interface {
 func ErrorWrap(err ErrorWrapUnion) *Error {
 	return &Error{Err: err}
 }
-func (err *Error) Unwrap() error {
-	return err.Err
+func (err *Error) Unwrap() ErrorWrapUnion {
+	return err.Err.(ErrorWrapUnion)
 }
 func (err *Error) PkgptraceTraceError() {}
