@@ -18,13 +18,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
 	ctrl "sigs.k8s.io/controller-runtime"
-
-	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 )
@@ -42,21 +39,22 @@ func CreateGrpcConnection(ctx context.Context, c client.Client, pod *v1.Pod, por
 	nodeName := pod.Spec.NodeName
 	log.Info("Creating client to chaos-daemon", "node", nodeName)
 
-	ns := config.ControllerCfg.Namespace
-	var endpoints v1.Endpoints
+	var node v1.Node
 	err := c.Get(ctx, types.NamespacedName{
-		Namespace: ns,
-		Name:      "chaos-daemon",
-	}, &endpoints)
+		Name: nodeName,
+	}, &node)
+
 	if err != nil {
 		return nil, err
 	}
 
-	daemonIP := findIPOnEndpoints(&endpoints, nodeName)
-	if len(daemonIP) == 0 {
-		return nil, errors.Errorf("cannot find daemonIP on node %s in related Endpoints %v", nodeName, endpoints)
+	conn, err := grpc.Dial(fmt.Sprintf("%s:%d", node.Status.Addresses[0].Address, port),
+		grpc.WithInsecure(),
+		grpc.WithUnaryInterceptor(TimeoutClientInterceptor))
+	if err != nil {
+		return nil, err
 	}
-	return CreateGrpcConnectionWithAddress(daemonIP, port)
+	return conn, nil
 }
 
 // CreateGrpcConnectionWithAddress create a grpc connection with given port and address
@@ -68,18 +66,6 @@ func CreateGrpcConnectionWithAddress(address string, port int) (*grpc.ClientConn
 		return nil, err
 	}
 	return conn, nil
-}
-
-func findIPOnEndpoints(e *v1.Endpoints, nodeName string) string {
-	for _, subset := range e.Subsets {
-		for _, addr := range subset.Addresses {
-			if addr.NodeName != nil && *addr.NodeName == nodeName {
-				return addr.IP
-			}
-		}
-	}
-
-	return ""
 }
 
 // TimeoutClientInterceptor wraps the RPC with a timeout.
