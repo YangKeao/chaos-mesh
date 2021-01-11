@@ -183,7 +183,7 @@ func (m *BackgroundProcessManager) KillBackgroundProcess(ctx context.Context, pi
 		return nil
 	}
 
-	output, err := exec.Command("kill", "-15", strconv.Itoa(p.Pid)).CombinedOutput()
+	output, err := exec.Command("sudo", "kill", "-15", strconv.Itoa(p.Pid)).CombinedOutput()
 
 	if err != nil && !strings.Contains(string(output), "No such process") {
 		log.Error(err, "error while killing process", "output", output)
