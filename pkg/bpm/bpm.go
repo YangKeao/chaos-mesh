@@ -18,6 +18,8 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
+	"strings"
 	"sync"
 	"syscall"
 
@@ -181,10 +183,10 @@ func (m *BackgroundProcessManager) KillBackgroundProcess(ctx context.Context, pi
 		return nil
 	}
 
-	err = p.Signal(syscall.SIGTERM)
+	output, err := exec.Command("kill", "-15", strconv.Itoa(p.Pid)).CombinedOutput()
 
-	if err != nil && err.Error() != "os: process already finished" {
-		log.Error(err, "error while killing process")
+	if err != nil && !strings.Contains(string(output), "No such process") {
+		log.Error(err, "error while killing process", "output", output)
 		return err
 	}
 
