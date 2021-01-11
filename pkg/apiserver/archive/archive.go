@@ -44,13 +44,20 @@ func NewService(
 	}
 }
 
+// StatusResponse defines a common status struct.
+type StatusResponse struct {
+	Status string `json:"status"`
+}
+
 // Register mounts our HTTP handler on the mux.
 func Register(r *gin.RouterGroup, s *Service) {
 	endpoint := r.Group("/archives")
+	endpoint.Use(utils.AuthRequired)
 
 	endpoint.GET("", s.list)
 	endpoint.GET("/detail", s.detail)
 	endpoint.GET("/report", s.report)
+	endpoint.DELETE("/:uid", s.delete)
 }
 
 // Archive defines the basic information of an archive.
@@ -93,7 +100,7 @@ func (s *Service) list(c *gin.Context) {
 	name := c.Query("name")
 	ns := c.Query("namespace")
 
-	data, err := s.archive.ListMeta(context.Background(), kind, ns, name, true)
+	metas, err := s.archive.ListMeta(context.Background(), kind, ns, name, true)
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
 		_ = c.Error(utils.ErrInternalServer.NewWithNoMessage())
@@ -102,15 +109,15 @@ func (s *Service) list(c *gin.Context) {
 
 	archives := make([]Archive, 0)
 
-	for _, d := range data {
+	for _, meta := range metas {
 		archives = append(archives, Archive{
-			UID:        d.UID,
-			Kind:       d.Kind,
-			Namespace:  d.Namespace,
-			Name:       d.Name,
-			Action:     d.Action,
-			StartTime:  d.StartTime,
-			FinishTime: d.FinishTime,
+			UID:        meta.UID,
+			Kind:       meta.Kind,
+			Namespace:  meta.Namespace,
+			Name:       meta.Name,
+			Action:     meta.Action,
+			StartTime:  meta.StartTime,
+			FinishTime: meta.FinishTime,
 		})
 	}
 
@@ -132,6 +139,7 @@ func (s *Service) detail(c *gin.Context) {
 		detail Detail
 	)
 	uid := c.Query("uid")
+	namespace := c.Query("namespace")
 
 	if uid == "" {
 		c.Status(http.StatusBadRequest)
@@ -139,33 +147,41 @@ func (s *Service) detail(c *gin.Context) {
 		return
 	}
 
-	data, err := s.archive.FindByUID(context.Background(), uid)
+	exp, err := s.archive.FindByUID(context.Background(), uid)
 	if err != nil {
-		if !gorm.IsRecordNotFoundError(err) {
-			c.Status(http.StatusInternalServerError)
-			_ = c.Error(utils.ErrInternalServer.NewWithNoMessage())
-		} else {
+		if gorm.IsRecordNotFoundError(err) {
 			c.Status(http.StatusInternalServerError)
 			_ = c.Error(utils.ErrInvalidRequest.New("the archive is not found"))
+		} else {
+			c.Status(http.StatusInternalServerError)
+			_ = c.Error(utils.ErrInternalServer.NewWithNoMessage())
 		}
 		return
 	}
 
-	switch data.Kind {
+	if len(namespace) != 0 && exp.Namespace != namespace {
+		c.Status(http.StatusBadRequest)
+		_ = c.Error(utils.ErrInvalidRequest.New("exp %s belong to namespace %s but not namespace %s", uid, exp.Namespace, namespace))
+		return
+	}
+
+	switch exp.Kind {
 	case v1alpha1.KindPodChaos:
-		yaml, err = data.ParsePodChaos()
+		yaml, err = exp.ParsePodChaos()
 	case v1alpha1.KindIoChaos:
-		yaml, err = data.ParseIOChaos()
+		yaml, err = exp.ParseIOChaos()
 	case v1alpha1.KindNetworkChaos:
-		yaml, err = data.ParseNetworkChaos()
+		yaml, err = exp.ParseNetworkChaos()
 	case v1alpha1.KindTimeChaos:
-		yaml, err = data.ParseTimeChaos()
+		yaml, err = exp.ParseTimeChaos()
 	case v1alpha1.KindKernelChaos:
-		yaml, err = data.ParseKernelChaos()
+		yaml, err = exp.ParseKernelChaos()
 	case v1alpha1.KindStressChaos:
-		yaml, err = data.ParseStressChaos()
+		yaml, err = exp.ParseStressChaos()
+	case v1alpha1.KindDNSChaos:
+		yaml, err = exp.ParseDNSChaos()
 	default:
-		err = fmt.Errorf("kind %s is not support", data.Kind)
+		err = fmt.Errorf("kind %s is not support", exp.Kind)
 	}
 	if err != nil {
 		c.Status(http.StatusInternalServerError)
@@ -175,13 +191,13 @@ func (s *Service) detail(c *gin.Context) {
 
 	detail = Detail{
 		Archive: Archive{
-			UID:        data.UID,
-			Kind:       data.Kind,
-			Name:       data.Name,
-			Namespace:  data.Namespace,
-			Action:     data.Action,
-			StartTime:  data.StartTime,
-			FinishTime: data.FinishTime,
+			UID:        exp.UID,
+			Kind:       exp.Kind,
+			Name:       exp.Name,
+			Namespace:  exp.Namespace,
+			Action:     exp.Action,
+			StartTime:  exp.StartTime,
+			FinishTime: exp.FinishTime,
 		},
 		YAML: yaml,
 	}
@@ -203,6 +219,7 @@ func (s *Service) report(c *gin.Context) {
 		report Report
 	)
 	uid := c.Query("uid")
+	namespace := c.Query("namespace")
 
 	if uid == "" {
 		c.Status(http.StatusBadRequest)
@@ -212,15 +229,22 @@ func (s *Service) report(c *gin.Context) {
 
 	meta, err := s.archive.FindMetaByUID(context.Background(), uid)
 	if err != nil {
-		if !gorm.IsRecordNotFoundError(err) {
-			c.Status(http.StatusInternalServerError)
-			_ = c.Error(utils.ErrInternalServer.NewWithNoMessage())
-		} else {
+		if gorm.IsRecordNotFoundError(err) {
 			c.Status(http.StatusInternalServerError)
 			_ = c.Error(utils.ErrInvalidRequest.New("the archive is not found"))
+		} else {
+			c.Status(http.StatusInternalServerError)
+			_ = c.Error(utils.ErrInternalServer.NewWithNoMessage())
 		}
 		return
 	}
+
+	if len(namespace) != 0 && meta.Namespace != namespace {
+		c.Status(http.StatusBadRequest)
+		_ = c.Error(utils.ErrInvalidRequest.New("exp %s belong to namespace %s but not namespace %s", uid, meta.Namespace, namespace))
+		return
+	}
+
 	report.Meta = &Archive{
 		UID:        meta.UID,
 		Kind:       meta.Kind,
@@ -248,4 +272,39 @@ func (s *Service) report(c *gin.Context) {
 	report.TotalFaultTime = timeAfter.Sub(timeNow).String()
 
 	c.JSON(http.StatusOK, report)
+}
+
+// @Summary Delete the specified archived experiment.
+// @Description Delete the specified archived experiment.
+// @Tags archives
+// @Produce json
+// @Param uid path string true "uid"
+// @Success 200 {object} StatusResponse
+// @Failure 500 {object} utils.APIError
+// @Router /archives/{uid} [delete]
+func (s *Service) delete(c *gin.Context) {
+	var (
+		err error
+		exp *core.Experiment
+	)
+
+	uid := c.Param("uid")
+
+	if exp, err = s.archive.FindByUID(context.Background(), uid); err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			c.Status(http.StatusInternalServerError)
+			_ = c.Error(utils.ErrInvalidRequest.New("the archived experiment is not found"))
+		} else {
+			c.Status(http.StatusInternalServerError)
+			_ = c.Error(utils.ErrInternalServer.WrapWithNoMessage(err))
+		}
+		return
+	}
+
+	if err = s.archive.Delete(context.Background(), exp); err != nil {
+		c.Status(http.StatusInternalServerError)
+		_ = c.Error(utils.ErrInternalServer.WrapWithNoMessage(err))
+	} else {
+		c.JSON(http.StatusOK, StatusResponse{Status: "success"})
+	}
 }

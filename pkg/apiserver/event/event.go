@@ -17,20 +17,19 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 
 	"github.com/chaos-mesh/chaos-mesh/pkg/apiserver/utils"
 	"github.com/chaos-mesh/chaos-mesh/pkg/config"
 	"github.com/chaos-mesh/chaos-mesh/pkg/core"
-
-	"sigs.k8s.io/controller-runtime/pkg/client"
 )
 
 // Service defines a handler service for events.
 type Service struct {
 	conf    *config.ChaosDashboardConfig
-	kubeCli client.Client
 	archive core.ExperimentStore
 	event   core.EventStore
 }
@@ -38,13 +37,11 @@ type Service struct {
 // NewService return an event service instance.
 func NewService(
 	conf *config.ChaosDashboardConfig,
-	cli client.Client,
 	archive core.ExperimentStore,
 	event core.EventStore,
 ) *Service {
 	return &Service{
 		conf:    conf,
-		kubeCli: cli,
 		archive: archive,
 		event:   event,
 	}
@@ -53,10 +50,12 @@ func NewService(
 // Register mounts our HTTP handler on the mux.
 func Register(r *gin.RouterGroup, s *Service) {
 	endpoint := r.Group("/events")
+	endpoint.Use(utils.AuthRequired)
 
 	// TODO: add more api handlers
 	endpoint.GET("", s.listEvents)
 	endpoint.GET("/dry", s.listDryEvents)
+	endpoint.GET("/get", s.getEvent)
 }
 
 // @Summary Get the list of events from db.
@@ -82,7 +81,7 @@ func (s *Service) listEvents(c *gin.Context) {
 		StartTimeStr:        c.Query("startTime"),
 		FinishTimeStr:       c.Query("finishTime"),
 		ExperimentName:      c.Query("experimentName"),
-		ExperimentNamespace: c.Query("experimentNamespace"),
+		ExperimentNamespace: c.Query("namespace"),
 		UID:                 c.Query("uid"),
 		Kind:                c.Query("kind"),
 		LimitStr:            c.Query("limit"),
@@ -122,7 +121,7 @@ func (s *Service) listDryEvents(c *gin.Context) {
 		StartTimeStr:        c.Query("startTime"),
 		FinishTimeStr:       c.Query("finishTime"),
 		ExperimentName:      c.Query("experimentName"),
-		ExperimentNamespace: c.Query("experimentNamespace"),
+		ExperimentNamespace: c.Query("namespace"),
 		Kind:                c.Query("kind"),
 		LimitStr:            c.Query("limit"),
 	}
@@ -135,4 +134,50 @@ func (s *Service) listDryEvents(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, eventList)
+}
+
+// @Summary Get the event from db by ID.
+// @Description Get the event from db by ID.
+// @Tags events
+// @Produce json
+// @Param id query uint true "The id of the event"
+// @Success 200 {object} core.Event
+// @Router /events/get [get]
+// @Failure 500 {object} utils.APIError
+func (s *Service) getEvent(c *gin.Context) {
+	idStr := c.Query("id")
+	namespace := c.Query("namespace")
+
+	if idStr == "" {
+		c.Status(http.StatusBadRequest)
+		_ = c.Error(utils.ErrInvalidRequest.New("id cannot be empty"))
+		return
+	}
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		c.Status(http.StatusBadRequest)
+		_ = c.Error(utils.ErrInvalidRequest.New("the format of id is wrong"))
+		return
+	}
+
+	event, err := s.event.Find(context.Background(), uint(id))
+	if err != nil {
+		if gorm.IsRecordNotFoundError(err) {
+			c.Status(http.StatusInternalServerError)
+			_ = c.Error(utils.ErrInvalidRequest.New("the event is not found"))
+		} else {
+			c.Status(http.StatusInternalServerError)
+			_ = c.Error(utils.ErrInternalServer.NewWithNoMessage())
+		}
+		return
+	}
+
+	if len(namespace) != 0 && event.Namespace != namespace {
+		c.Status(http.StatusBadRequest)
+		_ = c.Error(utils.ErrInvalidRequest.New("event %s belong to namespace %s but not namespace %s", idStr, event.Namespace, namespace))
+		return
+	}
+
+	c.JSON(http.StatusOK, event)
 }

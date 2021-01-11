@@ -41,7 +41,7 @@ var (
 		"cpuset", "cpuacct", "pids", "hugetlb"}
 )
 
-func (s *daemonServer) ExecStressors(ctx context.Context,
+func (s *DaemonServer) ExecStressors(ctx context.Context,
 	req *pb.ExecStressRequest) (*pb.ExecStressResponse, error) {
 	log.Info("Executing stressors", "request", req)
 	pid, err := s.crClient.GetPidFromContainerID(ctx, req.Target)
@@ -65,11 +65,12 @@ func (s *daemonServer) ExecStressors(ctx context.Context,
 		return nil, err
 	}
 
-	cmd := bpm.DefaultProcessBuilder("stress-ng", strings.Fields(req.Stressors)...).
-		EnablePause().
-		EnableSuicide().
-		SetNS(pid, bpm.PidNS).
-		Build()
+	processBuilder := bpm.DefaultProcessBuilder("stress-ng", strings.Fields(req.Stressors)...).
+		EnablePause()
+	if req.EnterNS {
+		processBuilder = processBuilder.SetNS(pid, bpm.PidNS)
+	}
+	cmd := processBuilder.Build()
 
 	err = s.backgroundProcessManager.StartProcess(cmd)
 	if err != nil {
@@ -118,7 +119,7 @@ func (s *daemonServer) ExecStressors(ctx context.Context,
 
 var errFinished = "os: process already finished"
 
-func (s *daemonServer) CancelStressors(ctx context.Context,
+func (s *DaemonServer) CancelStressors(ctx context.Context,
 	req *pb.CancelStressRequest) (*empty.Empty, error) {
 	pid, err := strconv.Atoi(req.Instance)
 	if err != nil {
@@ -213,9 +214,6 @@ func parseCgroupFromReader(r io.Reader) (map[string]string, error) {
 		s       = bufio.NewScanner(r)
 	)
 	for s.Scan() {
-		if err := s.Err(); err != nil {
-			return nil, err
-		}
 		var (
 			text  = s.Text()
 			parts = strings.SplitN(text, ":", 3)
@@ -229,6 +227,11 @@ func parseCgroupFromReader(r io.Reader) (map[string]string, error) {
 			}
 		}
 	}
+
+	if err := s.Err(); err != nil {
+		return nil, err
+	}
+
 	return cgroups, nil
 }
 
@@ -242,15 +245,15 @@ func getCgroupDestination(pid int, subsystem string) (string, error) {
 	defer f.Close()
 	s := bufio.NewScanner(f)
 	for s.Scan() {
-		if err := s.Err(); err != nil {
-			return "", err
-		}
 		fields := strings.Fields(s.Text())
 		for _, opt := range strings.Split(fields[len(fields)-1], ",") {
 			if opt == subsystem {
 				return fields[3], nil
 			}
 		}
+	}
+	if err := s.Err(); err != nil {
+		return "", err
 	}
 	return "", fmt.Errorf("never found desct for %s", subsystem)
 }

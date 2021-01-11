@@ -29,7 +29,6 @@ import (
 
 	"github.com/chaos-mesh/chaos-mesh/pkg/bpm"
 	"github.com/chaos-mesh/chaos-mesh/pkg/mock"
-	"github.com/chaos-mesh/chaos-mesh/pkg/utils"
 )
 
 const (
@@ -224,6 +223,7 @@ func ReadCommName(pid int) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	defer f.Close()
 
 	b, err := ioutil.ReadAll(f)
 	if err != nil {
@@ -269,6 +269,7 @@ func GetChildProcesses(ppid uint32) ([]uint32, error) {
 					log.Error(err, "read status file error", "path", statusPath)
 					return
 				}
+				defer reader.Close()
 
 				var (
 					pid    uint32
@@ -290,7 +291,7 @@ func GetChildProcesses(ppid uint32) ([]uint32, error) {
 		done <- true
 	}()
 
-	processGraph := utils.NewGraph()
+	processGraph := NewGraph()
 	for {
 		select {
 		case pair := <-pairs:

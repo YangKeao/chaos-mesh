@@ -1,6 +1,9 @@
-import { NavigateAction, NavigationBreadCrumbProps } from './navigation.type'
+import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
-import { createSlice } from '@reduxjs/toolkit'
+export interface NavigationBreadCrumbProps {
+  name: string
+  path?: string
+}
 
 function pathnameToBreadCrumbs(pathname: string) {
   const nameArray = pathname.slice(1).split('/')
@@ -24,11 +27,14 @@ const navigationSlice = createSlice({
     breadcrumbs: [] as NavigationBreadCrumbProps[],
   },
   reducers: {
-    setNavigationBreadcrumbs(state, action: NavigateAction) {
+    setNavigationBreadcrumbs(state, action: PayloadAction<string>) {
       const breadcrumbs = pathnameToBreadCrumbs(action.payload)
 
-      state.breadcrumbs = breadcrumbs
-      document.title = breadcrumbs.map((b) => b.name).join(' / ') + ' | Chaos Mesh Dashboard'
+      if (breadcrumbs[0].name) {
+        state.breadcrumbs = breadcrumbs
+
+        document.title = breadcrumbs.map((b) => b.name).join(' / ') + ' | Chaos Mesh Dashboard'
+      }
     },
   },
 })

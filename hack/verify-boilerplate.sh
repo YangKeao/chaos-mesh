@@ -33,6 +33,7 @@ files=($(find . -type f -not \( \
         -o -path './.*/*' \
         -o -path './vendor/*' \
         -o -path './ui/*' \
+        -o -path './docs/*' \
         -o -path '*/Makefile' \
         -o -path '*/Dockerfile' \
         -o -path './images/*' \
