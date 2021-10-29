@@ -1,0 +1,89 @@
+name: Upload PR Image
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  build-specific-architecture:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+        image: [chaos-daemon, chaos-mesh, chaos-dashboard, chaos-dlv]
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    if: ${{ github.event.issue.pull_request && startsWith(github.event.comment.body, "/upload-pr-image") }}
+    steps:
+      - uses: actions/checkout@master
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Extract Image Tag
+        shell: bash
+        run: |
+          IMAGE_TAG=pr-${{ github.event.issue.pull_request.number }}
+
+          echo "::set-output name=image_tag::$(echo $IMAGE_TAG)"
+        id: image_tag
+
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Chaos Mesh
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.image_tag }}
+          ARCH: ${{ matrix.arch }}
+          IMAGE: ${{ matrix.image }}
+        run: |
+          docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+
+          make -B TARGET_PLATFORM=$ARCH IMAGE_TAG=$IMAGE_TAG-$ARCH IMAGE_PROJECT=chaos-mesh/chaos-mesh DOCKER_REGISTRY=ghcr.io image-$IMAGE
+      
+      - name: Upload Chaos Mesh
+        env:
+          IMAGE_TAG: ${{ steps.image_tag.outputs.image_tag }}
+          ARCH: ${{ matrix.arch }}
+          IMAGE: ${{ matrix.image }}
+        run: |
+          docker push ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG-$ARCH
+
+  upload-manifest:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        image: [chaos-daemon, chaos-mesh, chaos-dashboard, chaos-dlv]
+    needs: build-specific-architecture
+    steps:
+      - name: Build Chaos Mesh manifest
+        env:
+          IMAGE: ${{ matrix.image }}
+          IMAGE_TAG: ${{ needs.build-specific-architecture.outputs.image_tag }}
+        run: |
+          docker manifest create ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG \
+            ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG-amd64 \
+            ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG-arm64
+          
+          docker manifest annotate ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG \
+            ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG-amd64 \
+            --os linux --arch amd64
+          docker manifest annotate ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG \
+            ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG-arm64 \
+            --os linux --arch arm64
+
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload Chaos Mesh
+        env:
+          IMAGE: ${{ matrix.image }}
+          IMAGE_TAG: ${{ needs.build-specific-architecture.outputs.image_tag }}
+        run: |
+          docker manifest push ghcr.io/chaos-mesh/chaos-mesh/$IMAGE:$IMAGE_TAG
