@@ -115,7 +115,7 @@ func (s *DaemonServer) ApplyIoChaos(ctx context.Context, in *pb.ApplyIoChaosRequ
 
 	log.Info("Waiting for toda to start")
 	var rpcError error
-	maxWaitTime := time.Millisecond * 2000
+	maxWaitTime := time.Second * 10
 	timeOut, cancel := context.WithTimeout(ctx, maxWaitTime)
 	defer cancel()
 	_ = client.CallContext(timeOut, &ret, "update", actions)
