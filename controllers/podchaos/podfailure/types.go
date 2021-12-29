@@ -115,27 +115,37 @@ func (r *recoverer) RecoverPod(ctx context.Context, pod *v1.Pod, somechaos v1alp
 	chaos, _ := somechaos.(*v1alpha1.PodChaos)
 	r.Log.Info("Recovering", "namespace", pod.Namespace, "name", pod.Name)
 
-	containerChaosCount := 0
+	origin := pod.DeepCopy()
+
 	for index := range pod.Spec.Containers {
 		name := pod.Spec.Containers[index].Name
-		key := annotation.GenKeyForImage(chaos, name)
+		key := annotation.GenKeyForImage(chaos, name, false)
 
 		if pod.Annotations == nil {
 			pod.Annotations = make(map[string]string)
 		}
 		// check annotation
-		if _, ok := pod.Annotations[key]; ok {
-			containerChaosCount++
+		if image, ok := pod.Annotations[key]; ok {
+			pod.Spec.Containers[index].Image = image
+			delete(pod.Annotations, key)
 		}
 	}
-	if containerChaosCount == 0 {
-		r.Log.Error(errNotOperatedChaos, "the pod not operated by podChaos", "namespace", pod.Namespace, "name", pod.Name)
-		return nil
+
+	for index := range pod.Spec.InitContainers {
+		name := pod.Spec.InitContainers[index].Name
+		key := annotation.GenKeyForImage(chaos, name, true)
+
+		if pod.Annotations == nil {
+			pod.Annotations = make(map[string]string)
+		}
+		// check annotation
+		if image, ok := pod.Annotations[key]; ok {
+			pod.Spec.InitContainers[index].Image = image
+			delete(pod.Annotations, key)
+		}
 	}
-	// chaos-mesh don't support
-	return r.Delete(ctx, pod, &client.DeleteOptions{
-		GracePeriodSeconds: new(int64), // PeriodSeconds has to be set specifically
-	})
+
+	return r.Patch(ctx, pod, client.MergeFrom(origin))
 }
 
 func (r *endpoint) failAllPods(ctx context.Context, pods []v1.Pod, podchaos *v1alpha1.PodChaos) error {
@@ -171,7 +181,7 @@ func (r *endpoint) failPod(ctx context.Context, pod *v1.Pod, podchaos *v1alpha1.
 		originImage := pod.Spec.InitContainers[index].Image
 		name := pod.Spec.InitContainers[index].Name
 
-		key := annotation.GenKeyForImage(podchaos, name)
+		key := annotation.GenKeyForImage(podchaos, name, true)
 		if pod.Annotations == nil {
 			pod.Annotations = make(map[string]string)
 		}
@@ -188,7 +198,7 @@ func (r *endpoint) failPod(ctx context.Context, pod *v1.Pod, podchaos *v1alpha1.
 		originImage := pod.Spec.Containers[index].Image
 		name := pod.Spec.Containers[index].Name
 
-		key := annotation.GenKeyForImage(podchaos, name)
+		key := annotation.GenKeyForImage(podchaos, name, false)
 		if pod.Annotations == nil {
 			pod.Annotations = make(map[string]string)
 		}
