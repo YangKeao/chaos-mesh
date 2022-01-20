@@ -36,7 +36,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
-	apiWebhook "github.com/chaos-mesh/chaos-mesh/api/webhook"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/cmd/chaos-controller-manager/provider"
 	"github.com/chaos-mesh/chaos-mesh/controllers"
 	ccfg "github.com/chaos-mesh/chaos-mesh/controllers/config"
@@ -49,6 +49,7 @@ import (
 	"github.com/chaos-mesh/chaos-mesh/pkg/version"
 	"github.com/chaos-mesh/chaos-mesh/pkg/webhook/config"
 	"github.com/chaos-mesh/chaos-mesh/pkg/webhook/config/watcher"
+	apiWebhook "github.com/chaos-mesh/chaos-mesh/webhook"
 )
 
 var (
@@ -120,6 +121,10 @@ func Run(params RunParams) error {
 			return err
 		}
 	}
+
+	err = ctrl.NewWebhookManagedBy(mgr).
+		For(&v1alpha2.NetworkChaos{}).
+		Complete()
 
 	for _, obj := range params.WebhookObjs {
 		if !ccfg.ShouldStartWebhook(obj.Name) {

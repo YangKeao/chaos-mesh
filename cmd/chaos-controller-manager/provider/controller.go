@@ -26,6 +26,7 @@ import (
 	"go.uber.org/fx"
 
 	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 
 	"k8s.io/apimachinery/pkg/runtime"
@@ -48,6 +49,7 @@ func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 
 	_ = v1alpha1.AddToScheme(scheme)
+	_ = v1alpha2.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
 

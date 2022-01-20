@@ -36,6 +36,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	e2econfig "github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/config"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/e2econst"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
@@ -79,6 +80,7 @@ var _ = ginkgo.Describe("[Basic]", func() {
 		scheme := runtime.NewScheme()
 		_ = clientgoscheme.AddToScheme(scheme)
 		_ = v1alpha1.AddToScheme(scheme)
+		_ = v1alpha2.AddToScheme(scheme)
 		cli, err = client.New(config, client.Options{Scheme: scheme})
 		framework.ExpectNoError(err, "create client error")
 	})

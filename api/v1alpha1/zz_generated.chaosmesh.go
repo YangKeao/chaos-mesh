@@ -1790,8 +1790,8 @@ func (in *TimeChaos) Default() {
 	gw.Default(in)
 }
 
-func init() {
-
+	func init() {
+	
 	SchemeBuilder.Register(&AWSChaos{}, &AWSChaosList{})
 	all.register(KindAWSChaos, &ChaosKind{
 		chaos: &AWSChaos{},
@@ -1872,7 +1872,7 @@ func init() {
 		list:  &TimeChaosList{},
 	})
 
-
+	
 	allScheduleItem.register(KindAWSChaos, &ChaosKind{
 		chaos: &AWSChaos{},
 		list:  &AWSChaosList{},
@@ -1938,4 +1938,5 @@ func init() {
 		list:  &WorkflowList{},
 	})
 
-}
+	}
+	

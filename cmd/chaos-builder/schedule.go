@@ -49,11 +49,12 @@ func generateScheduleRegister(name string) string {
 
 type scheduleCodeGenerator struct {
 	// name of each Kind of chaos, for example: PodChaos, IOChaos, DNSChaos
-	chaosTypes []string
+	chaosTypes  []string
+	boilerplate string
 }
 
-func newScheduleCodeGenerator(types []string) *scheduleCodeGenerator {
-	return &scheduleCodeGenerator{chaosTypes: types}
+func newScheduleCodeGenerator(types []string, boilerplate string) *scheduleCodeGenerator {
+	return &scheduleCodeGenerator{chaosTypes: types, boilerplate: boilerplate}
 }
 
 func (it *scheduleCodeGenerator) AppendTypes(typeName string) {
@@ -121,7 +122,7 @@ func (it *ScheduleItem) RestoreChaosSpec(root interface{}) error {
 	}
 }
 `,
-		boilerplate,
+		it.boilerplate,
 		imports,
 		scheduleTemplateTypesEntries,
 		scheduleTemplateTypeEntries,

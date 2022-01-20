@@ -36,6 +36,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 
 	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	ctrlconfig "github.com/chaos-mesh/chaos-mesh/controllers/config"
 	daemonClient "github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/client"
@@ -103,6 +104,7 @@ type ItemResult struct {
 
 func init() {
 	_ = v1alpha1.AddToScheme(scheme)
+	_ = v1alpha2.AddToScheme(scheme)
 	_ = clientgoscheme.AddToScheme(scheme)
 }
 

@@ -255,9 +255,9 @@ yaml: manifests/crd.yaml manifests/crd-v1beta1.yaml
 
 config: SHELL:=$(RUN_IN_DEV_SHELL)
 config: images/dev-env/.dockerbuilt
-	cd ./api/v1alpha1 ;\
-		controller-gen $(CRD_OPTIONS) rbac:roleName=manager-role paths="./..." output:crd:artifacts:config=../../config/crd/bases ;\
-		controller-gen $(CRD_OPTIONS) rbac:roleName=manager-role paths="./..." output:crd:artifacts:config=../../helm/chaos-mesh/crds ;
+	cd ./api;\
+		controller-gen $(CRD_OPTIONS) rbac:roleName=manager-role paths="./..." output:crd:artifacts:config=../config/crd/bases ;\
+		controller-gen $(CRD_OPTIONS) rbac:roleName=manager-role paths="./..." output:crd:artifacts:config=../helm/chaos-mesh/crds ;
 
 lint: SHELL:=$(RUN_IN_DEV_SHELL)
 lint: images/dev-env/.dockerbuilt
@@ -300,6 +300,8 @@ generate-ctrl: images/dev-env/.dockerbuilt generate-deepcopy
 generate-deepcopy: SHELL:=$(RUN_IN_DEV_SHELL)
 generate-deepcopy: images/dev-env/.dockerbuilt chaos-build
 	cd ./api/v1alpha1 ;\
+		controller-gen object:headerFile=../../hack/boilerplate/boilerplate.generatego.txt paths="./..." ;
+	cd ./api/v1alpha2 ;\
 		controller-gen object:headerFile=../../hack/boilerplate/boilerplate.generatego.txt paths="./..." ;
 
 generate: generate-ctrl swagger_spec generate-deepcopy chaos-build

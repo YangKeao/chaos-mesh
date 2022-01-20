@@ -27,11 +27,12 @@ import (
 // struct workflowCodeGenerator will render content of one file contains code blocks that required by workflow
 type workflowCodeGenerator struct {
 	// name of each Kind of chaos, for example: PodChaos, IOChaos, DNSChaos
-	chaosTypes []string
+	chaosTypes  []string
+	boilerplate string
 }
 
-func newWorkflowCodeGenerator(types []string) *workflowCodeGenerator {
-	return &workflowCodeGenerator{chaosTypes: types}
+func newWorkflowCodeGenerator(types []string, boilerplate string) *workflowCodeGenerator {
+	return &workflowCodeGenerator{chaosTypes: types, boilerplate: boilerplate}
 }
 
 func (it *workflowCodeGenerator) AppendTypes(typeName string) {
@@ -121,7 +122,7 @@ func (it *EmbedChaos) SpawnNewList(templateType TemplateType) (GenericChaosList,
 
 %s
 `,
-		boilerplate,
+		it.boilerplate,
 		imports,
 		workflowTemplateTypesEntries,
 		allChaosTemplateTypeEntries,

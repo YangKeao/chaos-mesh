@@ -26,6 +26,7 @@ import (
 // +kubebuilder:printcolumn:name="action",type=string,JSONPath=`.spec.action`
 // +kubebuilder:printcolumn:name="duration",type=string,JSONPath=`.spec.duration`
 // +chaos-mesh:experiment
+// +kubebuilder:storageversion
 
 // NetworkChaos is the Schema for the networkchaos API
 type NetworkChaos struct {
@@ -39,6 +40,8 @@ type NetworkChaos struct {
 	// Most recently observed status of the chaos experiment about pods
 	Status NetworkChaosStatus `json:"status"`
 }
+
+func (*NetworkChaos) Hub() {}
 
 var _ InnerObjectWithCustomStatus = (*NetworkChaos)(nil)
 var _ InnerObjectWithSelector = (*NetworkChaos)(nil)
