@@ -308,6 +308,7 @@ generate-deepcopy: images/dev-env/.dockerbuilt chaos-build
 
 generate: generate-ctrl swagger_spec generate-deepcopy chaos-build
 
+# some
 check: generate yaml vet boilerplate lint tidy install.sh fmt
 
 CLEAN_TARGETS+=e2e-test/image/e2e/bin/ginkgo
