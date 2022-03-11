@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/util/retry"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
@@ -49,18 +49,18 @@ var _ = Describe("Schedule", func() {
 				Namespace: "default",
 			}
 			duration := "10s"
-			chaos := &v1alpha1.TimeChaos{
+			chaos := &v1alpha2.TimeChaos{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo1",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.TimeChaosSpec{
+				Spec: v1alpha2.TimeChaosSpec{
 					TimeOffset: "100ms",
 					ClockIds:   []string{"CLOCK_REALTIME"},
 					Duration:   &duration,
-					ContainerSelector: v1alpha1.ContainerSelector{
-						PodSelector: v1alpha1.PodSelector{
-							Mode: v1alpha1.OneMode,
+					ContainerSelector: v1alpha2.ContainerSelector{
+						PodSelector: v1alpha2.PodSelector{
+							Mode: v1alpha2.OneMode,
 						},
 					},
 				},
@@ -78,7 +78,7 @@ var _ = Describe("Schedule", func() {
 					if err != nil {
 						return false, err
 					}
-					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha1.RunningPhase, nil
+					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha2.RunningPhase, nil
 				})
 				Expect(err).ToNot(HaveOccurred())
 				err = wait.Poll(time.Second*1, time.Second*10, func() (ok bool, err error) {
@@ -86,7 +86,7 @@ var _ = Describe("Schedule", func() {
 					if err != nil {
 						return false, err
 					}
-					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha1.StoppedPhase, nil
+					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha2.StoppedPhase, nil
 				})
 				Expect(err).ToNot(HaveOccurred())
 			}
@@ -102,18 +102,18 @@ var _ = Describe("Schedule", func() {
 				Namespace: "default",
 			}
 			duration := "1000s"
-			chaos := &v1alpha1.TimeChaos{
+			chaos := &v1alpha2.TimeChaos{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo2",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.TimeChaosSpec{
+				Spec: v1alpha2.TimeChaosSpec{
 					TimeOffset: "100ms",
 					ClockIds:   []string{"CLOCK_REALTIME"},
 					Duration:   &duration,
-					ContainerSelector: v1alpha1.ContainerSelector{
-						PodSelector: v1alpha1.PodSelector{
-							Mode: v1alpha1.OneMode,
+					ContainerSelector: v1alpha2.ContainerSelector{
+						PodSelector: v1alpha2.PodSelector{
+							Mode: v1alpha2.OneMode,
 						},
 					},
 				},
@@ -131,7 +131,7 @@ var _ = Describe("Schedule", func() {
 					if err != nil {
 						return false, err
 					}
-					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha1.RunningPhase, nil
+					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha2.RunningPhase, nil
 				})
 				Expect(err).ToNot(HaveOccurred())
 			}
@@ -142,7 +142,7 @@ var _ = Describe("Schedule", func() {
 					if err != nil {
 						return err
 					}
-					chaos.SetAnnotations(map[string]string{v1alpha1.PauseAnnotationKey: "true"})
+					chaos.SetAnnotations(map[string]string{v1alpha2.PauseAnnotationKey: "true"})
 					return k8sClient.Update(context.TODO(), chaos)
 				})
 				Expect(err).ToNot(HaveOccurred())
@@ -151,7 +151,7 @@ var _ = Describe("Schedule", func() {
 					if err != nil {
 						return false, err
 					}
-					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha1.StoppedPhase, nil
+					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha2.StoppedPhase, nil
 				})
 				Expect(err).ToNot(HaveOccurred())
 			}
@@ -163,7 +163,7 @@ var _ = Describe("Schedule", func() {
 					if err != nil {
 						return err
 					}
-					chaos.SetAnnotations(map[string]string{v1alpha1.PauseAnnotationKey: "false"})
+					chaos.SetAnnotations(map[string]string{v1alpha2.PauseAnnotationKey: "false"})
 					return k8sClient.Update(context.TODO(), chaos)
 				})
 				Expect(err).ToNot(HaveOccurred())
@@ -172,7 +172,7 @@ var _ = Describe("Schedule", func() {
 					if err != nil {
 						return false, err
 					}
-					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha1.RunningPhase, nil
+					return chaos.GetStatus().Experiment.DesiredPhase == v1alpha2.RunningPhase, nil
 				})
 				Expect(err).ToNot(HaveOccurred())
 			}

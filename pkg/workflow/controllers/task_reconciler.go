@@ -31,7 +31,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 	"github.com/chaos-mesh/chaos-mesh/pkg/workflow/task"
 	"github.com/chaos-mesh/chaos-mesh/pkg/workflow/task/collector"
@@ -65,14 +65,14 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 		)
 	}()
 
-	node := v1alpha1.WorkflowNode{}
+	node := v1alpha2.WorkflowNode{}
 	err := it.kubeClient.Get(ctx, request.NamespacedName, &node)
 	if err != nil {
 		return reconcile.Result{}, client.IgnoreNotFound(err)
 	}
 
 	// only resolve task nodes
-	if node.Spec.Type != v1alpha1.TypeTask {
+	if node.Spec.Type != v1alpha2.TypeTask {
 		return reconcile.Result{}, nil
 	}
 
@@ -84,8 +84,8 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 	}
 
 	if len(pods) == 0 {
-		if workflowName, ok := node.Labels[v1alpha1.LabelWorkflow]; ok {
-			parentWorkflow := v1alpha1.Workflow{}
+		if workflowName, ok := node.Labels[v1alpha2.LabelWorkflow]; ok {
+			parentWorkflow := v1alpha2.Workflow{}
 			err := it.kubeClient.Get(ctx, types.NamespacedName{
 				Namespace: node.Namespace,
 				Name:      workflowName,
@@ -101,7 +101,7 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 			}
 			it.eventRecorder.Event(&node, recorder.TaskPodSpawned{PodName: spawnedPod.Name})
 		} else {
-			return reconcile.Result{}, errors.Errorf("node %s/%s does not contains label %s", node.Namespace, node.Name, v1alpha1.LabelWorkflow)
+			return reconcile.Result{}, errors.Errorf("node %s/%s does not contains label %s", node.Namespace, node.Name, v1alpha2.LabelWorkflow)
 		}
 
 	}
@@ -128,14 +128,14 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 			it.eventRecorder.Event(&node, recorder.TaskPodPodCompleted{PodName: pods[0].Name})
 			// task pod is terminated
 			updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-				nodeNeedUpdate := v1alpha1.WorkflowNode{}
+				nodeNeedUpdate := v1alpha2.WorkflowNode{}
 				err := it.kubeClient.Get(ctx, request.NamespacedName, &nodeNeedUpdate)
 				if err != nil {
 					return err
 				}
 
 				if nodeNeedUpdate.Status.ConditionalBranchesStatus == nil {
-					nodeNeedUpdate.Status.ConditionalBranchesStatus = &v1alpha1.ConditionalBranchesStatus{}
+					nodeNeedUpdate.Status.ConditionalBranchesStatus = &v1alpha2.ConditionalBranchesStatus{}
 				}
 
 				// TODO: update related condition
@@ -188,20 +188,20 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 	} else {
 		// task pod is still running or not exists
 		updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-			nodeNeedUpdate := v1alpha1.WorkflowNode{}
+			nodeNeedUpdate := v1alpha2.WorkflowNode{}
 			err := it.kubeClient.Get(ctx, request.NamespacedName, &nodeNeedUpdate)
 			if err != nil {
 				return err
 			}
 			// TODO: update related condition
-			var branches []v1alpha1.ConditionalBranchStatus
+			var branches []v1alpha2.ConditionalBranchStatus
 
 			if nodeNeedUpdate.Status.ConditionalBranchesStatus == nil {
-				nodeNeedUpdate.Status.ConditionalBranchesStatus = &v1alpha1.ConditionalBranchesStatus{}
+				nodeNeedUpdate.Status.ConditionalBranchesStatus = &v1alpha2.ConditionalBranchesStatus{}
 			}
 
 			for _, conditionalTask := range nodeNeedUpdate.Spec.ConditionalBranches {
-				branch := v1alpha1.ConditionalBranchStatus{
+				branch := v1alpha2.ConditionalBranchStatus{
 					Target:           conditionalTask.Target,
 					EvaluationResult: corev1.ConditionUnknown,
 				}
@@ -222,7 +222,7 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 	}
 
 	// update the status about children nodes
-	var evaluatedNode v1alpha1.WorkflowNode
+	var evaluatedNode v1alpha2.WorkflowNode
 
 	err = it.kubeClient.Get(ctx, request.NamespacedName, &evaluatedNode)
 	if err != nil {
@@ -240,7 +240,7 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 
 		// update the status of children workflow nodes
 		updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-			nodeNeedUpdate := v1alpha1.WorkflowNode{}
+			nodeNeedUpdate := v1alpha2.WorkflowNode{}
 			err := it.kubeClient.Get(ctx, request.NamespacedName, &nodeNeedUpdate)
 			if err != nil {
 				return err
@@ -282,14 +282,14 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 				if !WorkflowNodeFinished(nodeNeedUpdate.Status) {
 					it.eventRecorder.Event(&nodeNeedUpdate, recorder.NodeAccomplished{})
 				}
-				SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-					Type:   v1alpha1.ConditionAccomplished,
+				SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+					Type:   v1alpha2.ConditionAccomplished,
 					Status: corev1.ConditionTrue,
 					Reason: "",
 				})
 			} else {
-				SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-					Type:   v1alpha1.ConditionAccomplished,
+				SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+					Type:   v1alpha2.ConditionAccomplished,
 					Status: corev1.ConditionFalse,
 					Reason: "",
 				})
@@ -305,7 +305,7 @@ func (it *TaskReconciler) Reconcile(ctx context.Context, request reconcile.Reque
 
 }
 
-func (it *TaskReconciler) syncChildNodes(ctx context.Context, evaluatedNode v1alpha1.WorkflowNode) error {
+func (it *TaskReconciler) syncChildNodes(ctx context.Context, evaluatedNode v1alpha2.WorkflowNode) error {
 
 	var tasks []string
 	for _, branch := range evaluatedNode.Status.ConditionalBranchesStatus.Branches {
@@ -359,7 +359,7 @@ func (it *TaskReconciler) syncChildNodes(ctx context.Context, evaluatedNode v1al
 		}
 	}
 
-	parentWorkflow := v1alpha1.Workflow{}
+	parentWorkflow := v1alpha2.Workflow{}
 	err = it.kubeClient.Get(ctx, types.NamespacedName{
 		Namespace: evaluatedNode.Namespace,
 		Name:      evaluatedNode.Spec.WorkflowName,
@@ -398,10 +398,10 @@ func (it *TaskReconciler) syncChildNodes(ctx context.Context, evaluatedNode v1al
 	return nil
 }
 
-func (it *TaskReconciler) FetchPodControlledByThisWorkflowNode(ctx context.Context, node v1alpha1.WorkflowNode) ([]corev1.Pod, error) {
+func (it *TaskReconciler) FetchPodControlledByThisWorkflowNode(ctx context.Context, node v1alpha2.WorkflowNode) ([]corev1.Pod, error) {
 	controlledByThisNode, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
 		MatchLabels: map[string]string{
-			v1alpha1.LabelControlledBy: node.Name,
+			v1alpha2.LabelControlledBy: node.Name,
 		},
 	})
 
@@ -422,7 +422,7 @@ func (it *TaskReconciler) FetchPodControlledByThisWorkflowNode(ctx context.Conte
 	return childPods.Items, nil
 }
 
-func (it *TaskReconciler) SpawnTaskPod(ctx context.Context, node *v1alpha1.WorkflowNode, workflow *v1alpha1.Workflow) (*corev1.Pod, error) {
+func (it *TaskReconciler) SpawnTaskPod(ctx context.Context, node *v1alpha2.WorkflowNode, workflow *v1alpha2.Workflow) (*corev1.Pod, error) {
 	if node.Spec.Task == nil {
 		return nil, errors.Errorf("node %s/%s does not contains spec of Target", node.Namespace, node.Name)
 	}
@@ -436,8 +436,8 @@ func (it *TaskReconciler) SpawnTaskPod(ctx context.Context, node *v1alpha1.Workf
 			GenerateName: fmt.Sprintf("%s-", node.Name),
 			Namespace:    node.Namespace,
 			Labels: map[string]string{
-				v1alpha1.LabelControlledBy: node.Name,
-				v1alpha1.LabelWorkflow:     workflow.Name,
+				v1alpha2.LabelControlledBy: node.Name,
+				v1alpha2.LabelWorkflow:     workflow.Name,
 			},
 			OwnerReferences: []metav1.OwnerReference{
 				{
@@ -460,7 +460,7 @@ func (it *TaskReconciler) SpawnTaskPod(ctx context.Context, node *v1alpha1.Workf
 	return &taskPod, nil
 }
 
-func (it *TaskReconciler) conditionalBranchesEvaluated(ctx context.Context, node v1alpha1.WorkflowNode) (bool, error) {
+func (it *TaskReconciler) conditionalBranchesEvaluated(ctx context.Context, node v1alpha2.WorkflowNode) (bool, error) {
 	// task pod should be completed, it's phase should be PodSucceeded or PodFailed
 	pods, err := it.FetchPodControlledByThisWorkflowNode(ctx, node)
 	if err != nil {

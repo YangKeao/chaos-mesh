@@ -26,7 +26,7 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 )
 
@@ -55,8 +55,8 @@ func TestcasePeersCrossover(
 	framework.ExpectEqual(len(result[networkConditionSlow]), 0)
 
 	var (
-		testDelayTcParam = v1alpha1.TcParameter{
-			Delay: &v1alpha1.DelaySpec{
+		testDelayTcParam = v1alpha2.TcParameter{
+			Delay: &v1alpha2.DelaySpec{
 				Latency:     "200ms",
 				Correlation: "25",
 				Jitter:      "0ms",
@@ -69,14 +69,14 @@ func TestcasePeersCrossover(
 		ns, "network-chaos-1",
 		map[string]string{"partition": "0"},
 		map[string]string{"partition": "1"},
-		v1alpha1.AllMode,
-		v1alpha1.AllMode,
-		v1alpha1.Both,
+		v1alpha2.AllMode,
+		v1alpha2.AllMode,
+		v1alpha2.Both,
 		testDelayTcParam,
 		nil,
 	)
 	// that's important
-	networkDelay.Spec.Direction = v1alpha1.Both
+	networkDelay.Spec.Direction = v1alpha2.Both
 
 	By("Injecting delay between partition 0 (peer 0,2) with partition 1 (peer 1,3)")
 	err := cli.Create(ctx, networkDelay.DeepCopy())

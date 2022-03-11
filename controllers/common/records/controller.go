@@ -26,7 +26,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector"
@@ -37,7 +37,7 @@ type Reconciler struct {
 	Impl types.ChaosImpl
 
 	// Object is used to mark the target type of this Reconciler
-	Object v1alpha1.InnerObject
+	Object v1alpha2.InnerObject
 
 	// Client is used to operate on the Kubernetes cluster
 	client.Client
@@ -60,7 +60,7 @@ const (
 
 // Reconcile the chaos records
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	obj := r.Object.DeepCopyObject().(v1alpha1.InnerObjectWithSelector)
+	obj := r.Object.DeepCopyObject().(v1alpha2.InnerObjectWithSelector)
 
 	if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 		if apierrors.IsNotFound(err) {
@@ -91,10 +91,10 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 			}
 
 			for _, target := range targets {
-				records = append(records, &v1alpha1.Record{
+				records = append(records, &v1alpha2.Record{
 					Id:          target.Id(),
 					SelectorKey: name,
-					Phase:       v1alpha1.NotInjected,
+					Phase:       v1alpha2.NotInjected,
 				})
 				shouldUpdate = true
 			}
@@ -123,21 +123,21 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 		originalPhase := record.Phase
 		operation := Nothing
-		if desiredPhase == v1alpha1.RunningPhase && originalPhase != v1alpha1.Injected {
+		if desiredPhase == v1alpha2.RunningPhase && originalPhase != v1alpha2.Injected {
 			// The originalPhase has three possible situations: Not Injected, Not Injedcted/* or Injected/*
 			// In the first two situations, it should apply, in the last situation, it should recover
 
-			if strings.HasPrefix(string(originalPhase), string(v1alpha1.NotInjected)) {
+			if strings.HasPrefix(string(originalPhase), string(v1alpha2.NotInjected)) {
 				operation = Apply
 			} else {
 				operation = Recover
 			}
 		}
-		if desiredPhase == v1alpha1.StoppedPhase && originalPhase != v1alpha1.NotInjected {
+		if desiredPhase == v1alpha2.StoppedPhase && originalPhase != v1alpha2.NotInjected {
 			// The originalPhase has three possible situations: Not Injedcted/*, Injected, or Injected/*
 			// In the first one situations, it should apply, in the last two situations, it should recover
 
-			if strings.HasPrefix(string(originalPhase), string(v1alpha1.NotInjected)) {
+			if strings.HasPrefix(string(originalPhase), string(v1alpha2.NotInjected)) {
 				operation = Apply
 			} else {
 				operation = Recover
@@ -162,7 +162,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 				continue
 			}
 
-			if record.Phase == v1alpha1.Injected {
+			if record.Phase == v1alpha2.Injected {
 				r.Recorder.Event(obj, recorder.Applied{
 					Id: records[index].Id,
 				})
@@ -185,7 +185,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 				continue
 			}
 
-			if record.Phase == v1alpha1.NotInjected {
+			if record.Phase == v1alpha2.NotInjected {
 				r.Recorder.Event(obj, recorder.Recovered{
 					Id: records[index].Id,
 				})
@@ -195,13 +195,13 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 	// TODO: auto generate SetCustomStatus rather than reflect
 	var customStatus reflect.Value
-	if objWithStatus, ok := obj.(v1alpha1.InnerObjectWithCustomStatus); ok {
+	if objWithStatus, ok := obj.(v1alpha2.InnerObjectWithCustomStatus); ok {
 		customStatus = reflect.Indirect(reflect.ValueOf(objWithStatus.GetCustomStatus()))
 	}
 	if shouldUpdate {
 		updateError := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
 			r.Log.Info("updating records", "records", records)
-			obj := r.Object.DeepCopyObject().(v1alpha1.InnerObjectWithSelector)
+			obj := r.Object.DeepCopyObject().(v1alpha2.InnerObjectWithSelector)
 
 			if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 				r.Log.Error(err, "unable to get chaos")
@@ -209,7 +209,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 			}
 
 			obj.GetStatus().Experiment.Records = records
-			if objWithStatus, ok := obj.(v1alpha1.InnerObjectWithCustomStatus); ok {
+			if objWithStatus, ok := obj.(v1alpha2.InnerObjectWithCustomStatus); ok {
 				ptrToCustomStatus := objWithStatus.GetCustomStatus()
 				// TODO: auto generate SetCustomStatus rather than reflect
 				reflect.Indirect(reflect.ValueOf(ptrToCustomStatus)).Set(reflect.Indirect(customStatus))

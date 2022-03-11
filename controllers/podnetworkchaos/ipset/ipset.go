@@ -23,7 +23,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/podnetworkchaos/netutils"
 	chaosdaemonclient "github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/client"
@@ -33,7 +33,7 @@ import (
 var log = ctrl.Log.WithName("ipset")
 
 // BuildIPSet builds an ipset with provided pod ip list
-func BuildIPSet(pods []v1.Pod, externalCidrs []string, networkchaos *v1alpha1.NetworkChaos, namePostFix string, source string) v1alpha1.RawIPSet {
+func BuildIPSet(pods []v1.Pod, externalCidrs []string, networkchaos *v1alpha2.NetworkChaos, namePostFix string, source string) v1alpha2.RawIPSet {
 	name := GenerateIPSetName(networkchaos, namePostFix)
 	cidrs := externalCidrs
 
@@ -43,17 +43,17 @@ func BuildIPSet(pods []v1.Pod, externalCidrs []string, networkchaos *v1alpha1.Ne
 		}
 	}
 
-	return v1alpha1.RawIPSet{
+	return v1alpha2.RawIPSet{
 		Name:  name,
 		Cidrs: cidrs,
-		RawRuleSource: v1alpha1.RawRuleSource{
+		RawRuleSource: v1alpha2.RawRuleSource{
 			Source: source,
 		},
 	}
 }
 
 // GenerateIPSetName generates name for ipset
-func GenerateIPSetName(networkchaos *v1alpha1.NetworkChaos, namePostFix string) string {
+func GenerateIPSetName(networkchaos *v1alpha2.NetworkChaos, namePostFix string) string {
 	return netutils.CompressName(networkchaos.Name, 27, namePostFix)
 }
 

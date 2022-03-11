@@ -21,7 +21,7 @@ import (
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
 	. "github.com/chaos-mesh/chaos-mesh/pkg/testutils"
 )
@@ -29,19 +29,19 @@ import (
 func TestPhaseSelectorMatch(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	runningSelector, err := newPhaseSelector(v1alpha1.PodSelectorSpec{PodPhaseSelectors: []string{string(v1.PodRunning)}})
+	runningSelector, err := newPhaseSelector(v1alpha2.PodSelectorSpec{PodPhaseSelectors: []string{string(v1.PodRunning)}})
 	g.Expect(err).ShouldNot(HaveOccurred())
 
-	emptySelector, err := newPhaseSelector(v1alpha1.PodSelectorSpec{})
+	emptySelector, err := newPhaseSelector(v1alpha2.PodSelectorSpec{})
 	g.Expect(err).ShouldNot(HaveOccurred())
 
-	runningAndPendingSelector, err := newPhaseSelector(v1alpha1.PodSelectorSpec{PodPhaseSelectors: []string{string(v1.PodRunning), string(v1.PodPending)}})
+	runningAndPendingSelector, err := newPhaseSelector(v1alpha2.PodSelectorSpec{PodPhaseSelectors: []string{string(v1.PodRunning), string(v1.PodPending)}})
 	g.Expect(err).ShouldNot(HaveOccurred())
 
-	failedSelector, err := newPhaseSelector(v1alpha1.PodSelectorSpec{PodPhaseSelectors: []string{string(v1.PodFailed)}})
+	failedSelector, err := newPhaseSelector(v1alpha2.PodSelectorSpec{PodPhaseSelectors: []string{string(v1.PodFailed)}})
 	g.Expect(err).ShouldNot(HaveOccurred())
 
-	unknownSelector, err := newPhaseSelector(v1alpha1.PodSelectorSpec{PodPhaseSelectors: []string{string(v1.PodUnknown)}})
+	unknownSelector, err := newPhaseSelector(v1alpha2.PodSelectorSpec{PodPhaseSelectors: []string{string(v1.PodUnknown)}})
 	g.Expect(err).ShouldNot(HaveOccurred())
 
 	pods := []v1.Pod{

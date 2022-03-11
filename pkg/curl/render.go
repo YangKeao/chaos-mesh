@@ -21,7 +21,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 const image = "curlimages/curl:7.78.0"
@@ -67,16 +67,16 @@ func renderCommands(request CommandFlags) (Commands, error) {
 	return result, nil
 }
 
-func RenderWorkflowTaskTemplate(request RequestForm) (*v1alpha1.Template, error) {
+func RenderWorkflowTaskTemplate(request RequestForm) (*v1alpha2.Template, error) {
 	commands, err := renderCommands(request.CommandFlags)
 	if err != nil {
 		return nil, err
 	}
 	containerName := fmt.Sprintf("%s%s", request.Name, nameSuffix)
-	return &v1alpha1.Template{
+	return &v1alpha2.Template{
 		Name: request.Name,
-		Type: v1alpha1.TypeTask,
-		Task: &v1alpha1.Task{
+		Type: v1alpha2.TypeTask,
+		Task: &v1alpha2.Task{
 			Container: &corev1.Container{
 				Name:    containerName,
 				Image:   image,

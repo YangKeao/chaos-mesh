@@ -30,7 +30,7 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 )
 
@@ -81,29 +81,29 @@ func TestcaseHttpPatchThenRecover(
 	expectedSecret := "Bar; Foo!"
 	expectedBody := `{"msg":"Hello","target":"Chaos Mesh"}`
 
-	httpChaos := &v1alpha1.HTTPChaos{
+	httpChaos := &v1alpha2.HTTPChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "http-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.HTTPChaosSpec{
-			PodSelector: v1alpha1.PodSelector{
-				Selector: v1alpha1.PodSelectorSpec{
-					GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.HTTPChaosSpec{
+			PodSelector: v1alpha2.PodSelector{
+				Selector: v1alpha2.PodSelectorSpec{
+					GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 						Namespaces:     []string{ns},
 						LabelSelectors: map[string]string{"app": "http"},
 					},
 				},
-				Mode: v1alpha1.OneMode,
+				Mode: v1alpha2.OneMode,
 			},
 			Port:   8080,
 			Target: "Request",
-			PodHttpChaosActions: v1alpha1.PodHttpChaosActions{
-				Patch: &v1alpha1.PodHttpChaosPatchActions{
+			PodHttpChaosActions: v1alpha2.PodHttpChaosActions{
+				Patch: &v1alpha2.PodHttpChaosPatchActions{
 					Headers: [][]string{
 						{SECRET, patchSecret},
 					},
-					Body: &v1alpha1.PodHttpChaosPatchBodyAction{
+					Body: &v1alpha2.PodHttpChaosPatchBodyAction{
 						Type:  "JSON",
 						Value: patchbody,
 					},
@@ -213,29 +213,29 @@ func TestcaseHttpPatchPauseAndUnPause(
 	expectedSecret := "Bar; Foo!"
 	expectedBody := `{"msg":"Hello","target":"Chaos Mesh"}`
 
-	httpChaos := &v1alpha1.HTTPChaos{
+	httpChaos := &v1alpha2.HTTPChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "http-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.HTTPChaosSpec{
-			PodSelector: v1alpha1.PodSelector{
-				Selector: v1alpha1.PodSelectorSpec{
-					GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.HTTPChaosSpec{
+			PodSelector: v1alpha2.PodSelector{
+				Selector: v1alpha2.PodSelectorSpec{
+					GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 						Namespaces:     []string{ns},
 						LabelSelectors: map[string]string{"app": "http"},
 					},
 				},
-				Mode: v1alpha1.OneMode,
+				Mode: v1alpha2.OneMode,
 			},
 			Port:   8080,
 			Target: "Request",
-			PodHttpChaosActions: v1alpha1.PodHttpChaosActions{
-				Patch: &v1alpha1.PodHttpChaosPatchActions{
+			PodHttpChaosActions: v1alpha2.PodHttpChaosActions{
+				Patch: &v1alpha2.PodHttpChaosPatchActions{
 					Headers: [][]string{
 						{SECRET, patchSecret},
 					},
-					Body: &v1alpha1.PodHttpChaosPatchBodyAction{
+					Body: &v1alpha2.PodHttpChaosPatchBodyAction{
 						Type:  "JSON",
 						Value: patchbody,
 					},
@@ -253,16 +253,16 @@ func TestcaseHttpPatchPauseAndUnPause(
 
 	By("waiting for assertion http chaos")
 	err = wait.PollImmediate(1*time.Second, 1*time.Minute, func() (bool, error) {
-		chaos := &v1alpha1.HTTPChaos{}
+		chaos := &v1alpha2.HTTPChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get http chaos error")
 
 		for _, c := range chaos.GetStatus().Conditions {
-			if c.Type == v1alpha1.ConditionAllInjected {
+			if c.Type == v1alpha2.ConditionAllInjected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
-			} else if c.Type == v1alpha1.ConditionSelected {
+			} else if c.Type == v1alpha2.ConditionSelected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
@@ -297,16 +297,16 @@ func TestcaseHttpPatchPauseAndUnPause(
 
 	By("waiting for assertion about pause")
 	err = wait.Poll(1*time.Second, 1*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.HTTPChaos{}
+		chaos := &v1alpha2.HTTPChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get http chaos error")
 
 		for _, c := range chaos.GetStatus().Conditions {
-			if c.Type == v1alpha1.ConditionAllRecovered {
+			if c.Type == v1alpha2.ConditionAllRecovered {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
-			} else if c.Type == v1alpha1.ConditionSelected {
+			} else if c.Type == v1alpha2.ConditionSelected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
@@ -347,16 +347,16 @@ func TestcaseHttpPatchPauseAndUnPause(
 
 	By("assert that http patch is effective again")
 	err = wait.Poll(1*time.Second, 1*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.HTTPChaos{}
+		chaos := &v1alpha2.HTTPChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get http chaos error")
 
 		for _, c := range chaos.GetStatus().Conditions {
-			if c.Type == v1alpha1.ConditionAllInjected {
+			if c.Type == v1alpha2.ConditionAllInjected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
-			} else if c.Type == v1alpha1.ConditionSelected {
+			} else if c.Type == v1alpha2.ConditionSelected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}

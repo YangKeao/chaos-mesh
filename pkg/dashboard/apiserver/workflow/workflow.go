@@ -25,7 +25,7 @@ import (
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/clientpool"
 	config "github.com/chaos-mesh/chaos-mesh/pkg/config/dashboard"
 	"github.com/chaos-mesh/chaos-mesh/pkg/curl"
@@ -95,7 +95,7 @@ func (it *Service) renderHTTPTask(c *gin.Context) {
 // @Failure 400 {object} utils.APIError
 // @Failure 500 {object} utils.APIError
 func (it *Service) isValidRenderedHTTPTask(c *gin.Context) {
-	requestBody := v1alpha1.Template{}
+	requestBody := v1alpha2.Template{}
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		utils.SetAPIError(c, utils.ErrBadRequest.Wrap(err, "failed to parse request body"))
 		return
@@ -114,7 +114,7 @@ func (it *Service) isValidRenderedHTTPTask(c *gin.Context) {
 // @Failure 400 {object} utils.APIError
 // @Failure 500 {object} utils.APIError
 func (it *Service) parseHTTPTask(c *gin.Context) {
-	requestBody := v1alpha1.Template{}
+	requestBody := v1alpha2.Template{}
 	if err := c.ShouldBindJSON(&requestBody); err != nil {
 		utils.SetAPIError(c, utils.ErrBadRequest.Wrap(err, "failed to parse request body"))
 		return
@@ -256,7 +256,7 @@ func (it *Service) getWorkflowDetailByUID(c *gin.Context) {
 // @Failure 500 {object} utils.APIError
 // @Router /workflows [post]
 func (it *Service) createWorkflow(c *gin.Context) {
-	payload := v1alpha1.Workflow{}
+	payload := v1alpha2.Workflow{}
 
 	err := json.NewDecoder(c.Request.Body).Decode(&payload)
 	if err != nil {
@@ -329,7 +329,7 @@ func (it *Service) deleteWorkflow(c *gin.Context) {
 // @Failure 500 {object} utils.APIError
 // @Router /workflows/{uid} [put]
 func (it *Service) updateWorkflow(c *gin.Context) {
-	payload := v1alpha1.Workflow{}
+	payload := v1alpha2.Workflow{}
 
 	err := json.NewDecoder(c.Request.Body).Decode(&payload)
 	if err != nil {

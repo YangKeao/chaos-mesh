@@ -22,7 +22,7 @@ import (
 
 	"github.com/hasura/go-graphql-client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosctl/common"
 	ctrlclient "github.com/chaos-mesh/chaos-mesh/pkg/ctrl/client"
 )
@@ -58,23 +58,23 @@ func (d *ioDebugger) Collect(ctx context.Context, namespace, chaosName string) (
 						VolumeMountPath string
 						Container       *string
 						Actions         []struct {
-							Type            v1alpha1.IOChaosType
-							v1alpha1.Filter `json:",inline"`
-							Faults          []v1alpha1.IoFault
+							Type            v1alpha2.IOChaosType
+							v1alpha2.Filter `json:",inline"`
+							Faults          []v1alpha2.IoFault
 							Latency         string
 							Ino             *uint64               `json:"ino,omitempty"`
 							Size            *uint64               `json:"size,omitempty"`
 							Blocks          *uint64               `json:"blocks,omitempty"`
-							Atime           *v1alpha1.Timespec    `json:"atime,omitempty"`
-							Mtime           *v1alpha1.Timespec    `json:"mtime,omitempty"`
-							Ctime           *v1alpha1.Timespec    `json:"ctime,omitempty"`
-							Kind            *v1alpha1.FileType    `json:"kind,omitempty"`
+							Atime           *v1alpha2.Timespec    `json:"atime,omitempty"`
+							Mtime           *v1alpha2.Timespec    `json:"mtime,omitempty"`
+							Ctime           *v1alpha2.Timespec    `json:"ctime,omitempty"`
+							Kind            *v1alpha2.FileType    `json:"kind,omitempty"`
 							Perm            *uint                 `json:"perm,omitempty"`
 							Nlink           *uint                 `json:"nlink,omitempty"`
 							UID             *uint                 `json:"uid,omitempty"`
 							GID             *uint                 `json:"gid,omitempty"`
 							Rdev            *uint                 `json:"rdev,omitempty"`
-							Filling         *v1alpha1.FillingType `json:"filling,omitempty"`
+							Filling         *v1alpha2.FillingType `json:"filling,omitempty"`
 							MaxOccurrences  *int64                `json:"maxOccurrences,omitempty"`
 							MaxLength       *int64                `json:"maxLength,omitempty"`
 						}

@@ -16,12 +16,12 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/ctrl/server/generated"
 	"github.com/chaos-mesh/chaos-mesh/pkg/ctrl/server/model"
 )
 
-func (r *attrOverrideSpecResolver) Ino(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error) {
+func (r *attrOverrideSpecResolver) Ino(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error) {
 	if obj.Ino == nil {
 		return nil, nil
 	}
@@ -29,7 +29,7 @@ func (r *attrOverrideSpecResolver) Ino(ctx context.Context, obj *v1alpha1.AttrOv
 	return &ino, nil
 }
 
-func (r *attrOverrideSpecResolver) Size(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error) {
+func (r *attrOverrideSpecResolver) Size(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error) {
 	if obj.Size == nil {
 		return nil, nil
 	}
@@ -37,7 +37,7 @@ func (r *attrOverrideSpecResolver) Size(ctx context.Context, obj *v1alpha1.AttrO
 	return &size, nil
 }
 
-func (r *attrOverrideSpecResolver) Blocks(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error) {
+func (r *attrOverrideSpecResolver) Blocks(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error) {
 	if obj.Blocks == nil {
 		return nil, nil
 	}
@@ -45,7 +45,7 @@ func (r *attrOverrideSpecResolver) Blocks(ctx context.Context, obj *v1alpha1.Att
 	return &blocks, nil
 }
 
-func (r *attrOverrideSpecResolver) Kind(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*string, error) {
+func (r *attrOverrideSpecResolver) Kind(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*string, error) {
 	if obj.Kind == nil {
 		return nil, nil
 	}
@@ -53,7 +53,7 @@ func (r *attrOverrideSpecResolver) Kind(ctx context.Context, obj *v1alpha1.AttrO
 	return &kind, nil
 }
 
-func (r *attrOverrideSpecResolver) Perm(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error) {
+func (r *attrOverrideSpecResolver) Perm(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error) {
 	if obj.Perm == nil {
 		return nil, nil
 	}
@@ -61,7 +61,7 @@ func (r *attrOverrideSpecResolver) Perm(ctx context.Context, obj *v1alpha1.AttrO
 	return &perm, nil
 }
 
-func (r *attrOverrideSpecResolver) Nlink(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error) {
+func (r *attrOverrideSpecResolver) Nlink(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error) {
 	if obj.Nlink == nil {
 		return nil, nil
 	}
@@ -69,7 +69,7 @@ func (r *attrOverrideSpecResolver) Nlink(ctx context.Context, obj *v1alpha1.Attr
 	return &nlink, nil
 }
 
-func (r *attrOverrideSpecResolver) UID(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error) {
+func (r *attrOverrideSpecResolver) UID(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error) {
 	if obj.UID == nil {
 		return nil, nil
 	}
@@ -77,7 +77,7 @@ func (r *attrOverrideSpecResolver) UID(ctx context.Context, obj *v1alpha1.AttrOv
 	return &uid, nil
 }
 
-func (r *attrOverrideSpecResolver) Gid(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error) {
+func (r *attrOverrideSpecResolver) Gid(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error) {
 	if obj.GID == nil {
 		return nil, nil
 	}
@@ -85,7 +85,7 @@ func (r *attrOverrideSpecResolver) Gid(ctx context.Context, obj *v1alpha1.AttrOv
 	return &gid, nil
 }
 
-func (r *attrOverrideSpecResolver) Rdev(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error) {
+func (r *attrOverrideSpecResolver) Rdev(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error) {
 	if obj.Rdev == nil {
 		return nil, nil
 	}
@@ -93,15 +93,15 @@ func (r *attrOverrideSpecResolver) Rdev(ctx context.Context, obj *v1alpha1.AttrO
 	return &rdev, nil
 }
 
-func (r *bandwidthSpecResolver) Limit(ctx context.Context, obj *v1alpha1.BandwidthSpec) (int, error) {
+func (r *bandwidthSpecResolver) Limit(ctx context.Context, obj *v1alpha2.BandwidthSpec) (int, error) {
 	return int(obj.Limit), nil
 }
 
-func (r *bandwidthSpecResolver) Buffer(ctx context.Context, obj *v1alpha1.BandwidthSpec) (int, error) {
+func (r *bandwidthSpecResolver) Buffer(ctx context.Context, obj *v1alpha2.BandwidthSpec) (int, error) {
 	return int(obj.Buffer), nil
 }
 
-func (r *bandwidthSpecResolver) Peakrate(ctx context.Context, obj *v1alpha1.BandwidthSpec) (*int, error) {
+func (r *bandwidthSpecResolver) Peakrate(ctx context.Context, obj *v1alpha2.BandwidthSpec) (*int, error) {
 	if obj.Peakrate == nil {
 		return nil, nil
 	}
@@ -109,7 +109,7 @@ func (r *bandwidthSpecResolver) Peakrate(ctx context.Context, obj *v1alpha1.Band
 	return &value, nil
 }
 
-func (r *bandwidthSpecResolver) Minburst(ctx context.Context, obj *v1alpha1.BandwidthSpec) (*int, error) {
+func (r *bandwidthSpecResolver) Minburst(ctx context.Context, obj *v1alpha2.BandwidthSpec) (*int, error) {
 	if obj.Minburst == nil {
 		return nil, nil
 	}
@@ -117,11 +117,11 @@ func (r *bandwidthSpecResolver) Minburst(ctx context.Context, obj *v1alpha1.Band
 	return &value, nil
 }
 
-func (r *chaosConditionResolver) Type(ctx context.Context, obj *v1alpha1.ChaosCondition) (string, error) {
+func (r *chaosConditionResolver) Type(ctx context.Context, obj *v1alpha2.ChaosCondition) (string, error) {
 	return string(obj.Type), nil
 }
 
-func (r *chaosConditionResolver) Status(ctx context.Context, obj *v1alpha1.ChaosCondition) (string, error) {
+func (r *chaosConditionResolver) Status(ctx context.Context, obj *v1alpha2.ChaosCondition) (string, error) {
 	return string(obj.Status), nil
 }
 
@@ -137,23 +137,23 @@ func (r *containerStateTerminatedResolver) FinishedAt(ctx context.Context, obj *
 	return &obj.FinishedAt.Time, nil
 }
 
-func (r *experimentStatusResolver) DesiredPhase(ctx context.Context, obj *v1alpha1.ExperimentStatus) (string, error) {
+func (r *experimentStatusResolver) DesiredPhase(ctx context.Context, obj *v1alpha2.ExperimentStatus) (string, error) {
 	return string(obj.DesiredPhase), nil
 }
 
-func (r *hTTPChaosResolver) UID(ctx context.Context, obj *v1alpha1.HTTPChaos) (string, error) {
+func (r *hTTPChaosResolver) UID(ctx context.Context, obj *v1alpha2.HTTPChaos) (string, error) {
 	return string(obj.UID), nil
 }
 
-func (r *hTTPChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha1.HTTPChaos) (*time.Time, error) {
+func (r *hTTPChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha2.HTTPChaos) (*time.Time, error) {
 	return &obj.CreationTimestamp.Time, nil
 }
 
-func (r *hTTPChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha1.HTTPChaos) (*time.Time, error) {
+func (r *hTTPChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha2.HTTPChaos) (*time.Time, error) {
 	return &obj.DeletionTimestamp.Time, nil
 }
 
-func (r *hTTPChaosResolver) Labels(ctx context.Context, obj *v1alpha1.HTTPChaos) (map[string]interface{}, error) {
+func (r *hTTPChaosResolver) Labels(ctx context.Context, obj *v1alpha2.HTTPChaos) (map[string]interface{}, error) {
 	labels := make(map[string]interface{})
 	for k, v := range obj.Labels {
 		labels[k] = v
@@ -161,7 +161,7 @@ func (r *hTTPChaosResolver) Labels(ctx context.Context, obj *v1alpha1.HTTPChaos)
 	return labels, nil
 }
 
-func (r *hTTPChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.HTTPChaos) (map[string]interface{}, error) {
+func (r *hTTPChaosResolver) Annotations(ctx context.Context, obj *v1alpha2.HTTPChaos) (map[string]interface{}, error) {
 	annotations := make(map[string]interface{})
 	for k, v := range obj.Annotations {
 		annotations[k] = v
@@ -169,10 +169,10 @@ func (r *hTTPChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.HTTPC
 	return annotations, nil
 }
 
-func (r *hTTPChaosResolver) Podhttp(ctx context.Context, obj *v1alpha1.HTTPChaos) ([]*v1alpha1.PodHttpChaos, error) {
-	podhttps := make([]*v1alpha1.PodHttpChaos, 0, len(obj.Status.Instances))
+func (r *hTTPChaosResolver) Podhttp(ctx context.Context, obj *v1alpha2.HTTPChaos) ([]*v1alpha2.PodHttpChaos, error) {
+	podhttps := make([]*v1alpha2.PodHttpChaos, 0, len(obj.Status.Instances))
 	for id := range obj.Status.Instances {
-		podhttp := new(v1alpha1.PodHttpChaos)
+		podhttp := new(v1alpha2.PodHttpChaos)
 		if err := r.Client.Get(ctx, parseNamespacedName(id), podhttp); err != nil {
 			return nil, err
 		}
@@ -181,15 +181,15 @@ func (r *hTTPChaosResolver) Podhttp(ctx context.Context, obj *v1alpha1.HTTPChaos
 	return podhttps, nil
 }
 
-func (r *hTTPChaosSpecResolver) Mode(ctx context.Context, obj *v1alpha1.HTTPChaosSpec) (string, error) {
+func (r *hTTPChaosSpecResolver) Mode(ctx context.Context, obj *v1alpha2.HTTPChaosSpec) (string, error) {
 	return string(obj.Mode), nil
 }
 
-func (r *hTTPChaosSpecResolver) Target(ctx context.Context, obj *v1alpha1.HTTPChaosSpec) (string, error) {
+func (r *hTTPChaosSpecResolver) Target(ctx context.Context, obj *v1alpha2.HTTPChaosSpec) (string, error) {
 	return string(obj.Target), nil
 }
 
-func (r *hTTPChaosSpecResolver) RequestHeaders(ctx context.Context, obj *v1alpha1.HTTPChaosSpec) (map[string]interface{}, error) {
+func (r *hTTPChaosSpecResolver) RequestHeaders(ctx context.Context, obj *v1alpha2.HTTPChaosSpec) (map[string]interface{}, error) {
 	headers := make(map[string]interface{})
 	for k, v := range obj.RequestHeaders {
 		headers[k] = v
@@ -197,7 +197,7 @@ func (r *hTTPChaosSpecResolver) RequestHeaders(ctx context.Context, obj *v1alpha
 	return headers, nil
 }
 
-func (r *hTTPChaosSpecResolver) ResponseHeaders(ctx context.Context, obj *v1alpha1.HTTPChaosSpec) (map[string]interface{}, error) {
+func (r *hTTPChaosSpecResolver) ResponseHeaders(ctx context.Context, obj *v1alpha2.HTTPChaosSpec) (map[string]interface{}, error) {
 	headers := make(map[string]interface{})
 	for k, v := range obj.ResponseHeaders {
 		headers[k] = v
@@ -205,7 +205,7 @@ func (r *hTTPChaosSpecResolver) ResponseHeaders(ctx context.Context, obj *v1alph
 	return headers, nil
 }
 
-func (r *hTTPChaosStatusResolver) Instances(ctx context.Context, obj *v1alpha1.HTTPChaosStatus) (map[string]interface{}, error) {
+func (r *hTTPChaosStatusResolver) Instances(ctx context.Context, obj *v1alpha2.HTTPChaosStatus) (map[string]interface{}, error) {
 	instances := make(map[string]interface{})
 	for k, v := range obj.Instances {
 		instances[k] = v
@@ -213,19 +213,19 @@ func (r *hTTPChaosStatusResolver) Instances(ctx context.Context, obj *v1alpha1.H
 	return instances, nil
 }
 
-func (r *iOChaosResolver) UID(ctx context.Context, obj *v1alpha1.IOChaos) (string, error) {
+func (r *iOChaosResolver) UID(ctx context.Context, obj *v1alpha2.IOChaos) (string, error) {
 	return string(obj.UID), nil
 }
 
-func (r *iOChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha1.IOChaos) (*time.Time, error) {
+func (r *iOChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha2.IOChaos) (*time.Time, error) {
 	return &obj.CreationTimestamp.Time, nil
 }
 
-func (r *iOChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha1.IOChaos) (*time.Time, error) {
+func (r *iOChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha2.IOChaos) (*time.Time, error) {
 	return &obj.DeletionTimestamp.Time, nil
 }
 
-func (r *iOChaosResolver) Labels(ctx context.Context, obj *v1alpha1.IOChaos) (map[string]interface{}, error) {
+func (r *iOChaosResolver) Labels(ctx context.Context, obj *v1alpha2.IOChaos) (map[string]interface{}, error) {
 	labels := make(map[string]interface{})
 	for k, v := range obj.Labels {
 		labels[k] = v
@@ -233,7 +233,7 @@ func (r *iOChaosResolver) Labels(ctx context.Context, obj *v1alpha1.IOChaos) (ma
 	return labels, nil
 }
 
-func (r *iOChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.IOChaos) (map[string]interface{}, error) {
+func (r *iOChaosResolver) Annotations(ctx context.Context, obj *v1alpha2.IOChaos) (map[string]interface{}, error) {
 	annotations := make(map[string]interface{})
 	for k, v := range obj.Annotations {
 		annotations[k] = v
@@ -241,10 +241,10 @@ func (r *iOChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.IOChaos
 	return annotations, nil
 }
 
-func (r *iOChaosResolver) Podios(ctx context.Context, obj *v1alpha1.IOChaos) ([]*v1alpha1.PodIOChaos, error) {
-	podios := make([]*v1alpha1.PodIOChaos, 0, len(obj.Status.Instances))
+func (r *iOChaosResolver) Podios(ctx context.Context, obj *v1alpha2.IOChaos) ([]*v1alpha2.PodIOChaos, error) {
+	podios := make([]*v1alpha2.PodIOChaos, 0, len(obj.Status.Instances))
 	for id := range obj.Status.Instances {
-		podio := new(v1alpha1.PodIOChaos)
+		podio := new(v1alpha2.PodIOChaos)
 		if err := r.Client.Get(ctx, parseNamespacedName(id), podio); err != nil {
 			return nil, err
 		}
@@ -253,11 +253,11 @@ func (r *iOChaosResolver) Podios(ctx context.Context, obj *v1alpha1.IOChaos) ([]
 	return podios, nil
 }
 
-func (r *iOChaosActionResolver) Type(ctx context.Context, obj *v1alpha1.IOChaosAction) (string, error) {
+func (r *iOChaosActionResolver) Type(ctx context.Context, obj *v1alpha2.IOChaosAction) (string, error) {
 	return string(obj.Type), nil
 }
 
-func (r *iOChaosActionResolver) Methods(ctx context.Context, obj *v1alpha1.IOChaosAction) ([]string, error) {
+func (r *iOChaosActionResolver) Methods(ctx context.Context, obj *v1alpha2.IOChaosAction) ([]string, error) {
 	methods := make([]string, 0, len(obj.Methods))
 	for k, v := range obj.Methods {
 		methods[k] = string(v)
@@ -265,7 +265,7 @@ func (r *iOChaosActionResolver) Methods(ctx context.Context, obj *v1alpha1.IOCha
 	return methods, nil
 }
 
-func (r *iOChaosActionResolver) Ino(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) Ino(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.AttrOverrideSpec == nil || obj.Ino == nil {
 		return nil, nil
 	}
@@ -273,7 +273,7 @@ func (r *iOChaosActionResolver) Ino(ctx context.Context, obj *v1alpha1.IOChaosAc
 	return &ino, nil
 }
 
-func (r *iOChaosActionResolver) Size(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) Size(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.AttrOverrideSpec == nil || obj.Size == nil {
 		return nil, nil
 	}
@@ -281,7 +281,7 @@ func (r *iOChaosActionResolver) Size(ctx context.Context, obj *v1alpha1.IOChaosA
 	return &size, nil
 }
 
-func (r *iOChaosActionResolver) Blocks(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) Blocks(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.AttrOverrideSpec == nil || obj.Blocks == nil {
 		return nil, nil
 	}
@@ -289,28 +289,28 @@ func (r *iOChaosActionResolver) Blocks(ctx context.Context, obj *v1alpha1.IOChao
 	return &blocks, nil
 }
 
-func (r *iOChaosActionResolver) Atime(ctx context.Context, obj *v1alpha1.IOChaosAction) (*v1alpha1.Timespec, error) {
+func (r *iOChaosActionResolver) Atime(ctx context.Context, obj *v1alpha2.IOChaosAction) (*v1alpha2.Timespec, error) {
 	if obj.AttrOverrideSpec == nil {
 		return nil, nil
 	}
 	return obj.Atime, nil
 }
 
-func (r *iOChaosActionResolver) Mtime(ctx context.Context, obj *v1alpha1.IOChaosAction) (*v1alpha1.Timespec, error) {
+func (r *iOChaosActionResolver) Mtime(ctx context.Context, obj *v1alpha2.IOChaosAction) (*v1alpha2.Timespec, error) {
 	if obj.AttrOverrideSpec == nil {
 		return nil, nil
 	}
 	return obj.Mtime, nil
 }
 
-func (r *iOChaosActionResolver) Ctime(ctx context.Context, obj *v1alpha1.IOChaosAction) (*v1alpha1.Timespec, error) {
+func (r *iOChaosActionResolver) Ctime(ctx context.Context, obj *v1alpha2.IOChaosAction) (*v1alpha2.Timespec, error) {
 	if obj.AttrOverrideSpec == nil {
 		return nil, nil
 	}
 	return obj.Ctime, nil
 }
 
-func (r *iOChaosActionResolver) Kind(ctx context.Context, obj *v1alpha1.IOChaosAction) (*string, error) {
+func (r *iOChaosActionResolver) Kind(ctx context.Context, obj *v1alpha2.IOChaosAction) (*string, error) {
 	if obj.AttrOverrideSpec == nil || obj.Kind == nil {
 		return nil, nil
 	}
@@ -318,7 +318,7 @@ func (r *iOChaosActionResolver) Kind(ctx context.Context, obj *v1alpha1.IOChaosA
 	return &kind, nil
 }
 
-func (r *iOChaosActionResolver) Perm(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int, error) {
+func (r *iOChaosActionResolver) Perm(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int, error) {
 	if obj.AttrOverrideSpec == nil || obj.Perm == nil {
 		return nil, nil
 	}
@@ -326,7 +326,7 @@ func (r *iOChaosActionResolver) Perm(ctx context.Context, obj *v1alpha1.IOChaosA
 	return &perm, nil
 }
 
-func (r *iOChaosActionResolver) Nlink(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) Nlink(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.AttrOverrideSpec == nil || obj.Nlink == nil {
 		return nil, nil
 	}
@@ -334,7 +334,7 @@ func (r *iOChaosActionResolver) Nlink(ctx context.Context, obj *v1alpha1.IOChaos
 	return &nlink, nil
 }
 
-func (r *iOChaosActionResolver) UID(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) UID(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.AttrOverrideSpec == nil || obj.UID == nil {
 		return nil, nil
 	}
@@ -342,7 +342,7 @@ func (r *iOChaosActionResolver) UID(ctx context.Context, obj *v1alpha1.IOChaosAc
 	return &uid, nil
 }
 
-func (r *iOChaosActionResolver) Gid(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) Gid(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.AttrOverrideSpec == nil || obj.GID == nil {
 		return nil, nil
 	}
@@ -350,7 +350,7 @@ func (r *iOChaosActionResolver) Gid(ctx context.Context, obj *v1alpha1.IOChaosAc
 	return &gid, nil
 }
 
-func (r *iOChaosActionResolver) Rdev(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) Rdev(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.AttrOverrideSpec == nil || obj.Rdev == nil {
 		return nil, nil
 	}
@@ -358,7 +358,7 @@ func (r *iOChaosActionResolver) Rdev(ctx context.Context, obj *v1alpha1.IOChaosA
 	return &rdev, nil
 }
 
-func (r *iOChaosActionResolver) Filling(ctx context.Context, obj *v1alpha1.IOChaosAction) (*string, error) {
+func (r *iOChaosActionResolver) Filling(ctx context.Context, obj *v1alpha2.IOChaosAction) (*string, error) {
 	if obj.MistakeSpec == nil {
 		return nil, nil
 	}
@@ -366,34 +366,34 @@ func (r *iOChaosActionResolver) Filling(ctx context.Context, obj *v1alpha1.IOCha
 	return &filling, nil
 }
 
-func (r *iOChaosActionResolver) MaxOccurrences(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) MaxOccurrences(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.MistakeSpec == nil {
 		return nil, nil
 	}
 	return &obj.MaxOccurrences, nil
 }
 
-func (r *iOChaosActionResolver) MaxLength(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error) {
+func (r *iOChaosActionResolver) MaxLength(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error) {
 	if obj.MistakeSpec == nil {
 		return nil, nil
 	}
 	return &obj.MaxLength, nil
 }
 
-func (r *iOChaosSpecResolver) Mode(ctx context.Context, obj *v1alpha1.IOChaosSpec) (string, error) {
+func (r *iOChaosSpecResolver) Mode(ctx context.Context, obj *v1alpha2.IOChaosSpec) (string, error) {
 	return string(obj.Mode), nil
 }
 
-func (r *iOChaosSpecResolver) Action(ctx context.Context, obj *v1alpha1.IOChaosSpec) (string, error) {
+func (r *iOChaosSpecResolver) Action(ctx context.Context, obj *v1alpha2.IOChaosSpec) (string, error) {
 	return string(obj.Action), nil
 }
 
-func (r *iOChaosSpecResolver) Errno(ctx context.Context, obj *v1alpha1.IOChaosSpec) (*int, error) {
+func (r *iOChaosSpecResolver) Errno(ctx context.Context, obj *v1alpha2.IOChaosSpec) (*int, error) {
 	errno := int(obj.Errno)
 	return &errno, nil
 }
 
-func (r *iOChaosSpecResolver) Methods(ctx context.Context, obj *v1alpha1.IOChaosSpec) ([]string, error) {
+func (r *iOChaosSpecResolver) Methods(ctx context.Context, obj *v1alpha2.IOChaosSpec) ([]string, error) {
 	methods := make([]string, 0, len(obj.Methods))
 	for _, method := range obj.Methods {
 		methods = append(methods, string(method))
@@ -401,7 +401,7 @@ func (r *iOChaosSpecResolver) Methods(ctx context.Context, obj *v1alpha1.IOChaos
 	return methods, nil
 }
 
-func (r *iOChaosStatusResolver) Instances(ctx context.Context, obj *v1alpha1.IOChaosStatus) (map[string]interface{}, error) {
+func (r *iOChaosStatusResolver) Instances(ctx context.Context, obj *v1alpha2.IOChaosStatus) (map[string]interface{}, error) {
 	instances := make(map[string]interface{})
 	for k, v := range obj.Instances {
 		instances[k] = v
@@ -409,7 +409,7 @@ func (r *iOChaosStatusResolver) Instances(ctx context.Context, obj *v1alpha1.IOC
 	return instances, nil
 }
 
-func (r *ioFaultResolver) Errno(ctx context.Context, obj *v1alpha1.IoFault) (int, error) {
+func (r *ioFaultResolver) Errno(ctx context.Context, obj *v1alpha2.IoFault) (int, error) {
 	return int(obj.Errno), nil
 }
 
@@ -453,7 +453,7 @@ func (r *loggerResolver) Pod(ctx context.Context, ns string, name string) (<-cha
 	return logChan, nil
 }
 
-func (r *mistakeSpecResolver) Filling(ctx context.Context, obj *v1alpha1.MistakeSpec) (*string, error) {
+func (r *mistakeSpecResolver) Filling(ctx context.Context, obj *v1alpha2.MistakeSpec) (*string, error) {
 	filling := string(obj.Filling)
 	return &filling, nil
 }
@@ -493,10 +493,10 @@ func (r *namespaceResolver) Pod(ctx context.Context, obj *model.Namespace, name 
 	return []*v1.Pod{pod}, nil
 }
 
-func (r *namespaceResolver) Stresschaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.StressChaos, error) {
+func (r *namespaceResolver) Stresschaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.StressChaos, error) {
 	if name == nil {
-		var stressList v1alpha1.StressChaosList
-		var stresses []*v1alpha1.StressChaos
+		var stressList v1alpha2.StressChaosList
+		var stresses []*v1alpha2.StressChaos
 		if err := r.Client.List(ctx, &stressList, &client.ListOptions{Namespace: obj.Ns}); err != nil {
 			return nil, err
 		}
@@ -509,17 +509,17 @@ func (r *namespaceResolver) Stresschaos(ctx context.Context, obj *model.Namespac
 	}
 
 	key := types.NamespacedName{Namespace: obj.Ns, Name: *name}
-	stress := new(v1alpha1.StressChaos)
+	stress := new(v1alpha2.StressChaos)
 	if err := r.Client.Get(ctx, key, stress); err != nil {
 		return nil, err
 	}
-	return []*v1alpha1.StressChaos{stress}, nil
+	return []*v1alpha2.StressChaos{stress}, nil
 }
 
-func (r *namespaceResolver) Iochaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.IOChaos, error) {
+func (r *namespaceResolver) Iochaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.IOChaos, error) {
 	if name == nil {
-		var ioList v1alpha1.IOChaosList
-		var ios []*v1alpha1.IOChaos
+		var ioList v1alpha2.IOChaosList
+		var ios []*v1alpha2.IOChaos
 		if err := r.Client.List(ctx, &ioList, &client.ListOptions{Namespace: obj.Ns}); err != nil {
 			return nil, err
 		}
@@ -532,17 +532,17 @@ func (r *namespaceResolver) Iochaos(ctx context.Context, obj *model.Namespace, n
 	}
 
 	key := types.NamespacedName{Namespace: obj.Ns, Name: *name}
-	io := new(v1alpha1.IOChaos)
+	io := new(v1alpha2.IOChaos)
 	if err := r.Client.Get(ctx, key, io); err != nil {
 		return nil, err
 	}
-	return []*v1alpha1.IOChaos{io}, nil
+	return []*v1alpha2.IOChaos{io}, nil
 }
 
-func (r *namespaceResolver) Podiochaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.PodIOChaos, error) {
+func (r *namespaceResolver) Podiochaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.PodIOChaos, error) {
 	if name == nil {
-		var ioList v1alpha1.PodIOChaosList
-		var ios []*v1alpha1.PodIOChaos
+		var ioList v1alpha2.PodIOChaosList
+		var ios []*v1alpha2.PodIOChaos
 		if err := r.Client.List(ctx, &ioList, &client.ListOptions{Namespace: obj.Ns}); err != nil {
 			return nil, err
 		}
@@ -555,18 +555,18 @@ func (r *namespaceResolver) Podiochaos(ctx context.Context, obj *model.Namespace
 	}
 
 	key := types.NamespacedName{Namespace: obj.Ns, Name: *name}
-	io := new(v1alpha1.PodIOChaos)
+	io := new(v1alpha2.PodIOChaos)
 	if err := r.Client.Get(ctx, key, io); err != nil {
 		return nil, err
 	}
 
-	return []*v1alpha1.PodIOChaos{io}, nil
+	return []*v1alpha2.PodIOChaos{io}, nil
 }
 
-func (r *namespaceResolver) Httpchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.HTTPChaos, error) {
+func (r *namespaceResolver) Httpchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.HTTPChaos, error) {
 	if name == nil {
-		var httpList v1alpha1.HTTPChaosList
-		var https []*v1alpha1.HTTPChaos
+		var httpList v1alpha2.HTTPChaosList
+		var https []*v1alpha2.HTTPChaos
 		if err := r.Client.List(ctx, &httpList, &client.ListOptions{Namespace: obj.Ns}); err != nil {
 			return nil, err
 		}
@@ -579,17 +579,17 @@ func (r *namespaceResolver) Httpchaos(ctx context.Context, obj *model.Namespace,
 	}
 
 	key := types.NamespacedName{Namespace: obj.Ns, Name: *name}
-	http := new(v1alpha1.HTTPChaos)
+	http := new(v1alpha2.HTTPChaos)
 	if err := r.Client.Get(ctx, key, http); err != nil {
 		return nil, err
 	}
-	return []*v1alpha1.HTTPChaos{http}, nil
+	return []*v1alpha2.HTTPChaos{http}, nil
 }
 
-func (r *namespaceResolver) Podhttpchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.PodHttpChaos, error) {
+func (r *namespaceResolver) Podhttpchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.PodHttpChaos, error) {
 	if name == nil {
-		var httpList v1alpha1.PodHttpChaosList
-		var https []*v1alpha1.PodHttpChaos
+		var httpList v1alpha2.PodHttpChaosList
+		var https []*v1alpha2.PodHttpChaos
 		if err := r.Client.List(ctx, &httpList, &client.ListOptions{Namespace: obj.Ns}); err != nil {
 			return nil, err
 		}
@@ -602,17 +602,17 @@ func (r *namespaceResolver) Podhttpchaos(ctx context.Context, obj *model.Namespa
 	}
 
 	key := types.NamespacedName{Namespace: obj.Ns, Name: *name}
-	http := new(v1alpha1.PodHttpChaos)
+	http := new(v1alpha2.PodHttpChaos)
 	if err := r.Client.Get(ctx, key, http); err != nil {
 		return nil, err
 	}
-	return []*v1alpha1.PodHttpChaos{http}, nil
+	return []*v1alpha2.PodHttpChaos{http}, nil
 }
 
-func (r *namespaceResolver) Networkchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.NetworkChaos, error) {
+func (r *namespaceResolver) Networkchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.NetworkChaos, error) {
 	if name == nil {
-		var networkList v1alpha1.NetworkChaosList
-		var networks []*v1alpha1.NetworkChaos
+		var networkList v1alpha2.NetworkChaosList
+		var networks []*v1alpha2.NetworkChaos
 		if err := r.Client.List(ctx, &networkList, &client.ListOptions{Namespace: obj.Ns}); err != nil {
 			return nil, err
 		}
@@ -625,17 +625,17 @@ func (r *namespaceResolver) Networkchaos(ctx context.Context, obj *model.Namespa
 	}
 
 	key := types.NamespacedName{Namespace: obj.Ns, Name: *name}
-	network := new(v1alpha1.NetworkChaos)
+	network := new(v1alpha2.NetworkChaos)
 	if err := r.Client.Get(ctx, key, network); err != nil {
 		return nil, err
 	}
-	return []*v1alpha1.NetworkChaos{network}, nil
+	return []*v1alpha2.NetworkChaos{network}, nil
 }
 
-func (r *namespaceResolver) Podnetworkchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.PodNetworkChaos, error) {
+func (r *namespaceResolver) Podnetworkchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.PodNetworkChaos, error) {
 	if name == nil {
-		var networkList v1alpha1.PodNetworkChaosList
-		var networks []*v1alpha1.PodNetworkChaos
+		var networkList v1alpha2.PodNetworkChaosList
+		var networks []*v1alpha2.PodNetworkChaos
 		if err := r.Client.List(ctx, &networkList, &client.ListOptions{Namespace: obj.Ns}); err != nil {
 			return nil, err
 		}
@@ -648,26 +648,26 @@ func (r *namespaceResolver) Podnetworkchaos(ctx context.Context, obj *model.Name
 	}
 
 	key := types.NamespacedName{Namespace: obj.Ns, Name: *name}
-	network := new(v1alpha1.PodNetworkChaos)
+	network := new(v1alpha2.PodNetworkChaos)
 	if err := r.Client.Get(ctx, key, network); err != nil {
 		return nil, err
 	}
-	return []*v1alpha1.PodNetworkChaos{network}, nil
+	return []*v1alpha2.PodNetworkChaos{network}, nil
 }
 
-func (r *networkChaosResolver) UID(ctx context.Context, obj *v1alpha1.NetworkChaos) (string, error) {
+func (r *networkChaosResolver) UID(ctx context.Context, obj *v1alpha2.NetworkChaos) (string, error) {
 	return string(obj.UID), nil
 }
 
-func (r *networkChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha1.NetworkChaos) (*time.Time, error) {
+func (r *networkChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha2.NetworkChaos) (*time.Time, error) {
 	return &obj.CreationTimestamp.Time, nil
 }
 
-func (r *networkChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha1.NetworkChaos) (*time.Time, error) {
+func (r *networkChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha2.NetworkChaos) (*time.Time, error) {
 	return &obj.DeletionTimestamp.Time, nil
 }
 
-func (r *networkChaosResolver) Labels(ctx context.Context, obj *v1alpha1.NetworkChaos) (map[string]interface{}, error) {
+func (r *networkChaosResolver) Labels(ctx context.Context, obj *v1alpha2.NetworkChaos) (map[string]interface{}, error) {
 	labels := make(map[string]interface{})
 	for k, v := range obj.Labels {
 		labels[k] = v
@@ -675,7 +675,7 @@ func (r *networkChaosResolver) Labels(ctx context.Context, obj *v1alpha1.Network
 	return labels, nil
 }
 
-func (r *networkChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.NetworkChaos) (map[string]interface{}, error) {
+func (r *networkChaosResolver) Annotations(ctx context.Context, obj *v1alpha2.NetworkChaos) (map[string]interface{}, error) {
 	annotations := make(map[string]interface{})
 	for k, v := range obj.Annotations {
 		annotations[k] = v
@@ -683,10 +683,10 @@ func (r *networkChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.Ne
 	return annotations, nil
 }
 
-func (r *networkChaosResolver) Podnetwork(ctx context.Context, obj *v1alpha1.NetworkChaos) ([]*v1alpha1.PodNetworkChaos, error) {
-	podnetworks := make([]*v1alpha1.PodNetworkChaos, 0, len(obj.Status.Instances))
+func (r *networkChaosResolver) Podnetwork(ctx context.Context, obj *v1alpha2.NetworkChaos) ([]*v1alpha2.PodNetworkChaos, error) {
+	podnetworks := make([]*v1alpha2.PodNetworkChaos, 0, len(obj.Status.Instances))
 	for id := range obj.Status.Instances {
-		podnetwork := new(v1alpha1.PodNetworkChaos)
+		podnetwork := new(v1alpha2.PodNetworkChaos)
 		if err := r.Client.Get(ctx, parseNamespacedName(id), podnetwork); err != nil {
 			return nil, err
 		}
@@ -789,19 +789,19 @@ func (r *podConditionResolver) LastTransitionTime(ctx context.Context, obj *v1.P
 	return &obj.LastTransitionTime.Time, nil
 }
 
-func (r *podHTTPChaosResolver) UID(ctx context.Context, obj *v1alpha1.PodHttpChaos) (string, error) {
+func (r *podHTTPChaosResolver) UID(ctx context.Context, obj *v1alpha2.PodHttpChaos) (string, error) {
 	return string(obj.UID), nil
 }
 
-func (r *podHTTPChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha1.PodHttpChaos) (*time.Time, error) {
+func (r *podHTTPChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha2.PodHttpChaos) (*time.Time, error) {
 	return &obj.CreationTimestamp.Time, nil
 }
 
-func (r *podHTTPChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha1.PodHttpChaos) (*time.Time, error) {
+func (r *podHTTPChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha2.PodHttpChaos) (*time.Time, error) {
 	return &obj.DeletionTimestamp.Time, nil
 }
 
-func (r *podHTTPChaosResolver) Labels(ctx context.Context, obj *v1alpha1.PodHttpChaos) (map[string]interface{}, error) {
+func (r *podHTTPChaosResolver) Labels(ctx context.Context, obj *v1alpha2.PodHttpChaos) (map[string]interface{}, error) {
 	labels := make(map[string]interface{})
 	for k, v := range obj.Labels {
 		labels[k] = v
@@ -809,7 +809,7 @@ func (r *podHTTPChaosResolver) Labels(ctx context.Context, obj *v1alpha1.PodHttp
 	return labels, nil
 }
 
-func (r *podHTTPChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.PodHttpChaos) (map[string]interface{}, error) {
+func (r *podHTTPChaosResolver) Annotations(ctx context.Context, obj *v1alpha2.PodHttpChaos) (map[string]interface{}, error) {
 	annotations := make(map[string]interface{})
 	for k, v := range obj.Annotations {
 		annotations[k] = v
@@ -817,7 +817,7 @@ func (r *podHTTPChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.Po
 	return annotations, nil
 }
 
-func (r *podHTTPChaosResolver) Pod(ctx context.Context, obj *v1alpha1.PodHttpChaos) (*v1.Pod, error) {
+func (r *podHTTPChaosResolver) Pod(ctx context.Context, obj *v1alpha2.PodHttpChaos) (*v1.Pod, error) {
 	pod := new(v1.Pod)
 	if err := r.Client.Get(ctx, types.NamespacedName{Namespace: obj.Namespace, Name: obj.Name}, pod); err != nil {
 		return nil, err
@@ -825,7 +825,7 @@ func (r *podHTTPChaosResolver) Pod(ctx context.Context, obj *v1alpha1.PodHttpCha
 	return pod, nil
 }
 
-func (r *podHttpChaosReplaceActionsResolver) Body(ctx context.Context, obj *v1alpha1.PodHttpChaosReplaceActions) (*string, error) {
+func (r *podHttpChaosReplaceActionsResolver) Body(ctx context.Context, obj *v1alpha2.PodHttpChaosReplaceActions) (*string, error) {
 	data, err := json.Marshal(obj.Body)
 	if err != nil {
 		return nil, err
@@ -835,7 +835,7 @@ func (r *podHttpChaosReplaceActionsResolver) Body(ctx context.Context, obj *v1al
 	return &body, nil
 }
 
-func (r *podHttpChaosReplaceActionsResolver) Queries(ctx context.Context, obj *v1alpha1.PodHttpChaosReplaceActions) (map[string]interface{}, error) {
+func (r *podHttpChaosReplaceActionsResolver) Queries(ctx context.Context, obj *v1alpha2.PodHttpChaosReplaceActions) (map[string]interface{}, error) {
 	queries := make(map[string]interface{})
 	for k, v := range obj.Queries {
 		queries[k] = v
@@ -843,7 +843,7 @@ func (r *podHttpChaosReplaceActionsResolver) Queries(ctx context.Context, obj *v
 	return queries, nil
 }
 
-func (r *podHttpChaosReplaceActionsResolver) Headers(ctx context.Context, obj *v1alpha1.PodHttpChaosReplaceActions) (map[string]interface{}, error) {
+func (r *podHttpChaosReplaceActionsResolver) Headers(ctx context.Context, obj *v1alpha2.PodHttpChaosReplaceActions) (map[string]interface{}, error) {
 	headers := make(map[string]interface{})
 	for k, v := range obj.Headers {
 		headers[k] = v
@@ -851,11 +851,11 @@ func (r *podHttpChaosReplaceActionsResolver) Headers(ctx context.Context, obj *v
 	return headers, nil
 }
 
-func (r *podHttpChaosRuleResolver) Target(ctx context.Context, obj *v1alpha1.PodHttpChaosRule) (string, error) {
+func (r *podHttpChaosRuleResolver) Target(ctx context.Context, obj *v1alpha2.PodHttpChaosRule) (string, error) {
 	return string(obj.Target), nil
 }
 
-func (r *podHttpChaosSelectorResolver) RequestHeaders(ctx context.Context, obj *v1alpha1.PodHttpChaosSelector) (map[string]interface{}, error) {
+func (r *podHttpChaosSelectorResolver) RequestHeaders(ctx context.Context, obj *v1alpha2.PodHttpChaosSelector) (map[string]interface{}, error) {
 	headers := make(map[string]interface{})
 	for k, v := range obj.RequestHeaders {
 		headers[k] = v
@@ -863,7 +863,7 @@ func (r *podHttpChaosSelectorResolver) RequestHeaders(ctx context.Context, obj *
 	return headers, nil
 }
 
-func (r *podHttpChaosSelectorResolver) ResponseHeaders(ctx context.Context, obj *v1alpha1.PodHttpChaosSelector) (map[string]interface{}, error) {
+func (r *podHttpChaosSelectorResolver) ResponseHeaders(ctx context.Context, obj *v1alpha2.PodHttpChaosSelector) (map[string]interface{}, error) {
 	headers := make(map[string]interface{})
 	for k, v := range obj.ResponseHeaders {
 		headers[k] = v
@@ -871,19 +871,19 @@ func (r *podHttpChaosSelectorResolver) ResponseHeaders(ctx context.Context, obj 
 	return headers, nil
 }
 
-func (r *podIOChaosResolver) UID(ctx context.Context, obj *v1alpha1.PodIOChaos) (string, error) {
+func (r *podIOChaosResolver) UID(ctx context.Context, obj *v1alpha2.PodIOChaos) (string, error) {
 	return string(obj.UID), nil
 }
 
-func (r *podIOChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha1.PodIOChaos) (*time.Time, error) {
+func (r *podIOChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha2.PodIOChaos) (*time.Time, error) {
 	return &obj.CreationTimestamp.Time, nil
 }
 
-func (r *podIOChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha1.PodIOChaos) (*time.Time, error) {
+func (r *podIOChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha2.PodIOChaos) (*time.Time, error) {
 	return &obj.DeletionTimestamp.Time, nil
 }
 
-func (r *podIOChaosResolver) Labels(ctx context.Context, obj *v1alpha1.PodIOChaos) (map[string]interface{}, error) {
+func (r *podIOChaosResolver) Labels(ctx context.Context, obj *v1alpha2.PodIOChaos) (map[string]interface{}, error) {
 	labels := make(map[string]interface{})
 	for k, v := range obj.Labels {
 		labels[k] = v
@@ -891,7 +891,7 @@ func (r *podIOChaosResolver) Labels(ctx context.Context, obj *v1alpha1.PodIOChao
 	return labels, nil
 }
 
-func (r *podIOChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.PodIOChaos) (map[string]interface{}, error) {
+func (r *podIOChaosResolver) Annotations(ctx context.Context, obj *v1alpha2.PodIOChaos) (map[string]interface{}, error) {
 	annotations := make(map[string]interface{})
 	for k, v := range obj.Annotations {
 		annotations[k] = v
@@ -899,7 +899,7 @@ func (r *podIOChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.PodI
 	return annotations, nil
 }
 
-func (r *podIOChaosResolver) Pod(ctx context.Context, obj *v1alpha1.PodIOChaos) (*v1.Pod, error) {
+func (r *podIOChaosResolver) Pod(ctx context.Context, obj *v1alpha2.PodIOChaos) (*v1.Pod, error) {
 	pod := new(v1.Pod)
 	key := types.NamespacedName{Namespace: obj.Namespace, Name: obj.Name}
 	if err := r.Client.Get(ctx, key, pod); err != nil {
@@ -908,16 +908,16 @@ func (r *podIOChaosResolver) Pod(ctx context.Context, obj *v1alpha1.PodIOChaos) 
 	return pod, nil
 }
 
-func (r *podIOChaosResolver) Ios(ctx context.Context, obj *v1alpha1.PodIOChaos) ([]*v1alpha1.IOChaos, error) {
+func (r *podIOChaosResolver) Ios(ctx context.Context, obj *v1alpha2.PodIOChaos) ([]*v1alpha2.IOChaos, error) {
 	ioNames := make(map[string]bool)
 	for _, action := range obj.Spec.Actions {
 		ioNames[action.Source] = true
 	}
 
-	ios := make([]*v1alpha1.IOChaos, 0, len(ioNames))
+	ios := make([]*v1alpha2.IOChaos, 0, len(ioNames))
 	for name := range ioNames {
 		namespaced := parseNamespacedName(name)
-		io := new(v1alpha1.IOChaos)
+		io := new(v1alpha2.IOChaos)
 		if err := r.Client.Get(ctx, namespaced, io); err != nil {
 			return nil, err
 		}
@@ -926,19 +926,19 @@ func (r *podIOChaosResolver) Ios(ctx context.Context, obj *v1alpha1.PodIOChaos) 
 	return ios, nil
 }
 
-func (r *podNetworkChaosResolver) UID(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (string, error) {
+func (r *podNetworkChaosResolver) UID(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (string, error) {
 	return string(obj.UID), nil
 }
 
-func (r *podNetworkChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (*time.Time, error) {
+func (r *podNetworkChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (*time.Time, error) {
 	return &obj.CreationTimestamp.Time, nil
 }
 
-func (r *podNetworkChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (*time.Time, error) {
+func (r *podNetworkChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (*time.Time, error) {
 	return &obj.DeletionTimestamp.Time, nil
 }
 
-func (r *podNetworkChaosResolver) Labels(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (map[string]interface{}, error) {
+func (r *podNetworkChaosResolver) Labels(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (map[string]interface{}, error) {
 	labels := make(map[string]interface{})
 	for k, v := range obj.Labels {
 		labels[k] = v
@@ -946,7 +946,7 @@ func (r *podNetworkChaosResolver) Labels(ctx context.Context, obj *v1alpha1.PodN
 	return labels, nil
 }
 
-func (r *podNetworkChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (map[string]interface{}, error) {
+func (r *podNetworkChaosResolver) Annotations(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (map[string]interface{}, error) {
 	annotations := make(map[string]interface{})
 	for k, v := range obj.Annotations {
 		annotations[k] = v
@@ -954,7 +954,7 @@ func (r *podNetworkChaosResolver) Annotations(ctx context.Context, obj *v1alpha1
 	return annotations, nil
 }
 
-func (r *podNetworkChaosResolver) Pod(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (*v1.Pod, error) {
+func (r *podNetworkChaosResolver) Pod(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (*v1.Pod, error) {
 	pod := new(v1.Pod)
 	if err := r.Client.Get(ctx, types.NamespacedName{Namespace: obj.Namespace, Name: obj.Name}, pod); err != nil {
 		return nil, err
@@ -962,7 +962,7 @@ func (r *podNetworkChaosResolver) Pod(ctx context.Context, obj *v1alpha1.PodNetw
 	return pod, nil
 }
 
-func (r *podSelectorSpecResolver) Pods(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error) {
+func (r *podSelectorSpecResolver) Pods(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error) {
 	pods := make(map[string]interface{})
 	for k, v := range obj.Pods {
 		pods[k] = v
@@ -970,7 +970,7 @@ func (r *podSelectorSpecResolver) Pods(ctx context.Context, obj *v1alpha1.PodSel
 	return pods, nil
 }
 
-func (r *podSelectorSpecResolver) NodeSelectors(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error) {
+func (r *podSelectorSpecResolver) NodeSelectors(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error) {
 	selectors := make(map[string]interface{})
 	for k, v := range obj.NodeSelectors {
 		selectors[k] = v
@@ -978,7 +978,7 @@ func (r *podSelectorSpecResolver) NodeSelectors(ctx context.Context, obj *v1alph
 	return selectors, nil
 }
 
-func (r *podSelectorSpecResolver) FieldSelectors(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error) {
+func (r *podSelectorSpecResolver) FieldSelectors(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error) {
 	selectors := make(map[string]interface{})
 	for k, v := range obj.FieldSelectors {
 		selectors[k] = v
@@ -986,7 +986,7 @@ func (r *podSelectorSpecResolver) FieldSelectors(ctx context.Context, obj *v1alp
 	return selectors, nil
 }
 
-func (r *podSelectorSpecResolver) LabelSelectors(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error) {
+func (r *podSelectorSpecResolver) LabelSelectors(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error) {
 	selectors := make(map[string]interface{})
 	for k, v := range obj.LabelSelectors {
 		selectors[k] = v
@@ -994,7 +994,7 @@ func (r *podSelectorSpecResolver) LabelSelectors(ctx context.Context, obj *v1alp
 	return selectors, nil
 }
 
-func (r *podSelectorSpecResolver) AnnotationSelectors(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error) {
+func (r *podSelectorSpecResolver) AnnotationSelectors(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error) {
 	selectors := make(map[string]interface{})
 	for k, v := range obj.AnnotationSelectors {
 		selectors[k] = v
@@ -1062,31 +1062,31 @@ func (r *queryResolver) Namespace(ctx context.Context, ns *string) ([]*model.Nam
 	return []*model.Namespace{{Ns: *ns}}, nil
 }
 
-func (r *rawIptablesResolver) Direction(ctx context.Context, obj *v1alpha1.RawIptables) (string, error) {
+func (r *rawIptablesResolver) Direction(ctx context.Context, obj *v1alpha2.RawIptables) (string, error) {
 	return string(obj.Direction), nil
 }
 
-func (r *rawTrafficControlResolver) Type(ctx context.Context, obj *v1alpha1.RawTrafficControl) (string, error) {
+func (r *rawTrafficControlResolver) Type(ctx context.Context, obj *v1alpha2.RawTrafficControl) (string, error) {
 	return string(obj.Type), nil
 }
 
-func (r *recordResolver) Phase(ctx context.Context, obj *v1alpha1.Record) (string, error) {
+func (r *recordResolver) Phase(ctx context.Context, obj *v1alpha2.Record) (string, error) {
 	return string(obj.Phase), nil
 }
 
-func (r *stressChaosResolver) UID(ctx context.Context, obj *v1alpha1.StressChaos) (string, error) {
+func (r *stressChaosResolver) UID(ctx context.Context, obj *v1alpha2.StressChaos) (string, error) {
 	return string(obj.UID), nil
 }
 
-func (r *stressChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha1.StressChaos) (*time.Time, error) {
+func (r *stressChaosResolver) CreationTimestamp(ctx context.Context, obj *v1alpha2.StressChaos) (*time.Time, error) {
 	return &obj.CreationTimestamp.Time, nil
 }
 
-func (r *stressChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha1.StressChaos) (*time.Time, error) {
+func (r *stressChaosResolver) DeletionTimestamp(ctx context.Context, obj *v1alpha2.StressChaos) (*time.Time, error) {
 	return &obj.DeletionTimestamp.Time, nil
 }
 
-func (r *stressChaosResolver) Labels(ctx context.Context, obj *v1alpha1.StressChaos) (map[string]interface{}, error) {
+func (r *stressChaosResolver) Labels(ctx context.Context, obj *v1alpha2.StressChaos) (map[string]interface{}, error) {
 	labels := make(map[string]interface{})
 	for k, v := range obj.Labels {
 		labels[k] = v
@@ -1094,7 +1094,7 @@ func (r *stressChaosResolver) Labels(ctx context.Context, obj *v1alpha1.StressCh
 	return labels, nil
 }
 
-func (r *stressChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.StressChaos) (map[string]interface{}, error) {
+func (r *stressChaosResolver) Annotations(ctx context.Context, obj *v1alpha2.StressChaos) (map[string]interface{}, error) {
 	annotations := make(map[string]interface{})
 	for k, v := range obj.Annotations {
 		annotations[k] = v
@@ -1102,7 +1102,7 @@ func (r *stressChaosResolver) Annotations(ctx context.Context, obj *v1alpha1.Str
 	return annotations, nil
 }
 
-func (r *stressChaosResolver) Podstress(ctx context.Context, obj *v1alpha1.StressChaos) ([]*model.PodStressChaos, error) {
+func (r *stressChaosResolver) Podstress(ctx context.Context, obj *v1alpha2.StressChaos) ([]*model.PodStressChaos, error) {
 	pods, _, err := GetPods(ctx, obj.Status.ChaosStatus, obj.Spec.Selector, r.Client)
 	if err != nil {
 		return nil, err
@@ -1119,11 +1119,11 @@ func (r *stressChaosResolver) Podstress(ctx context.Context, obj *v1alpha1.Stres
 	return podStress, nil
 }
 
-func (r *stressChaosSpecResolver) Mode(ctx context.Context, obj *v1alpha1.StressChaosSpec) (string, error) {
+func (r *stressChaosSpecResolver) Mode(ctx context.Context, obj *v1alpha2.StressChaosSpec) (string, error) {
 	return string(obj.Mode), nil
 }
 
-func (r *stressChaosStatusResolver) Instances(ctx context.Context, obj *v1alpha1.StressChaosStatus) (map[string]interface{}, error) {
+func (r *stressChaosStatusResolver) Instances(ctx context.Context, obj *v1alpha2.StressChaosStatus) (map[string]interface{}, error) {
 	panic(fmt.Errorf("not implemented"))
 }
 

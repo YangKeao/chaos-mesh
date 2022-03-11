@@ -31,7 +31,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/clientpool"
 	config "github.com/chaos-mesh/chaos-mesh/pkg/config/dashboard"
 	u "github.com/chaos-mesh/chaos-mesh/pkg/dashboard/apiserver/utils"
@@ -115,7 +115,7 @@ func (s *Service) list(c *gin.Context) {
 		log.V(1).Info("Replace query namespace with", ns)
 	}
 
-	ScheduleList := v1alpha1.ScheduleList{}
+	ScheduleList := v1alpha2.ScheduleList{}
 	if err = kubeCli.List(context.Background(), &ScheduleList, &client.ListOptions{Namespace: ns}); err != nil {
 		u.SetAPImachineryError(c, err)
 
@@ -165,7 +165,7 @@ func (s *Service) create(c *gin.Context) {
 		return
 	}
 
-	var sch v1alpha1.Schedule
+	var sch v1alpha2.Schedule
 	if err = u.ShouldBindBodyWithJSON(c, &sch); err != nil {
 		return
 	}
@@ -223,7 +223,7 @@ func (s *Service) get(c *gin.Context) {
 }
 
 func (s *Service) findScheduleInCluster(c *gin.Context, kubeCli client.Client, namespacedName types.NamespacedName) *Detail {
-	var sch v1alpha1.Schedule
+	var sch v1alpha2.Schedule
 
 	if err := kubeCli.Get(context.Background(), namespacedName, &sch); err != nil {
 		u.SetAPImachineryError(c, err)
@@ -240,7 +240,7 @@ func (s *Service) findScheduleInCluster(c *gin.Context, kubeCli client.Client, n
 
 	UIDList := make([]string, 0)
 	schType := string(sch.Spec.Type)
-	chaosKind, ok := v1alpha1.AllScheduleItemKinds()[schType]
+	chaosKind, ok := v1alpha2.AllScheduleItemKinds()[schType]
 	if !ok {
 		u.SetAPIError(c, u.ErrInternalServer.New("Kind "+schType+" is not supported"))
 
@@ -248,7 +248,7 @@ func (s *Service) findScheduleInCluster(c *gin.Context, kubeCli client.Client, n
 	}
 
 	selector, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
-		MatchLabels: map[string]string{v1alpha1.LabelManagedBy: sch.Name},
+		MatchLabels: map[string]string{v1alpha2.LabelManagedBy: sch.Name},
 	})
 	if err != nil {
 		u.SetAPIError(c, u.ErrInternalServer.WrapWithNoMessage(err))
@@ -405,7 +405,7 @@ func (s *Service) batchDelete(c *gin.Context) {
 
 func checkAndDeleteSchedule(c *gin.Context, kubeCli client.Client, namespacedName types.NamespacedName) (err error) {
 	ctx := context.Background()
-	var sch v1alpha1.Schedule
+	var sch v1alpha2.Schedule
 
 	if err = kubeCli.Get(ctx, namespacedName, &sch); err != nil {
 		return
@@ -450,7 +450,7 @@ func (s *Service) pauseSchedule(c *gin.Context) {
 	}
 
 	annotations := map[string]string{
-		v1alpha1.PauseAnnotationKey: "true",
+		v1alpha2.PauseAnnotationKey: "true",
 	}
 	if err = patchSchedule(kubeCli, sch, annotations); err != nil {
 		u.SetAPImachineryError(c, err)
@@ -492,7 +492,7 @@ func (s *Service) startSchedule(c *gin.Context) {
 	}
 
 	annotations := map[string]string{
-		v1alpha1.PauseAnnotationKey: "false",
+		v1alpha2.PauseAnnotationKey: "false",
 	}
 	if err = patchSchedule(kubeCli, sch, annotations); err != nil {
 		u.SetAPImachineryError(c, err)
@@ -503,7 +503,7 @@ func (s *Service) startSchedule(c *gin.Context) {
 }
 
 func patchSchedule(kubeCli client.Client, sch *core.Schedule, annotations map[string]string) error {
-	var tmp v1alpha1.Schedule
+	var tmp v1alpha2.Schedule
 
 	if err := kubeCli.Get(context.Background(), types.NamespacedName{Namespace: sch.Namespace, Name: sch.Name}, &tmp); err != nil {
 		return err

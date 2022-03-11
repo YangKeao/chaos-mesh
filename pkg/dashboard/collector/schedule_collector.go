@@ -27,7 +27,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/core"
 )
 
@@ -46,7 +46,7 @@ func (r *ScheduleCollector) Reconcile(ctx context.Context, req ctrl.Request) (ct
 		return ctrl.Result{}, nil
 	}
 
-	schedule := &v1alpha1.Schedule{}
+	schedule := &v1alpha2.Schedule{}
 	err := r.Get(ctx, req.NamespacedName, schedule)
 	if apierrors.IsNotFound(err) {
 		if err = r.archiveSchedule(req.Namespace, req.Name); err != nil {
@@ -76,7 +76,7 @@ func (r *ScheduleCollector) Setup(mgr ctrl.Manager, apiType client.Object) error
 		Complete(r)
 }
 
-func (r *ScheduleCollector) setUnarchivedSchedule(req ctrl.Request, schedule v1alpha1.Schedule) error {
+func (r *ScheduleCollector) setUnarchivedSchedule(req ctrl.Request, schedule v1alpha2.Schedule) error {
 	archive := &core.Schedule{
 		ScheduleMeta: core.ScheduleMeta{
 			Namespace: req.Namespace,
@@ -88,23 +88,23 @@ func (r *ScheduleCollector) setUnarchivedSchedule(req ctrl.Request, schedule v1a
 	}
 
 	switch schedule.Spec.Type {
-	case v1alpha1.ScheduleTypePodChaos:
+	case v1alpha2.ScheduleTypePodChaos:
 		archive.Action = string(schedule.Spec.ScheduleItem.PodChaos.Action)
-	case v1alpha1.ScheduleTypeNetworkChaos:
+	case v1alpha2.ScheduleTypeNetworkChaos:
 		archive.Action = string(schedule.Spec.ScheduleItem.NetworkChaos.Action)
-	case v1alpha1.ScheduleTypeIOChaos:
+	case v1alpha2.ScheduleTypeIOChaos:
 		archive.Action = string(schedule.Spec.ScheduleItem.IOChaos.Action)
-	case v1alpha1.ScheduleTypeTimeChaos, v1alpha1.ScheduleTypeKernelChaos, v1alpha1.ScheduleTypeStressChaos, v1alpha1.ScheduleTypeHTTPChaos:
+	case v1alpha2.ScheduleTypeTimeChaos, v1alpha2.ScheduleTypeKernelChaos, v1alpha2.ScheduleTypeStressChaos, v1alpha2.ScheduleTypeHTTPChaos:
 		archive.Action = ""
-	case v1alpha1.ScheduleTypeDNSChaos:
+	case v1alpha2.ScheduleTypeDNSChaos:
 		archive.Action = string(schedule.Spec.ScheduleItem.DNSChaos.Action)
-	case v1alpha1.ScheduleTypeAWSChaos:
+	case v1alpha2.ScheduleTypeAWSChaos:
 		archive.Action = string(schedule.Spec.ScheduleItem.AWSChaos.Action)
-	case v1alpha1.ScheduleTypeGCPChaos:
+	case v1alpha2.ScheduleTypeGCPChaos:
 		archive.Action = string(schedule.Spec.ScheduleItem.GCPChaos.Action)
-	case v1alpha1.ScheduleTypeJVMChaos:
+	case v1alpha2.ScheduleTypeJVMChaos:
 		archive.Action = string(schedule.Spec.ScheduleItem.JVMChaos.Action)
-	case v1alpha1.ScheduleTypePhysicalMachineChaos:
+	case v1alpha2.ScheduleTypePhysicalMachineChaos:
 		archive.Action = string(schedule.Spec.ScheduleItem.PhysicalMachineChaos.Action)
 	default:
 		return errors.New("unsupported chaos type " + string(schedule.Spec.Type))

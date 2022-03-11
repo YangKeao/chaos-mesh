@@ -27,7 +27,7 @@ import (
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 )
 
@@ -53,28 +53,28 @@ func TestcaseNetworkDelay(
 	framework.ExpectEqual(len(result[networkConditionSlow]), 0)
 
 	var (
-		testDelayTcParam = v1alpha1.TcParameter{
-			Delay: &v1alpha1.DelaySpec{
+		testDelayTcParam = v1alpha2.TcParameter{
+			Delay: &v1alpha2.DelaySpec{
 				Latency:     "200ms",
 				Correlation: "25",
 				Jitter:      "0ms",
 			},
 		}
-		testDelayTcParamEvenMoreComplicate = v1alpha1.TcParameter{
-			Delay: &v1alpha1.DelaySpec{
+		testDelayTcParamEvenMoreComplicate = v1alpha2.TcParameter{
+			Delay: &v1alpha2.DelaySpec{
 				Latency:     "200ms",
 				Correlation: "25",
 				Jitter:      "0ms",
 			},
-			Loss: &v1alpha1.LossSpec{
+			Loss: &v1alpha2.LossSpec{
 				Loss:        "25",
 				Correlation: "25",
 			},
-			Duplicate: &v1alpha1.DuplicateSpec{
+			Duplicate: &v1alpha2.DuplicateSpec{
 				Duplicate:   "25",
 				Correlation: "25",
 			},
-			Corrupt: &v1alpha1.CorruptSpec{
+			Corrupt: &v1alpha2.CorruptSpec{
 				Corrupt:     "25",
 				Correlation: "25",
 			},
@@ -87,9 +87,9 @@ func TestcaseNetworkDelay(
 		ns, "network-chaos-1",
 		map[string]string{"app": "network-peer-0"},
 		nil, // no target specified
-		v1alpha1.OneMode,
-		v1alpha1.OneMode,
-		v1alpha1.To,
+		v1alpha2.OneMode,
+		v1alpha2.OneMode,
+		v1alpha2.To,
 		testDelayTcParam,
 		testDelayDuration,
 	)
@@ -127,9 +127,9 @@ func TestcaseNetworkDelay(
 		ns, "network-chaos-1",
 		map[string]string{"app": "network-peer-0"},
 		map[string]string{"app": "network-peer-1"}, // 0 -> 1 add delays
-		v1alpha1.OneMode,
-		v1alpha1.OneMode,
-		v1alpha1.To,
+		v1alpha2.OneMode,
+		v1alpha2.OneMode,
+		v1alpha2.To,
 		testDelayTcParam,
 		testDelayDuration,
 	)
@@ -167,9 +167,9 @@ func TestcaseNetworkDelay(
 		ns, "network-chaos-2",
 		map[string]string{"app": "network-peer-0"},
 		map[string]string{"partition": "0"}, // 0 -> even its partition (idx % 2)
-		v1alpha1.OneMode,
-		v1alpha1.AllMode,
-		v1alpha1.To,
+		v1alpha2.OneMode,
+		v1alpha2.AllMode,
+		v1alpha2.To,
 		testDelayTcParam,
 		testDelayDuration,
 	)
@@ -231,9 +231,9 @@ func TestcaseNetworkDelay(
 		ns, "network-chaos-3",
 		map[string]string{"app": "network-peer-0"},
 		nil, // no target specified
-		v1alpha1.OneMode,
-		v1alpha1.OneMode,
-		v1alpha1.To,
+		v1alpha2.OneMode,
+		v1alpha2.OneMode,
+		v1alpha2.To,
 		testDelayTcParamEvenMoreComplicate,
 		testDelayDuration,
 	)
@@ -268,9 +268,9 @@ func TestcaseNetworkDelay(
 		ns, "network-chaos-4",
 		map[string]string{"app": "network-peer-0"},
 		map[string]string{"partition": "0"}, // 0 -> even its partition (idx % 2)
-		v1alpha1.OneMode,
-		v1alpha1.AllMode,
-		v1alpha1.Both,
+		v1alpha2.OneMode,
+		v1alpha2.AllMode,
+		v1alpha2.Both,
 		testDelayTcParam,
 		testDelayDuration,
 	)

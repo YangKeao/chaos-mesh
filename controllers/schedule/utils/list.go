@@ -22,7 +22,7 @@ import (
 	"github.com/pkg/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type ActiveLister struct {
@@ -31,15 +31,15 @@ type ActiveLister struct {
 }
 
 // TODO: use another easy-to-used type for describing ChaosList
-func (lister *ActiveLister) ListActiveJobs(ctx context.Context, schedule *v1alpha1.Schedule) (v1alpha1.GenericChaosList, error) {
-	kind, ok := v1alpha1.AllScheduleItemKinds()[string(schedule.Spec.Type)]
+func (lister *ActiveLister) ListActiveJobs(ctx context.Context, schedule *v1alpha2.Schedule) (v1alpha2.GenericChaosList, error) {
+	kind, ok := v1alpha2.AllScheduleItemKinds()[string(schedule.Spec.Type)]
 	if !ok {
 		lister.Log.Info("unknown kind", "kind", schedule.Spec.Type)
 		return nil, errors.Errorf("Unknown type: %s", schedule.Spec.Type)
 	}
 
 	list := kind.SpawnList()
-	err := lister.List(ctx, list, client.MatchingLabels{v1alpha1.LabelManagedBy: schedule.Name})
+	err := lister.List(ctx, list, client.MatchingLabels{v1alpha2.LabelManagedBy: schedule.Name})
 	if err != nil {
 		lister.Log.Error(err, "fail to list chaos")
 		return nil, nil

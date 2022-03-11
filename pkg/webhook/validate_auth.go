@@ -28,16 +28,16 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 var alwaysAllowedKind = []string{
-	v1alpha1.KindAWSChaos,
-	v1alpha1.KindPodNetworkChaos,
-	v1alpha1.KindPodIOChaos,
-	v1alpha1.KindGCPChaos,
-	v1alpha1.KindPodHttpChaos,
-	v1alpha1.KindPhysicalMachine,
+	v1alpha2.KindAWSChaos,
+	v1alpha2.KindPodNetworkChaos,
+	v1alpha2.KindPodIOChaos,
+	v1alpha2.KindGCPChaos,
+	v1alpha2.KindPodHttpChaos,
+	v1alpha2.KindPhysicalMachine,
 
 	"WorkflowNode",
 }
@@ -84,7 +84,7 @@ func (v *AuthValidator) Handle(ctx context.Context, req admission.Request) admis
 		return admission.Allowed(fmt.Sprintf("skip the RBAC check for type %s", requestKind))
 	}
 
-	kind, ok := v1alpha1.AllKindsIncludeScheduleAndWorkflow()[requestKind]
+	kind, ok := v1alpha2.AllKindsIncludeScheduleAndWorkflow()[requestKind]
 	if !ok {
 		err := errors.Wrapf(errInvalidValue, "kind %s is not support", requestKind)
 		return admission.Errored(http.StatusBadRequest, err)

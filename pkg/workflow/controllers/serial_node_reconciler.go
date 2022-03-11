@@ -28,7 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 )
 
@@ -74,14 +74,14 @@ func (it *SerialNodeReconciler) Reconcile(ctx context.Context, request reconcile
 		)
 	}()
 
-	node := v1alpha1.WorkflowNode{}
+	node := v1alpha2.WorkflowNode{}
 	err := it.kubeClient.Get(ctx, request.NamespacedName, &node)
 	if err != nil {
 		return reconcile.Result{}, client.IgnoreNotFound(err)
 	}
 
 	// only resolve serial nodes
-	if node.Spec.Type != v1alpha1.TypeSerial {
+	if node.Spec.Type != v1alpha2.TypeSerial {
 		return reconcile.Result{}, nil
 	}
 
@@ -95,7 +95,7 @@ func (it *SerialNodeReconciler) Reconcile(ctx context.Context, request reconcile
 
 	// update status
 	updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		nodeNeedUpdate := v1alpha1.WorkflowNode{}
+		nodeNeedUpdate := v1alpha2.WorkflowNode{}
 		err := it.kubeClient.Get(ctx, request.NamespacedName, &nodeNeedUpdate)
 		if err != nil {
 			return err
@@ -131,14 +131,14 @@ func (it *SerialNodeReconciler) Reconcile(ctx context.Context, request reconcile
 			if !WorkflowNodeFinished(nodeNeedUpdate.Status) {
 				it.eventRecorder.Event(&nodeNeedUpdate, recorder.NodeAccomplished{})
 			}
-			SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-				Type:   v1alpha1.ConditionAccomplished,
+			SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+				Type:   v1alpha2.ConditionAccomplished,
 				Status: corev1.ConditionTrue,
 				Reason: "",
 			})
 		} else {
-			SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-				Type:   v1alpha1.ConditionAccomplished,
+			SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+				Type:   v1alpha2.ConditionAccomplished,
 				Status: corev1.ConditionFalse,
 				Reason: "",
 			})
@@ -160,7 +160,7 @@ func (it *SerialNodeReconciler) Reconcile(ctx context.Context, request reconcile
 //
 // Notice again: we SHOULD NOT decide the operation based on v1alpha1.WorkflowNodeStatus, please
 // use kubeClient to fetch information from real world.
-func (it *SerialNodeReconciler) syncChildNodes(ctx context.Context, node v1alpha1.WorkflowNode) error {
+func (it *SerialNodeReconciler) syncChildNodes(ctx context.Context, node v1alpha2.WorkflowNode) error {
 
 	// empty serial node
 	if len(node.Spec.Children) == 0 {
@@ -213,7 +213,7 @@ func (it *SerialNodeReconciler) syncChildNodes(ctx context.Context, node v1alpha
 						it.eventRecorder.Event(&node, recorder.RerunBySpecChanged{CleanedChildrenNode: nodesToCleanup})
 
 						for _, refToDelete := range nodesToDelete {
-							nodeToDelete := v1alpha1.WorkflowNode{}
+							nodeToDelete := v1alpha2.WorkflowNode{}
 							err := it.kubeClient.Get(ctx, types.NamespacedName{
 								Namespace: node.Namespace,
 								Name:      refToDelete.Name,
@@ -250,7 +250,7 @@ func (it *SerialNodeReconciler) syncChildNodes(ctx context.Context, node v1alpha
 		return nil
 	}
 
-	parentWorkflow := v1alpha1.Workflow{}
+	parentWorkflow := v1alpha2.Workflow{}
 	err = it.kubeClient.Get(ctx, types.NamespacedName{
 		Namespace: node.Namespace,
 		Name:      node.Spec.WorkflowName,

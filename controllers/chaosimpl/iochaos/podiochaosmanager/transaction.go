@@ -18,7 +18,7 @@ package podiochaosmanager
 import (
 	"github.com/pkg/errors"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 )
 
@@ -30,7 +30,7 @@ type PodIOTransaction struct {
 // Step represents a step of PodIOTransaction
 type Step interface {
 	// Apply will apply an action on podnetworkchaos
-	Apply(chaos *v1alpha1.PodIOChaos) error
+	Apply(chaos *v1alpha2.PodIOChaos) error
 }
 
 // Clear removes all resources with the same source
@@ -39,8 +39,8 @@ type Clear struct {
 }
 
 // Apply runs this action
-func (s *Clear) Apply(chaos *v1alpha1.PodIOChaos) error {
-	actions := []v1alpha1.IOChaosAction{}
+func (s *Clear) Apply(chaos *v1alpha2.PodIOChaos) error {
+	actions := []v1alpha2.IOChaosAction{}
 	for _, action := range chaos.Spec.Actions {
 		if action.Source != s.Source {
 			actions = append(actions, action)
@@ -57,9 +57,9 @@ type Append struct {
 }
 
 // Apply runs this action
-func (a *Append) Apply(chaos *v1alpha1.PodIOChaos) error {
+func (a *Append) Apply(chaos *v1alpha2.PodIOChaos) error {
 	switch item := a.Item.(type) {
-	case v1alpha1.IOChaosAction:
+	case v1alpha2.IOChaosAction:
 		chaos.Spec.Actions = append(chaos.Spec.Actions, item)
 	default:
 		return errors.Wrapf(utils.ErrUnknownType, "type: %T", item)
@@ -74,7 +74,7 @@ type SetContainer struct {
 }
 
 // Apply runs this action
-func (s *SetContainer) Apply(chaos *v1alpha1.PodIOChaos) error {
+func (s *SetContainer) Apply(chaos *v1alpha2.PodIOChaos) error {
 	chaos.Spec.Container = &s.Container
 
 	return nil
@@ -86,7 +86,7 @@ type SetVolumePath struct {
 }
 
 // Apply runs this action
-func (s *SetVolumePath) Apply(chaos *v1alpha1.PodIOChaos) error {
+func (s *SetVolumePath) Apply(chaos *v1alpha2.PodIOChaos) error {
 	chaos.Spec.VolumeMountPath = s.Path
 
 	return nil
@@ -102,7 +102,7 @@ func (t *PodIOTransaction) Clear(source string) {
 // Append adds an item to corresponding list in podnetworkchaos
 func (t *PodIOTransaction) Append(item interface{}) error {
 	switch item.(type) {
-	case v1alpha1.IOChaosAction:
+	case v1alpha2.IOChaosAction:
 		t.Steps = append(t.Steps, &Append{
 			Item: item,
 		})
@@ -130,7 +130,7 @@ func (t *PodIOTransaction) SetContainer(container string) error {
 }
 
 // Apply runs every step on the chaos
-func (t *PodIOTransaction) Apply(chaos *v1alpha1.PodIOChaos) error {
+func (t *PodIOTransaction) Apply(chaos *v1alpha2.PodIOChaos) error {
 	for _, s := range t.Steps {
 		err := s.Apply(chaos)
 		if err != nil {

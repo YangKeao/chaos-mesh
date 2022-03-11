@@ -20,7 +20,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // Get this function from Kubernetes
@@ -28,8 +28,8 @@ import (
 // getRecentUnmetScheduleTime gets the most recent time that have passed when a Job should have started but did not.
 //
 // If there are too many (>100) unstarted times, just give up and return a nil.
-func getRecentUnmetScheduleTime(schedule *v1alpha1.Schedule, now time.Time) (*time.Time, *time.Time, error) {
-	sched, err := v1alpha1.StandardCronParser.Parse(schedule.Spec.Schedule)
+func getRecentUnmetScheduleTime(schedule *v1alpha2.Schedule, now time.Time) (*time.Time, *time.Time, error) {
+	sched, err := v1alpha2.StandardCronParser.Parse(schedule.Spec.Schedule)
 	if err != nil {
 		return nil, nil, errors.Errorf("unparseable schedule: %s : %s", schedule.Spec.Schedule, err)
 	}

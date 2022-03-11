@@ -29,7 +29,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 )
 
@@ -53,20 +53,20 @@ func (it *ChaosNodeReconciler) Reconcile(ctx context.Context, request reconcile.
 		)
 	}()
 
-	node := v1alpha1.WorkflowNode{}
+	node := v1alpha2.WorkflowNode{}
 
 	err := it.kubeClient.Get(ctx, request.NamespacedName, &node)
 	if err != nil {
 		return reconcile.Result{}, client.IgnoreNotFound(err)
 	}
 
-	if !v1alpha1.IsChaosTemplateType(node.Spec.Type) {
+	if !v1alpha2.IsChaosTemplateType(node.Spec.Type) {
 		return reconcile.Result{}, nil
 	}
 
 	it.logger.V(4).Info("resolve chaos node", "node", request)
 
-	if node.Spec.Type == v1alpha1.TypeSchedule {
+	if node.Spec.Type == v1alpha2.TypeSchedule {
 		err := it.syncSchedule(ctx, node)
 		if err != nil {
 			return reconcile.Result{}, err
@@ -79,13 +79,13 @@ func (it *ChaosNodeReconciler) Reconcile(ctx context.Context, request reconcile.
 	}
 
 	updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		nodeNeedUpdate := v1alpha1.WorkflowNode{}
+		nodeNeedUpdate := v1alpha2.WorkflowNode{}
 		err := it.kubeClient.Get(ctx, request.NamespacedName, &nodeNeedUpdate)
 		if err != nil {
 			return client.IgnoreNotFound(err)
 		}
 
-		if nodeNeedUpdate.Spec.Type == v1alpha1.TypeSchedule {
+		if nodeNeedUpdate.Spec.Type == v1alpha2.TypeSchedule {
 			// sync status with schedule
 			scheduleList, err := it.fetchChildrenSchedule(ctx, nodeNeedUpdate)
 			if err != nil {
@@ -106,17 +106,17 @@ func (it *ChaosNodeReconciler) Reconcile(ctx context.Context, request reconcile.
 					Name:     scheduleObject.GetName(),
 				}
 				nodeNeedUpdate.Status.ChaosResource = &chaosRef
-				SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-					Type:   v1alpha1.ConditionChaosInjected,
+				SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+					Type:   v1alpha2.ConditionChaosInjected,
 					Status: corev1.ConditionTrue,
-					Reason: v1alpha1.ChaosCRCreated,
+					Reason: v1alpha2.ChaosCRCreated,
 				})
 			} else {
 				nodeNeedUpdate.Status.ChaosResource = nil
-				SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-					Type:   v1alpha1.ConditionChaosInjected,
+				SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+					Type:   v1alpha2.ConditionChaosInjected,
 					Status: corev1.ConditionFalse,
-					Reason: v1alpha1.ChaosCRNotExists,
+					Reason: v1alpha2.ChaosCRNotExists,
 				})
 			}
 
@@ -144,17 +144,17 @@ func (it *ChaosNodeReconciler) Reconcile(ctx context.Context, request reconcile.
 				Name:     chaosObject.GetName(),
 			}
 			nodeNeedUpdate.Status.ChaosResource = &chaosRef
-			SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-				Type:   v1alpha1.ConditionChaosInjected,
+			SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+				Type:   v1alpha2.ConditionChaosInjected,
 				Status: corev1.ConditionTrue,
-				Reason: v1alpha1.ChaosCRCreated,
+				Reason: v1alpha2.ChaosCRCreated,
 			})
 		} else {
 			nodeNeedUpdate.Status.ChaosResource = nil
-			SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-				Type:   v1alpha1.ConditionChaosInjected,
+			SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+				Type:   v1alpha2.ConditionChaosInjected,
 				Status: corev1.ConditionFalse,
-				Reason: v1alpha1.ChaosCRNotExists,
+				Reason: v1alpha2.ChaosCRNotExists,
 			})
 		}
 
@@ -164,7 +164,7 @@ func (it *ChaosNodeReconciler) Reconcile(ctx context.Context, request reconcile.
 	return reconcile.Result{}, updateError
 }
 
-func (it *ChaosNodeReconciler) syncSchedule(ctx context.Context, node v1alpha1.WorkflowNode) error {
+func (it *ChaosNodeReconciler) syncSchedule(ctx context.Context, node v1alpha2.WorkflowNode) error {
 	scheduleList, err := it.fetchChildrenSchedule(ctx, node)
 	if err != nil {
 		return err
@@ -227,7 +227,7 @@ func (it *ChaosNodeReconciler) syncSchedule(ctx context.Context, node v1alpha1.W
 
 }
 
-func (it *ChaosNodeReconciler) syncChaosResources(ctx context.Context, node v1alpha1.WorkflowNode) error {
+func (it *ChaosNodeReconciler) syncChaosResources(ctx context.Context, node v1alpha2.WorkflowNode) error {
 
 	chaosList, err := it.fetchChildrenChaosCustomResource(ctx, node)
 	if err != nil {
@@ -297,7 +297,7 @@ func (it *ChaosNodeReconciler) syncChaosResources(ctx context.Context, node v1al
 }
 
 // inject Chaos will create one instance of chaos CR
-func (it *ChaosNodeReconciler) createChaos(ctx context.Context, node v1alpha1.WorkflowNode) error {
+func (it *ChaosNodeReconciler) createChaos(ctx context.Context, node v1alpha2.WorkflowNode) error {
 
 	chaosObject, err := node.Spec.EmbedChaos.SpawnNewObject(node.Spec.Type)
 	if err != nil {
@@ -315,8 +315,8 @@ func (it *ChaosNodeReconciler) createChaos(ctx context.Context, node v1alpha1.Wo
 		BlockOwnerDeletion: &blockOwnerDeletion,
 	}))
 	chaosObject.SetLabels(map[string]string{
-		v1alpha1.LabelControlledBy: node.Name,
-		v1alpha1.LabelWorkflow:     node.Spec.WorkflowName,
+		v1alpha2.LabelControlledBy: node.Name,
+		v1alpha2.LabelWorkflow:     node.Spec.WorkflowName,
 	})
 
 	err = it.kubeClient.Create(ctx, chaosObject)
@@ -333,14 +333,14 @@ func (it *ChaosNodeReconciler) createChaos(ctx context.Context, node v1alpha1.Wo
 	return nil
 }
 
-func (it *ChaosNodeReconciler) fetchChildrenChaosCustomResource(ctx context.Context, node v1alpha1.WorkflowNode) ([]v1alpha1.GenericChaos, error) {
+func (it *ChaosNodeReconciler) fetchChildrenChaosCustomResource(ctx context.Context, node v1alpha2.WorkflowNode) ([]v1alpha2.GenericChaos, error) {
 	genericChaosList, err := node.Spec.EmbedChaos.SpawnNewList(node.Spec.Type)
 	if err != nil {
 		return nil, err
 	}
 	controlledByThisNode, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
 		MatchLabels: map[string]string{
-			v1alpha1.LabelControlledBy: node.Name,
+			v1alpha2.LabelControlledBy: node.Name,
 		},
 	})
 	if err != nil {
@@ -361,18 +361,18 @@ func (it *ChaosNodeReconciler) fetchChildrenChaosCustomResource(ctx context.Cont
 	return sorted, err
 }
 
-func (it ChaosNodeReconciler) createSchedule(ctx context.Context, node v1alpha1.WorkflowNode) error {
+func (it ChaosNodeReconciler) createSchedule(ctx context.Context, node v1alpha2.WorkflowNode) error {
 	if node.Spec.Schedule == nil {
 		return errors.New("invalid workfow node, the spec of schedule is nil")
 	}
-	scheduleToCreate := v1alpha1.Schedule{
+	scheduleToCreate := v1alpha2.Schedule{
 		TypeMeta: metav1.TypeMeta{},
 		ObjectMeta: metav1.ObjectMeta{
 			Namespace:    node.Namespace,
 			GenerateName: fmt.Sprintf("%s-", node.Name),
 			Labels: map[string]string{
-				v1alpha1.LabelControlledBy: node.Name,
-				v1alpha1.LabelWorkflow:     node.Spec.WorkflowName,
+				v1alpha2.LabelControlledBy: node.Name,
+				v1alpha2.LabelWorkflow:     node.Spec.WorkflowName,
 			},
 			OwnerReferences: []metav1.OwnerReference{
 				{
@@ -402,11 +402,11 @@ func (it ChaosNodeReconciler) createSchedule(ctx context.Context, node v1alpha1.
 
 }
 
-func (it *ChaosNodeReconciler) fetchChildrenSchedule(ctx context.Context, node v1alpha1.WorkflowNode) ([]v1alpha1.Schedule, error) {
-	var scheduleList v1alpha1.ScheduleList
+func (it *ChaosNodeReconciler) fetchChildrenSchedule(ctx context.Context, node v1alpha2.WorkflowNode) ([]v1alpha2.Schedule, error) {
+	var scheduleList v1alpha2.ScheduleList
 	controlledByThisNode, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
 		MatchLabels: map[string]string{
-			v1alpha1.LabelControlledBy: node.Name,
+			v1alpha2.LabelControlledBy: node.Name,
 		},
 	})
 	if err != nil {
@@ -425,7 +425,7 @@ func (it *ChaosNodeReconciler) fetchChildrenSchedule(ctx context.Context, node v
 	return sorted, err
 }
 
-type SortGenericChaosByCreationTimestamp []v1alpha1.GenericChaos
+type SortGenericChaosByCreationTimestamp []v1alpha2.GenericChaos
 
 func (it SortGenericChaosByCreationTimestamp) Len() int {
 	return len(it)
@@ -439,7 +439,7 @@ func (it SortGenericChaosByCreationTimestamp) Swap(i, j int) {
 	it[i], it[j] = it[j], it[i]
 }
 
-type SortScheduleByCreationTimestamp []v1alpha1.Schedule
+type SortScheduleByCreationTimestamp []v1alpha2.Schedule
 
 func (it SortScheduleByCreationTimestamp) Len() int {
 	return len(it)

@@ -27,7 +27,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 )
 
@@ -39,10 +39,10 @@ type Impl struct {
 	Log logr.Logger
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	awschaos := obj.(*v1alpha1.AWSChaos)
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	awschaos := obj.(*v1alpha2.AWSChaos)
 
-	var selected v1alpha1.AWSSelector
+	var selected v1alpha2.AWSSelector
 	json.Unmarshal([]byte(records[index].Id), &selected)
 	opts := []func(*awscfg.LoadOptions) error{
 		awscfg.WithRegion(selected.AWSRegion),
@@ -56,7 +56,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		}, secret)
 		if err != nil {
 			impl.Log.Error(err, "fail to get cloud secret")
-			return v1alpha1.NotInjected, err
+			return v1alpha2.NotInjected, err
 		}
 		opts = append(opts, awscfg.WithCredentialsProvider(credentials.NewStaticCredentialsProvider(
 			string(secret.Data["aws_access_key_id"]),
@@ -67,7 +67,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	cfg, err := awscfg.LoadDefaultConfig(ctx, opts...)
 	if err != nil {
 		impl.Log.Error(err, "unable to load aws SDK config")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	ec2client := ec2.NewFromConfig(cfg)
 
@@ -77,14 +77,14 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 
 	if err != nil {
 		impl.Log.Error(err, "fail to restart the instance")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) Recover(_ context.Context, _ int, _ []*v1alpha1.Record, _ v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	return v1alpha1.NotInjected, nil
+func (impl *Impl) Recover(_ context.Context, _ int, _ []*v1alpha2.Record, _ v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	return v1alpha2.NotInjected, nil
 }
 
 func NewImpl(c client.Client, log logr.Logger) *Impl {

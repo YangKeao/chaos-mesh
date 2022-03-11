@@ -22,7 +22,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // PodArg by default use `Status=corev1.PodRunning` and `Namespace=metav1.NamespaceDefault`.
@@ -124,11 +124,11 @@ type PhysicalMachineArg struct {
 	Address   string
 }
 
-func NewPhysicalMachine(p PhysicalMachineArg) v1alpha1.PhysicalMachine {
+func NewPhysicalMachine(p PhysicalMachineArg) v1alpha2.PhysicalMachine {
 	if p.Namespace == "" {
 		p.Namespace = metav1.NamespaceDefault
 	}
-	return v1alpha1.PhysicalMachine{
+	return v1alpha2.PhysicalMachine{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "PhysicalMachine",
 			APIVersion: "v1alpha1",
@@ -139,7 +139,7 @@ func NewPhysicalMachine(p PhysicalMachineArg) v1alpha1.PhysicalMachine {
 			Labels:      p.Labels,
 			Annotations: p.Ans,
 		},
-		Spec: v1alpha1.PhysicalMachineSpec{
+		Spec: v1alpha2.PhysicalMachineSpec{
 			Address: p.Address,
 		},
 	}
@@ -149,9 +149,9 @@ func GenerateNPhysicalMachines(
 	namePrefix string,
 	n int,
 	arg PhysicalMachineArg,
-) ([]runtime.Object, []v1alpha1.PhysicalMachine) {
+) ([]runtime.Object, []v1alpha2.PhysicalMachine) {
 	var physicalMachineObjects []runtime.Object
-	var physicalMachines []v1alpha1.PhysicalMachine
+	var physicalMachines []v1alpha2.PhysicalMachine
 	for i := 0; i < n; i++ {
 		arg.Name = fmt.Sprintf("%s%d", namePrefix, i)
 		physicalMachine := NewPhysicalMachine(arg)

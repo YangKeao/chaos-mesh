@@ -28,7 +28,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // Reconciler for common chaos
@@ -50,7 +50,7 @@ type StatusAndReason struct {
 }
 
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	obj := r.Object.DeepCopyObject().(v1alpha1.InnerObjectWithSelector)
+	obj := r.Object.DeepCopyObject().(v1alpha2.InnerObjectWithSelector)
 	if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 		if apierrors.IsNotFound(err) {
 			r.Log.Info("chaos not found")
@@ -62,7 +62,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	}
 
 	updateError := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
-		conditionMap := make(map[v1alpha1.ChaosConditionType]StatusAndReason)
+		conditionMap := make(map[v1alpha2.ChaosConditionType]StatusAndReason)
 		for _, c := range obj.GetStatus().Conditions {
 			conditionMap[c.Type] = StatusAndReason{
 				Status: c.Status,
@@ -70,13 +70,13 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 			}
 		}
 
-		newConditionMap := make(map[v1alpha1.ChaosConditionType]StatusAndReason)
+		newConditionMap := make(map[v1alpha2.ChaosConditionType]StatusAndReason)
 		if obj.GetStatus().Experiment.Records != nil {
-			newConditionMap[v1alpha1.ConditionSelected] = StatusAndReason{
+			newConditionMap[v1alpha2.ConditionSelected] = StatusAndReason{
 				Status: corev1.ConditionTrue,
 			}
 		} else {
-			newConditionMap[v1alpha1.ConditionSelected] = StatusAndReason{
+			newConditionMap[v1alpha2.ConditionSelected] = StatusAndReason{
 				Status: corev1.ConditionFalse,
 			}
 		}
@@ -84,35 +84,35 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		allInjected := corev1.ConditionTrue
 		allRecovered := corev1.ConditionTrue
 		for _, record := range obj.GetStatus().Experiment.Records {
-			if record.Phase != v1alpha1.NotInjected {
+			if record.Phase != v1alpha2.NotInjected {
 				allRecovered = corev1.ConditionFalse
 			}
 
-			if record.Phase != v1alpha1.Injected {
+			if record.Phase != v1alpha2.Injected {
 				allInjected = corev1.ConditionFalse
 			}
 		}
-		newConditionMap[v1alpha1.ConditionAllInjected] = StatusAndReason{
+		newConditionMap[v1alpha2.ConditionAllInjected] = StatusAndReason{
 			Status: allInjected,
 		}
-		newConditionMap[v1alpha1.ConditionAllRecovered] = StatusAndReason{
+		newConditionMap[v1alpha2.ConditionAllRecovered] = StatusAndReason{
 			Status: allRecovered,
 		}
 
 		if obj.IsPaused() {
-			newConditionMap[v1alpha1.ConditionPaused] = StatusAndReason{
+			newConditionMap[v1alpha2.ConditionPaused] = StatusAndReason{
 				Status: corev1.ConditionTrue,
 			}
 		} else {
-			newConditionMap[v1alpha1.ConditionPaused] = StatusAndReason{
+			newConditionMap[v1alpha2.ConditionPaused] = StatusAndReason{
 				Status: corev1.ConditionFalse,
 			}
 		}
 
 		if !reflect.DeepEqual(newConditionMap, conditionMap) {
-			conditions := make([]v1alpha1.ChaosCondition, 0, 5)
+			conditions := make([]v1alpha2.ChaosCondition, 0, 5)
 			for k, v := range newConditionMap {
-				conditions = append(conditions, v1alpha1.ChaosCondition{
+				conditions = append(conditions, v1alpha2.ChaosCondition{
 					Type:   k,
 					Status: v.Status,
 					Reason: v.Reason,
@@ -120,7 +120,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 			}
 
 			r.Log.Info("updating conditions", "conditions", conditions)
-			obj := r.Object.DeepCopyObject().(v1alpha1.InnerObjectWithSelector)
+			obj := r.Object.DeepCopyObject().(v1alpha2.InnerObjectWithSelector)
 
 			if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 				r.Log.Error(err, "unable to get chaos")

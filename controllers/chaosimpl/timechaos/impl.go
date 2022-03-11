@@ -24,7 +24,7 @@ import (
 	"go.uber.org/fx"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
@@ -39,7 +39,7 @@ type Impl struct {
 	decoder *utils.ContainerRecordDecoder
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	pbClient := decodedContainer.PbClient
 	containerId := decodedContainer.ContainerId
@@ -47,18 +47,18 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		defer pbClient.Close()
 	}
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	timechaos := obj.(*v1alpha1.TimeChaos)
+	timechaos := obj.(*v1alpha2.TimeChaos)
 	mask, err := timeUtils.EncodeClkIds(timechaos.Spec.ClockIds)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	duration, err := time.ParseDuration(timechaos.Spec.TimeOffset)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	sec, nsec := secAndNSecFromDuration(duration)
@@ -71,13 +71,13 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		ClkIdsMask:  mask,
 	})
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	pbClient := decodedContainer.PbClient
 	containerId := decodedContainer.ContainerId
@@ -87,9 +87,9 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	if err != nil {
 		if errors.Is(err, utils.ErrContainerNotFound) {
 			// pretend the disappeared container has been recovered
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	impl.Log.Info("recover for container", "containerId", containerId)
@@ -97,10 +97,10 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		ContainerId: containerId,
 	})
 	if err != nil {
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
 func secAndNSecFromDuration(duration time.Duration) (sec int64, nsec int64) {
@@ -113,7 +113,7 @@ func secAndNSecFromDuration(duration time.Duration) (sec int64, nsec int64) {
 func NewImpl(c client.Client, log logr.Logger, decoder *utils.ContainerRecordDecoder) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "timechaos",
-		Object: &v1alpha1.TimeChaos{},
+		Object: &v1alpha2.TimeChaos{},
 		Impl: &Impl{
 			Client:  c,
 			Log:     log.WithName("timechaos"),

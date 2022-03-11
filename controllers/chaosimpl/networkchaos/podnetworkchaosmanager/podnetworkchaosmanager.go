@@ -28,7 +28,7 @@ import (
 	"k8s.io/client-go/util/retry"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 var (
@@ -60,10 +60,10 @@ type CommitResponse struct {
 }
 
 // Commit will update all modifications to the cluster
-func (m *PodNetworkManager) Commit(ctx context.Context, owner *v1alpha1.NetworkChaos) (int64, error) {
+func (m *PodNetworkManager) Commit(ctx context.Context, owner *v1alpha2.NetworkChaos) (int64, error) {
 	m.Log.Info("running modification on pod", "key", m.Key, "modification", m.T)
 	updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		chaos := &v1alpha1.PodNetworkChaos{}
+		chaos := &v1alpha2.PodNetworkChaos{}
 
 		err := m.Client.Get(ctx, m.Key, chaos)
 		if err != nil {
@@ -93,7 +93,7 @@ func (m *PodNetworkManager) Commit(ctx context.Context, owner *v1alpha1.NetworkC
 		return 0, updateError
 	}
 
-	chaos := &v1alpha1.PodNetworkChaos{}
+	chaos := &v1alpha2.PodNetworkChaos{}
 	err := m.Reader.Get(ctx, m.Key, chaos)
 	if err != nil {
 		m.Log.Error(err, "error while getting the latest generation number")
@@ -104,7 +104,7 @@ func (m *PodNetworkManager) Commit(ctx context.Context, owner *v1alpha1.NetworkC
 
 func (m *PodNetworkManager) CreateNewPodNetworkChaos(ctx context.Context) error {
 	var err error
-	chaos := &v1alpha1.PodNetworkChaos{}
+	chaos := &v1alpha2.PodNetworkChaos{}
 
 	pod := v1.Pod{}
 	err = m.Client.Get(ctx, m.Key, &pod)

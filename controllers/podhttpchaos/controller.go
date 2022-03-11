@@ -30,7 +30,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/chaosdaemon"
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
@@ -46,7 +46,7 @@ type Reconciler struct {
 }
 
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	obj := &v1alpha1.PodHttpChaos{}
+	obj := &v1alpha2.PodHttpChaos{}
 
 	if err := r.Client.Get(ctx, req.NamespacedName, obj); err != nil {
 		if apierrors.IsNotFound(err) {
@@ -87,7 +87,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		}
 
 		updateError := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
-			obj := &v1alpha1.PodHttpChaos{}
+			obj := &v1alpha2.PodHttpChaos{}
 
 			if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 				r.Log.Error(err, "unable to get chaos")
@@ -126,7 +126,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 	containerID := pod.Status.ContainerStatuses[0].ContainerID
 
-	rules := make([]v1alpha1.PodHttpChaosBaseRule, 0)
+	rules := make([]v1alpha2.PodHttpChaosBaseRule, 0)
 	proxyPortsMap := make(map[uint32]bool)
 
 	for _, rule := range obj.Spec.Rules {

@@ -23,7 +23,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/utils/pointer"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 func TestGetRecentUnmetScheduleTime(t *testing.T) {
@@ -95,16 +95,16 @@ func TestGetRecentUnmetScheduleTime(t *testing.T) {
 		createTimeStamp, err := time.Parse(time.RFC3339, t.creationTimeStamp)
 		g.Expect(err).To(BeNil())
 
-		schedule := v1alpha1.Schedule{
+		schedule := v1alpha2.Schedule{
 			ObjectMeta: metav1.ObjectMeta{
 				CreationTimestamp: metav1.Time{
 					Time: createTimeStamp,
 				},
 			},
-			Spec: v1alpha1.ScheduleSpec{
+			Spec: v1alpha2.ScheduleSpec{
 				Schedule: t.schedule,
 			},
-			Status: v1alpha1.ScheduleStatus{
+			Status: v1alpha2.ScheduleStatus{
 				LastScheduleTime: metav1.Time{
 					Time: lastScheduleTime,
 				},

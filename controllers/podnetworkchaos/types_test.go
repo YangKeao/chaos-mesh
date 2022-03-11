@@ -28,7 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/cmd/chaos-controller-manager/provider"
 	. "github.com/chaos-mesh/chaos-mesh/controllers/test"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
@@ -76,7 +76,7 @@ func TestHostNetworkOption(t *testing.T) {
 
 		setHostNetwork(objs)
 
-		chaos := &v1alpha1.PodNetworkChaos{
+		chaos := &v1alpha2.PodNetworkChaos{
 			TypeMeta: metav1.TypeMeta{
 				Kind:       "PodNetworkChaos",
 				APIVersion: "v1",
@@ -86,7 +86,7 @@ func TestHostNetworkOption(t *testing.T) {
 				Name:       "p0",
 				Generation: 1,
 			},
-			Spec: v1alpha1.PodNetworkChaosSpec{},
+			Spec: v1alpha2.PodNetworkChaosSpec{},
 		}
 		objs = append(objs, chaos)
 
@@ -121,7 +121,7 @@ func TestHostNetworkOption(t *testing.T) {
 
 func TestMergenetem(t *testing.T) {
 	t.Run("empty", func(t *testing.T) {
-		spec := v1alpha1.TcParameter{}
+		spec := v1alpha2.TcParameter{}
 		_, err := mergeNetem(spec)
 		if err == nil {
 			t.Errorf("expect invalid spec failed with message %s but got nil", invalidNetemSpecMsg)
@@ -134,13 +134,13 @@ func TestMergenetem(t *testing.T) {
 	t.Run("delay loss", func(t *testing.T) {
 		g := NewGomegaWithT(t)
 
-		spec := v1alpha1.TcParameter{
-			Delay: &v1alpha1.DelaySpec{
+		spec := v1alpha2.TcParameter{
+			Delay: &v1alpha2.DelaySpec{
 				Latency:     "90ms",
 				Correlation: "25",
 				Jitter:      "90ms",
 			},
-			Loss: &v1alpha1.LossSpec{
+			Loss: &v1alpha2.LossSpec{
 				Loss:        "25",
 				Correlation: "25",
 			},

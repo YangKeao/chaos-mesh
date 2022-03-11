@@ -27,7 +27,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 )
 
@@ -58,14 +58,14 @@ func (it *ParallelNodeReconciler) Reconcile(ctx context.Context, request reconci
 		)
 	}()
 
-	node := v1alpha1.WorkflowNode{}
+	node := v1alpha2.WorkflowNode{}
 	err := it.kubeClient.Get(ctx, request.NamespacedName, &node)
 	if err != nil {
 		return reconcile.Result{}, client.IgnoreNotFound(err)
 	}
 
 	// only resolve parallel nodes
-	if node.Spec.Type != v1alpha1.TypeParallel {
+	if node.Spec.Type != v1alpha2.TypeParallel {
 		return reconcile.Result{}, nil
 	}
 
@@ -79,7 +79,7 @@ func (it *ParallelNodeReconciler) Reconcile(ctx context.Context, request reconci
 
 	// update status
 	updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		nodeNeedUpdate := v1alpha1.WorkflowNode{}
+		nodeNeedUpdate := v1alpha2.WorkflowNode{}
 		err := it.kubeClient.Get(ctx, request.NamespacedName, &nodeNeedUpdate)
 		if err != nil {
 			return err
@@ -111,14 +111,14 @@ func (it *ParallelNodeReconciler) Reconcile(ctx context.Context, request reconci
 			if !WorkflowNodeFinished(nodeNeedUpdate.Status) {
 				it.eventRecorder.Event(&nodeNeedUpdate, recorder.NodeAccomplished{})
 			}
-			SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-				Type:   v1alpha1.ConditionAccomplished,
+			SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+				Type:   v1alpha2.ConditionAccomplished,
 				Status: corev1.ConditionTrue,
 				Reason: "",
 			})
 		} else {
-			SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-				Type:   v1alpha1.ConditionAccomplished,
+			SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+				Type:   v1alpha2.ConditionAccomplished,
 				Status: corev1.ConditionFalse,
 				Reason: "",
 			})
@@ -135,7 +135,7 @@ func (it *ParallelNodeReconciler) Reconcile(ctx context.Context, request reconci
 	return reconcile.Result{}, nil
 }
 
-func (it *ParallelNodeReconciler) syncChildNodes(ctx context.Context, node v1alpha1.WorkflowNode) error {
+func (it *ParallelNodeReconciler) syncChildNodes(ctx context.Context, node v1alpha2.WorkflowNode) error {
 
 	// empty parallel node
 	if len(node.Spec.Children) == 0 {
@@ -194,7 +194,7 @@ func (it *ParallelNodeReconciler) syncChildNodes(ctx context.Context, node v1alp
 		return nil
 	}
 
-	parentWorkflow := v1alpha1.Workflow{}
+	parentWorkflow := v1alpha2.Workflow{}
 	err = it.kubeClient.Get(ctx, types.NamespacedName{
 		Namespace: node.Namespace,
 		Name:      node.Spec.WorkflowName,

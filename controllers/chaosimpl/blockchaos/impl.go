@@ -22,7 +22,7 @@ import (
 	"go.uber.org/fx"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 )
@@ -34,22 +34,22 @@ type Impl struct {
 	Log logr.Logger
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	impl.Log.Info("blockchaos apply", "record", records[index])
 	// TODO: implement blockchaos apply
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	impl.Log.Info("blockchaos recover", "record", records[index])
 	// TODO: implement blockchaos recover
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
 func NewImpl(c client.Client, log logr.Logger, decoder *utils.ContainerRecordDecoder) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "blockchaos",
-		Object: &v1alpha1.BlockChaos{},
+		Object: &v1alpha2.BlockChaos{},
 		Impl: &Impl{
 			Client: c,
 			Log:    log.WithName("blockchaos"),

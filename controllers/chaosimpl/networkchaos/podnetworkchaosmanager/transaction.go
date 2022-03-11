@@ -18,7 +18,7 @@ package podnetworkchaosmanager
 import (
 	"github.com/pkg/errors"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 )
 
@@ -30,7 +30,7 @@ type PodNetworkTransaction struct {
 // Step represents a step of PodNetworkTransaction
 type Step interface {
 	// Apply will apply an action on podnetworkchaos
-	Apply(chaos *v1alpha1.PodNetworkChaos) error
+	Apply(chaos *v1alpha2.PodNetworkChaos) error
 }
 
 // Clear removes all resources with the same source
@@ -39,8 +39,8 @@ type Clear struct {
 }
 
 // Apply runs this action
-func (s *Clear) Apply(chaos *v1alpha1.PodNetworkChaos) error {
-	ipsets := []v1alpha1.RawIPSet{}
+func (s *Clear) Apply(chaos *v1alpha2.PodNetworkChaos) error {
+	ipsets := []v1alpha2.RawIPSet{}
 	for _, ipset := range chaos.Spec.IPSets {
 		if ipset.Source != s.Source {
 			ipsets = append(ipsets, ipset)
@@ -48,7 +48,7 @@ func (s *Clear) Apply(chaos *v1alpha1.PodNetworkChaos) error {
 	}
 	chaos.Spec.IPSets = ipsets
 
-	chains := []v1alpha1.RawIptables{}
+	chains := []v1alpha2.RawIptables{}
 	for _, chain := range chaos.Spec.Iptables {
 		if chain.Source != s.Source {
 			chains = append(chains, chain)
@@ -56,7 +56,7 @@ func (s *Clear) Apply(chaos *v1alpha1.PodNetworkChaos) error {
 	}
 	chaos.Spec.Iptables = chains
 
-	qdiscs := []v1alpha1.RawTrafficControl{}
+	qdiscs := []v1alpha2.RawTrafficControl{}
 	for _, qdisc := range chaos.Spec.TrafficControls {
 		if qdisc.Source != s.Source {
 			qdiscs = append(qdiscs, qdisc)
@@ -73,13 +73,13 @@ type Append struct {
 }
 
 // Apply runs this action
-func (a *Append) Apply(chaos *v1alpha1.PodNetworkChaos) error {
+func (a *Append) Apply(chaos *v1alpha2.PodNetworkChaos) error {
 	switch item := a.Item.(type) {
-	case v1alpha1.RawIPSet:
+	case v1alpha2.RawIPSet:
 		chaos.Spec.IPSets = append(chaos.Spec.IPSets, item)
-	case v1alpha1.RawIptables:
+	case v1alpha2.RawIptables:
 		chaos.Spec.Iptables = append(chaos.Spec.Iptables, item)
-	case v1alpha1.RawTrafficControl:
+	case v1alpha2.RawTrafficControl:
 		chaos.Spec.TrafficControls = append(chaos.Spec.TrafficControls, item)
 	default:
 		return errors.Wrapf(utils.ErrUnknownType, "type: %T", item)
@@ -98,7 +98,7 @@ func (t *PodNetworkTransaction) Clear(source string) {
 // Append adds an item to corresponding list in podnetworkchaos
 func (t *PodNetworkTransaction) Append(item interface{}) error {
 	switch item.(type) {
-	case v1alpha1.RawIPSet, v1alpha1.RawIptables, v1alpha1.RawTrafficControl:
+	case v1alpha2.RawIPSet, v1alpha2.RawIptables, v1alpha2.RawTrafficControl:
 		t.Steps = append(t.Steps, &Append{
 			Item: item,
 		})
@@ -109,7 +109,7 @@ func (t *PodNetworkTransaction) Append(item interface{}) error {
 }
 
 // Apply runs every step on the chaos
-func (t *PodNetworkTransaction) Apply(chaos *v1alpha1.PodNetworkChaos) error {
+func (t *PodNetworkTransaction) Apply(chaos *v1alpha2.PodNetworkChaos) error {
 	for _, s := range t.Steps {
 		err := s.Apply(chaos)
 		if err != nil {

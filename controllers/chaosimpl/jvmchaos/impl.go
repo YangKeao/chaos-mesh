@@ -26,7 +26,7 @@ import (
 	"go.uber.org/fx"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
@@ -70,10 +70,10 @@ type Impl struct {
 }
 
 // Apply applies jvm-chaos
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	impl.Log.Info("jvm chaos apply", "record", records[index])
 	if impl.decoder == nil {
-		return v1alpha1.NotInjected, errors.WithStack(errNilDecoder)
+		return v1alpha2.NotInjected, errors.WithStack(errNilDecoder)
 	}
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	if decodedContainer.PbClient != nil {
@@ -85,13 +85,13 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		}()
 	}
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	jvmChaos := obj.(*v1alpha1.JVMChaos)
+	jvmChaos := obj.(*v1alpha2.JVMChaos)
 	err = generateRuleData(&jvmChaos.Spec)
 	if err != nil {
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	_, err = decodedContainer.PbClient.InstallJVMRules(ctx, &pb.InstallJVMRulesRequest{
@@ -102,16 +102,16 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	})
 	if err != nil {
 		impl.Log.Error(err, "install jvm rules")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
 // Recover means the reconciler recovers the chaos action
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	if impl.decoder == nil {
-		return v1alpha1.Injected, errors.WithStack(errNilDecoder)
+		return v1alpha2.Injected, errors.WithStack(errNilDecoder)
 	}
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	if decodedContainer.PbClient != nil {
@@ -123,13 +123,13 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		}()
 	}
 	if err != nil {
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
-	jvmChaos := obj.(*v1alpha1.JVMChaos)
+	jvmChaos := obj.(*v1alpha2.JVMChaos)
 	err = generateRuleData(&jvmChaos.Spec)
 	if err != nil {
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	_, err = decodedContainer.PbClient.UninstallJVMRules(ctx, &pb.UninstallJVMRulesRequest{
@@ -140,15 +140,15 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	})
 	if err != nil {
 		impl.Log.Error(err, "uninstall jvm rules")
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
 // JVMRuleParameter is only used to generate rule data
 type JVMRuleParameter struct {
-	v1alpha1.JVMParameter
+	v1alpha2.JVMParameter
 
 	StressType      string
 	StressValue     string
@@ -156,7 +156,7 @@ type JVMRuleParameter struct {
 	Do              string
 }
 
-func generateRuleData(spec *v1alpha1.JVMChaosSpec) error {
+func generateRuleData(spec *v1alpha2.JVMChaosSpec) error {
 	if len(spec.RuleData) != 0 {
 		return nil
 	}
@@ -166,13 +166,13 @@ func generateRuleData(spec *v1alpha1.JVMChaosSpec) error {
 	}
 
 	switch spec.Action {
-	case v1alpha1.JVMLatencyAction:
+	case v1alpha2.JVMLatencyAction:
 		ruleParameter.Do = fmt.Sprintf("Thread.sleep(%d)", ruleParameter.LatencyDuration)
-	case v1alpha1.JVMExceptionAction:
+	case v1alpha2.JVMExceptionAction:
 		ruleParameter.Do = fmt.Sprintf("throw new %s", ruleParameter.ThrowException)
-	case v1alpha1.JVMReturnAction:
+	case v1alpha2.JVMReturnAction:
 		ruleParameter.Do = fmt.Sprintf("return %s", ruleParameter.ReturnValue)
-	case v1alpha1.JVMStressAction:
+	case v1alpha2.JVMStressAction:
 		if ruleParameter.CPUCount > 0 {
 			ruleParameter.StressType = "CPU"
 			ruleParameter.StressValueName = "CPUCOUNT"
@@ -187,11 +187,11 @@ func generateRuleData(spec *v1alpha1.JVMChaosSpec) error {
 	buf := new(bytes.Buffer)
 	var t *template.Template
 	switch spec.Action {
-	case v1alpha1.JVMStressAction:
+	case v1alpha2.JVMStressAction:
 		t = template.Must(template.New("byteman rule").Parse(StressRuleTemplate))
-	case v1alpha1.JVMExceptionAction, v1alpha1.JVMLatencyAction, v1alpha1.JVMReturnAction:
+	case v1alpha2.JVMExceptionAction, v1alpha2.JVMLatencyAction, v1alpha2.JVMReturnAction:
 		t = template.Must(template.New("byteman rule").Parse(CommonRuleTemplate))
-	case v1alpha1.JVMGCAction:
+	case v1alpha2.JVMGCAction:
 		t = template.Must(template.New("byteman rule").Parse(GcRuleTemplate))
 	default:
 		return errors.Errorf("jvm action %s not supported", spec.Action)
@@ -212,7 +212,7 @@ func generateRuleData(spec *v1alpha1.JVMChaosSpec) error {
 func NewImpl(c client.Client, log logr.Logger, decoder *utils.ContainerRecordDecoder) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "jvmchaos",
-		Object: &v1alpha1.JVMChaos{},
+		Object: &v1alpha2.JVMChaos{},
 		Impl: &Impl{
 			Client:  c,
 			Log:     log.WithName("jvmchaos"),

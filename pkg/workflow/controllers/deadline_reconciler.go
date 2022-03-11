@@ -28,7 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 )
 
@@ -48,14 +48,14 @@ func NewDeadlineReconciler(kubeClient client.Client, eventRecorder recorder.Chao
 }
 
 func (it *DeadlineReconciler) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
-	node := v1alpha1.WorkflowNode{}
+	node := v1alpha2.WorkflowNode{}
 
 	err := it.kubeClient.Get(ctx, request.NamespacedName, &node)
 	if err != nil {
 		return reconcile.Result{}, client.IgnoreNotFound(err)
 	}
 
-	if ConditionEqualsTo(node.Status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionTrue) {
+	if ConditionEqualsTo(node.Status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionTrue) {
 		// if this node deadline is exceed, try propagating to children node
 		return reconcile.Result{}, it.propagateDeadlineToChildren(ctx, &node)
 	}
@@ -68,30 +68,30 @@ func (it *DeadlineReconciler) Reconcile(ctx context.Context, request reconcile.R
 	if node.Spec.Deadline.Before(&now) {
 
 		updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-			nodeNeedUpdate := v1alpha1.WorkflowNode{}
+			nodeNeedUpdate := v1alpha2.WorkflowNode{}
 			err := it.kubeClient.Get(ctx, request.NamespacedName, &nodeNeedUpdate)
 			if err != nil {
 				return err
 			}
 
-			if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionTrue) {
+			if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionTrue) {
 				// no need to update
 				return nil
 			}
 
 			var reason string
-			if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha1.ConditionAccomplished, corev1.ConditionTrue) {
-				reason = v1alpha1.NodeDeadlineOmitted
+			if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha2.ConditionAccomplished, corev1.ConditionTrue) {
+				reason = v1alpha2.NodeDeadlineOmitted
 			} else {
-				reason = v1alpha1.NodeDeadlineExceed
+				reason = v1alpha2.NodeDeadlineExceed
 			}
 
-			if !ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionTrue) && reason == v1alpha1.NodeDeadlineExceed {
+			if !ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionTrue) && reason == v1alpha2.NodeDeadlineExceed {
 				it.eventRecorder.Event(&node, recorder.DeadlineExceed{})
 			}
 
-			SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-				Type:   v1alpha1.ConditionDeadlineExceed,
+			SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+				Type:   v1alpha2.ConditionDeadlineExceed,
 				Status: corev1.ConditionTrue,
 				Reason: reason,
 			})
@@ -110,24 +110,24 @@ func (it *DeadlineReconciler) Reconcile(ctx context.Context, request reconcile.R
 		}
 	} else {
 		updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-			nodeNeedUpdate := v1alpha1.WorkflowNode{}
+			nodeNeedUpdate := v1alpha2.WorkflowNode{}
 			err := it.kubeClient.Get(ctx, request.NamespacedName, &nodeNeedUpdate)
 			if err != nil {
 				return err
 			}
 
-			if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionFalse) {
+			if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionFalse) {
 				// no need to update
 				return nil
-			} else if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionTrue) &&
-				GetCondition(nodeNeedUpdate.Status, v1alpha1.ConditionDeadlineExceed).Reason == v1alpha1.ParentNodeDeadlineExceed {
+			} else if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionTrue) &&
+				GetCondition(nodeNeedUpdate.Status, v1alpha2.ConditionDeadlineExceed).Reason == v1alpha2.ParentNodeDeadlineExceed {
 				return nil
 			}
 
-			SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-				Type:   v1alpha1.ConditionDeadlineExceed,
+			SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+				Type:   v1alpha2.ConditionDeadlineExceed,
 				Status: corev1.ConditionFalse,
-				Reason: v1alpha1.NodeDeadlineNotExceed,
+				Reason: v1alpha2.NodeDeadlineNotExceed,
 			})
 			return it.kubeClient.Status().Update(ctx, &nodeNeedUpdate)
 		})
@@ -146,9 +146,9 @@ func (it *DeadlineReconciler) Reconcile(ctx context.Context, request reconcile.R
 	return reconcile.Result{}, nil
 }
 
-func (it *DeadlineReconciler) propagateDeadlineToChildren(ctx context.Context, parent *v1alpha1.WorkflowNode) error {
+func (it *DeadlineReconciler) propagateDeadlineToChildren(ctx context.Context, parent *v1alpha2.WorkflowNode) error {
 	switch parent.Spec.Type {
-	case v1alpha1.TypeSerial, v1alpha1.TypeParallel, v1alpha1.TypeTask:
+	case v1alpha2.TypeSerial, v1alpha2.TypeParallel, v1alpha2.TypeTask:
 		activeChildNodes, _, err := it.ChildNodesFetcher.fetchChildNodes(ctx, *parent)
 		if err != nil {
 			return err
@@ -162,7 +162,7 @@ func (it *DeadlineReconciler) propagateDeadlineToChildren(ctx context.Context, p
 			}
 
 			err := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-				nodeNeedUpdate := v1alpha1.WorkflowNode{}
+				nodeNeedUpdate := v1alpha2.WorkflowNode{}
 				err := it.kubeClient.Get(ctx, types.NamespacedName{
 					Namespace: childNode.Namespace,
 					Name:      childNode.Name,
@@ -170,17 +170,17 @@ func (it *DeadlineReconciler) propagateDeadlineToChildren(ctx context.Context, p
 				if err != nil {
 					return err
 				}
-				if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionTrue) {
+				if ConditionEqualsTo(nodeNeedUpdate.Status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionTrue) {
 					it.logger.Info("omit propagate deadline to children, child already in deadline exceed",
 						"node", fmt.Sprintf("%s/%s", nodeNeedUpdate.Namespace, nodeNeedUpdate.Name),
 						"parent node", fmt.Sprintf("%s/%s", parent.Namespace, parent.Name),
 					)
 					return nil
 				}
-				SetCondition(&nodeNeedUpdate.Status, v1alpha1.WorkflowNodeCondition{
-					Type:   v1alpha1.ConditionDeadlineExceed,
+				SetCondition(&nodeNeedUpdate.Status, v1alpha2.WorkflowNodeCondition{
+					Type:   v1alpha2.ConditionDeadlineExceed,
 					Status: corev1.ConditionTrue,
-					Reason: v1alpha1.ParentNodeDeadlineExceed,
+					Reason: v1alpha2.ParentNodeDeadlineExceed,
 				})
 				it.eventRecorder.Event(&nodeNeedUpdate, recorder.ParentNodeDeadlineExceed{ParentNodeName: parent.Name})
 				return it.kubeClient.Status().Update(ctx, &nodeNeedUpdate)

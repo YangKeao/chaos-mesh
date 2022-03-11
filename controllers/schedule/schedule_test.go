@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/util/wait"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // These tests use Ginkgo (BDD-style Go testing framework). Refer to
@@ -49,30 +49,30 @@ var _ = Describe("Schedule", func() {
 				Namespace: "default",
 			}
 			duration := "100m"
-			schedule := &v1alpha1.Schedule{
+			schedule := &v1alpha2.Schedule{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo0",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.ScheduleSpec{
+				Spec: v1alpha2.ScheduleSpec{
 					Schedule: "@every 10s",
-					ScheduleItem: v1alpha1.ScheduleItem{
-						EmbedChaos: v1alpha1.EmbedChaos{TimeChaos: &v1alpha1.TimeChaosSpec{
+					ScheduleItem: v1alpha2.ScheduleItem{
+						EmbedChaos: v1alpha2.EmbedChaos{TimeChaos: &v1alpha2.TimeChaosSpec{
 							TimeOffset: "100ms",
 							ClockIds:   []string{"CLOCK_REALTIME"},
 							Duration:   &duration,
-							ContainerSelector: v1alpha1.ContainerSelector{
-								PodSelector: v1alpha1.PodSelector{
-									Mode: v1alpha1.OneMode,
+							ContainerSelector: v1alpha2.ContainerSelector{
+								PodSelector: v1alpha2.PodSelector{
+									Mode: v1alpha2.OneMode,
 								},
 							},
 						}},
 					},
-					ConcurrencyPolicy: v1alpha1.ForbidConcurrent,
+					ConcurrencyPolicy: v1alpha2.ForbidConcurrent,
 					HistoryLimit:      5,
-					Type:              v1alpha1.ScheduleTypeTimeChaos,
+					Type:              v1alpha2.ScheduleTypeTimeChaos,
 				},
-				Status: v1alpha1.ScheduleStatus{
+				Status: v1alpha2.ScheduleStatus{
 					LastScheduleTime: metav1.NewTime(time.Time{}),
 				},
 			}
@@ -80,7 +80,7 @@ var _ = Describe("Schedule", func() {
 			By("creating an API obj")
 			Expect(k8sClient.Create(context.TODO(), schedule)).To(Succeed())
 
-			fetched := &v1alpha1.Schedule{}
+			fetched := &v1alpha2.Schedule{}
 			Expect(k8sClient.Get(context.TODO(), key, fetched)).To(Succeed())
 			Expect(fetched).To(Equal(schedule))
 
@@ -97,30 +97,30 @@ var _ = Describe("Schedule", func() {
 				Namespace: "default",
 			}
 			duration := "100s"
-			schedule := &v1alpha1.Schedule{
+			schedule := &v1alpha2.Schedule{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo1",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.ScheduleSpec{
+				Spec: v1alpha2.ScheduleSpec{
 					Schedule: "@every 1s",
-					ScheduleItem: v1alpha1.ScheduleItem{
-						EmbedChaos: v1alpha1.EmbedChaos{TimeChaos: &v1alpha1.TimeChaosSpec{
+					ScheduleItem: v1alpha2.ScheduleItem{
+						EmbedChaos: v1alpha2.EmbedChaos{TimeChaos: &v1alpha2.TimeChaosSpec{
 							TimeOffset: "100ms",
 							ClockIds:   []string{"CLOCK_REALTIME"},
 							Duration:   &duration,
-							ContainerSelector: v1alpha1.ContainerSelector{
-								PodSelector: v1alpha1.PodSelector{
-									Mode: v1alpha1.OneMode,
+							ContainerSelector: v1alpha2.ContainerSelector{
+								PodSelector: v1alpha2.PodSelector{
+									Mode: v1alpha2.OneMode,
 								},
 							},
 						}},
 					},
-					ConcurrencyPolicy: v1alpha1.ForbidConcurrent,
+					ConcurrencyPolicy: v1alpha2.ForbidConcurrent,
 					HistoryLimit:      2,
-					Type:              v1alpha1.ScheduleTypeTimeChaos,
+					Type:              v1alpha2.ScheduleTypeTimeChaos,
 				},
-				Status: v1alpha1.ScheduleStatus{
+				Status: v1alpha2.ScheduleStatus{
 					LastScheduleTime: metav1.NewTime(time.Now()),
 				},
 			}
@@ -162,30 +162,30 @@ var _ = Describe("Schedule", func() {
 				Namespace: "default",
 			}
 			duration := "100s"
-			schedule := &v1alpha1.Schedule{
+			schedule := &v1alpha2.Schedule{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo2",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.ScheduleSpec{
+				Spec: v1alpha2.ScheduleSpec{
 					Schedule: "@every 2s",
-					ScheduleItem: v1alpha1.ScheduleItem{
-						EmbedChaos: v1alpha1.EmbedChaos{TimeChaos: &v1alpha1.TimeChaosSpec{
+					ScheduleItem: v1alpha2.ScheduleItem{
+						EmbedChaos: v1alpha2.EmbedChaos{TimeChaos: &v1alpha2.TimeChaosSpec{
 							TimeOffset: "100ms",
 							ClockIds:   []string{"CLOCK_REALTIME"},
 							Duration:   &duration,
-							ContainerSelector: v1alpha1.ContainerSelector{
-								PodSelector: v1alpha1.PodSelector{
-									Mode: v1alpha1.OneMode,
+							ContainerSelector: v1alpha2.ContainerSelector{
+								PodSelector: v1alpha2.PodSelector{
+									Mode: v1alpha2.OneMode,
 								},
 							},
 						}},
 					},
-					ConcurrencyPolicy: v1alpha1.AllowConcurrent,
+					ConcurrencyPolicy: v1alpha2.AllowConcurrent,
 					HistoryLimit:      2,
-					Type:              v1alpha1.ScheduleTypeTimeChaos,
+					Type:              v1alpha2.ScheduleTypeTimeChaos,
 				},
-				Status: v1alpha1.ScheduleStatus{
+				Status: v1alpha2.ScheduleStatus{
 					LastScheduleTime: metav1.NewTime(time.Now()),
 				},
 			}
@@ -220,30 +220,30 @@ var _ = Describe("Schedule", func() {
 				Namespace: "default",
 			}
 			duration := "1s"
-			schedule := &v1alpha1.Schedule{
+			schedule := &v1alpha2.Schedule{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo3",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.ScheduleSpec{
+				Spec: v1alpha2.ScheduleSpec{
 					Schedule: "@every 3s",
-					ScheduleItem: v1alpha1.ScheduleItem{
-						EmbedChaos: v1alpha1.EmbedChaos{TimeChaos: &v1alpha1.TimeChaosSpec{
+					ScheduleItem: v1alpha2.ScheduleItem{
+						EmbedChaos: v1alpha2.EmbedChaos{TimeChaos: &v1alpha2.TimeChaosSpec{
 							TimeOffset: "100ms",
 							ClockIds:   []string{"CLOCK_REALTIME"},
 							Duration:   &duration,
-							ContainerSelector: v1alpha1.ContainerSelector{
-								PodSelector: v1alpha1.PodSelector{
-									Mode: v1alpha1.OneMode,
+							ContainerSelector: v1alpha2.ContainerSelector{
+								PodSelector: v1alpha2.PodSelector{
+									Mode: v1alpha2.OneMode,
 								},
 							},
 						}},
 					},
-					ConcurrencyPolicy: v1alpha1.AllowConcurrent,
+					ConcurrencyPolicy: v1alpha2.AllowConcurrent,
 					HistoryLimit:      2,
-					Type:              v1alpha1.ScheduleTypeTimeChaos,
+					Type:              v1alpha2.ScheduleTypeTimeChaos,
 				},
-				Status: v1alpha1.ScheduleStatus{
+				Status: v1alpha2.ScheduleStatus{
 					LastScheduleTime: metav1.NewTime(time.Now()),
 				},
 			}
@@ -282,37 +282,37 @@ var _ = Describe("Schedule", func() {
 				Namespace: "default",
 			}
 			duration := "10000s"
-			schedule := &v1alpha1.Schedule{
+			schedule := &v1alpha2.Schedule{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo10",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.ScheduleSpec{
+				Spec: v1alpha2.ScheduleSpec{
 					Schedule: "@every 3s",
-					ScheduleItem: v1alpha1.ScheduleItem{
-						Workflow: &v1alpha1.WorkflowSpec{
+					ScheduleItem: v1alpha2.ScheduleItem{
+						Workflow: &v1alpha2.WorkflowSpec{
 							Entry: "the-entry",
-							Templates: []v1alpha1.Template{
+							Templates: []v1alpha2.Template{
 								{
 									Name:     "the-entry",
-									Type:     v1alpha1.TypeSerial,
+									Type:     v1alpha2.TypeSerial,
 									Deadline: &duration,
 									Children: []string{"hardwork"},
 								},
 								{
 									Name:     "hardwork",
-									Type:     v1alpha1.TypeSuspend,
+									Type:     v1alpha2.TypeSuspend,
 									Deadline: &duration,
 									Children: nil,
 								},
 							},
 						},
 					},
-					ConcurrencyPolicy: v1alpha1.ForbidConcurrent,
+					ConcurrencyPolicy: v1alpha2.ForbidConcurrent,
 					HistoryLimit:      2,
-					Type:              v1alpha1.ScheduleTypeWorkflow,
+					Type:              v1alpha2.ScheduleTypeWorkflow,
 				},
-				Status: v1alpha1.ScheduleStatus{
+				Status: v1alpha2.ScheduleStatus{
 					LastScheduleTime: metav1.NewTime(time.Time{}),
 				},
 			}
@@ -349,31 +349,31 @@ var _ = Describe("Schedule", func() {
 				Namespace: "default",
 			}
 			duration := "1s"
-			schedule := &v1alpha1.Schedule{
+			schedule := &v1alpha2.Schedule{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "foo11",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.ScheduleSpec{
+				Spec: v1alpha2.ScheduleSpec{
 					Schedule: "@every 3s",
-					ScheduleItem: v1alpha1.ScheduleItem{
-						Workflow: &v1alpha1.WorkflowSpec{
+					ScheduleItem: v1alpha2.ScheduleItem{
+						Workflow: &v1alpha2.WorkflowSpec{
 							Entry: "the-entry",
-							Templates: []v1alpha1.Template{
+							Templates: []v1alpha2.Template{
 								{
 									Name:     "the-entry",
-									Type:     v1alpha1.TypeSerial,
+									Type:     v1alpha2.TypeSerial,
 									Deadline: &duration,
 									Children: nil,
 								},
 							},
 						},
 					},
-					ConcurrencyPolicy: v1alpha1.AllowConcurrent,
+					ConcurrencyPolicy: v1alpha2.AllowConcurrent,
 					HistoryLimit:      2,
-					Type:              v1alpha1.ScheduleTypeWorkflow,
+					Type:              v1alpha2.ScheduleTypeWorkflow,
 				},
-				Status: v1alpha1.ScheduleStatus{
+				Status: v1alpha2.ScheduleStatus{
 					LastScheduleTime: metav1.NewTime(time.Time{}),
 				},
 			}

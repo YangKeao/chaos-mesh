@@ -20,7 +20,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/controller"
 )
 
@@ -50,7 +50,7 @@ const (
 )
 
 // GetChaosStatus returns the status of chaos object.
-func GetChaosStatus(obj v1alpha1.InnerObject) ChaosStatus {
+func GetChaosStatus(obj v1alpha2.InnerObject) ChaosStatus {
 	if obj.IsDeleted() {
 		return Deleting
 	}
@@ -61,11 +61,11 @@ func GetChaosStatus(obj v1alpha1.InnerObject) ChaosStatus {
 		if c.Status == corev1.ConditionTrue {
 			switch c.Type {
 			// If ConditionPaused is true, represent the chaos experiment is paused.
-			case v1alpha1.ConditionPaused:
+			case v1alpha2.ConditionPaused:
 				return Paused
-			case v1alpha1.ConditionSelected:
+			case v1alpha2.ConditionSelected:
 				selected = true
-			case v1alpha1.ConditionAllInjected:
+			case v1alpha2.ConditionAllInjected:
 				allInjected = true
 			}
 		}
@@ -84,7 +84,7 @@ func GetChaosStatus(obj v1alpha1.InnerObject) ChaosStatus {
 	return Injecting
 }
 
-func GetScheduleStatus(sch v1alpha1.Schedule) ScheduleStatus {
+func GetScheduleStatus(sch v1alpha2.Schedule) ScheduleStatus {
 	if sch.IsPaused() {
 		return SchedulePaused
 	}

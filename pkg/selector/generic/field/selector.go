@@ -21,7 +21,7 @@ import (
 	"k8s.io/apimachinery/pkg/fields"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
 )
 
@@ -54,7 +54,7 @@ func (s *fieldSelector) Match(obj client.Object) bool {
 	switch obj := obj.(type) {
 	case *v1.Pod:
 		objFields = toPodSelectableFields(obj)
-	case *v1alpha1.PhysicalMachine:
+	case *v1alpha2.PhysicalMachine:
 		objFields = toPhysicalMachineSelectableFields(obj)
 	default:
 		// not support
@@ -63,7 +63,7 @@ func (s *fieldSelector) Match(obj client.Object) bool {
 	return s.Matches(objFields)
 }
 
-func New(spec v1alpha1.GenericSelectorSpec, _ generic.Option) (generic.Selector, error) {
+func New(spec v1alpha2.GenericSelectorSpec, _ generic.Option) (generic.Selector, error) {
 	return &fieldSelector{
 		Selector: fields.SelectorFromSet(spec.FieldSelectors),
 	}, nil
@@ -92,7 +92,7 @@ func toPodSelectableFields(pod *v1.Pod) fields.Set {
 }
 
 // toPhysicalMachineSelectableFields returns a field set that represents the object
-func toPhysicalMachineSelectableFields(physicalMachine *v1alpha1.PhysicalMachine) fields.Set {
+func toPhysicalMachineSelectableFields(physicalMachine *v1alpha2.PhysicalMachine) fields.Set {
 	pmSpecificFieldsSet := make(fields.Set, 3)
 	pmSpecificFieldsSet["spec.address"] = physicalMachine.Spec.Address
 	return addObjectMetaFieldsSet(pmSpecificFieldsSet, &physicalMachine.ObjectMeta, true)

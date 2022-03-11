@@ -29,7 +29,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/clientpool"
 	config "github.com/chaos-mesh/chaos-mesh/pkg/config/dashboard"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/apiserver/utils"
@@ -168,7 +168,7 @@ func (s *Service) listPods(c *gin.Context) {
 		return
 	}
 
-	selector := v1alpha1.PodSelectorSpec{}
+	selector := v1alpha2.PodSelectorSpec{}
 	if err := c.ShouldBindJSON(&selector); err != nil {
 		c.Status(http.StatusBadRequest)
 		_ = c.Error(utils.ErrBadRequest.WrapWithNoMessage(err))
@@ -262,7 +262,7 @@ func (s *Service) getChaosAvailableNamespaces(c *gin.Context) {
 func (s *Service) getKinds(c *gin.Context) {
 	var kinds []string
 
-	allKinds := v1alpha1.AllKinds()
+	allKinds := v1alpha2.AllKinds()
 	for name := range allKinds {
 		kinds = append(kinds, name)
 	}
@@ -298,7 +298,7 @@ func (s *Service) getLabels(c *gin.Context) {
 		return
 	}
 
-	selector := v1alpha1.PodSelectorSpec{}
+	selector := v1alpha2.PodSelectorSpec{}
 	nsList := strings.Split(podNamespaceList, ",")
 	selector.Namespaces = nsList
 
@@ -350,7 +350,7 @@ func (s *Service) getAnnotations(c *gin.Context) {
 		return
 	}
 
-	selector := v1alpha1.PodSelectorSpec{}
+	selector := v1alpha2.PodSelectorSpec{}
 	nsList := strings.Split(podNamespaceList, ",")
 	selector.Namespaces = nsList
 
@@ -452,7 +452,7 @@ func (s *Service) listPhysicalMachines(c *gin.Context) {
 		return
 	}
 
-	selector := v1alpha1.PhysicalMachineSelectorSpec{}
+	selector := v1alpha2.PhysicalMachineSelectorSpec{}
 	if err := c.ShouldBindJSON(&selector); err != nil {
 		utils.SetAPIError(c, utils.ErrBadRequest.WrapWithNoMessage(err))
 		return
@@ -499,7 +499,7 @@ func (s *Service) getPhysicalMachineLabels(c *gin.Context) {
 		return
 	}
 
-	selector := v1alpha1.PhysicalMachineSelectorSpec{}
+	selector := v1alpha2.PhysicalMachineSelectorSpec{}
 	nsList := strings.Split(physicalMachineNamespaceList, ",")
 	selector.Namespaces = nsList
 
@@ -548,7 +548,7 @@ func (s *Service) getPhysicalMachineAnnotations(c *gin.Context) {
 		utils.SetAPIError(c, utils.ErrInternalServer.WrapWithNoMessage(errors.New("physicalMachineNamespaceList is required")))
 		return
 	}
-	selector := v1alpha1.PhysicalMachineSelectorSpec{}
+	selector := v1alpha2.PhysicalMachineSelectorSpec{}
 	nsList := strings.Split(physicalMachineNamespaceList, ",")
 	selector.Namespaces = nsList
 

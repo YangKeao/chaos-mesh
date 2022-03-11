@@ -28,7 +28,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/controllers/schedule/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/builder"
@@ -44,7 +44,7 @@ type Reconciler struct {
 }
 
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	schedule := &v1alpha1.Schedule{}
+	schedule := &v1alpha2.Schedule{}
 	err := r.Get(ctx, req.NamespacedName, schedule)
 	if err != nil {
 		if !k8sError.IsNotFound(err) {
@@ -53,7 +53,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		return ctrl.Result{}, nil
 	}
 
-	if schedule.Spec.Type == v1alpha1.ScheduleTypeWorkflow {
+	if schedule.Spec.Type == v1alpha2.ScheduleTypeWorkflow {
 		if schedule.IsPaused() {
 			r.Recorder.Event(schedule, recorder.NotSupported{
 				Activity: "pausing a workflow schedule",
@@ -73,7 +73,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 	items := reflect.ValueOf(list).Elem().FieldByName("Items")
 	for i := 0; i < items.Len(); i++ {
-		item := items.Index(i).Addr().Interface().(v1alpha1.InnerObject)
+		item := items.Index(i).Addr().Interface().(v1alpha2.InnerObject)
 		if item.IsPaused() != schedule.IsPaused() {
 			key := k8sTypes.NamespacedName{
 				Namespace: item.GetNamespace(),
@@ -92,7 +92,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 				if annotations == nil {
 					annotations = make(map[string]string)
 				}
-				annotations[v1alpha1.PauseAnnotationKey] = pause
+				annotations[v1alpha2.PauseAnnotationKey] = pause
 				item.SetAnnotations(annotations)
 
 				return r.Client.Update(ctx, item)
@@ -118,7 +118,7 @@ func Bootstrap(mgr ctrl.Manager, client client.Client, log logr.Logger, lister *
 		return nil
 	}
 	return builder.Default(mgr).
-		For(&v1alpha1.Schedule{}).
+		For(&v1alpha2.Schedule{}).
 		Named(controllerName).
 		Complete(&Reconciler{
 			client,

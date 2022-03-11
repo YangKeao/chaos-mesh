@@ -34,7 +34,7 @@ import (
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/test/manager"
 	"github.com/chaos-mesh/chaos-mesh/pkg/log"
 )
@@ -71,7 +71,7 @@ var _ = BeforeSuite(func() {
 		}
 	}
 
-	err := v1alpha1.SchemeBuilder.AddToScheme(k8sScheme.Scheme)
+	err := v1alpha2.SchemeBuilder.AddToScheme(k8sScheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
 	cfg, err = testEnv.Start()

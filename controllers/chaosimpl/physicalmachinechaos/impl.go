@@ -33,7 +33,7 @@ import (
 	"go.uber.org/fx"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/controller"
@@ -46,10 +46,10 @@ type Impl struct {
 	Log logr.Logger
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	impl.Log.Info("apply physical machine chaos")
 
-	physicalMachineChaos := obj.(*v1alpha1.PhysicalMachineChaos)
+	physicalMachineChaos := obj.(*v1alpha2.PhysicalMachineChaos)
 	var address string
 	// For compatibility with older versions, we now have two ways to select the address
 	// of the physical machine, so there will be two possible values for the records:
@@ -59,15 +59,15 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	if len(physicalMachineChaos.Spec.Address) > 0 {
 		address = records[index].Id
 	} else {
-		var physicalMachine v1alpha1.PhysicalMachine
+		var physicalMachine v1alpha2.PhysicalMachine
 		namespacedName, err := controller.ParseNamespacedName(records[index].Id)
 		if err != nil {
-			return v1alpha1.NotInjected, err
+			return v1alpha2.NotInjected, err
 		}
 		err = impl.Get(ctx, namespacedName, &physicalMachine)
 		if err != nil {
 			// TODO: handle this error
-			return v1alpha1.NotInjected, err
+			return v1alpha2.NotInjected, err
 		}
 		address = physicalMachine.Spec.Address
 	}
@@ -79,7 +79,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		actions = append(actions, "")
 	} else if len(actions) != 2 {
 		err := errors.New("action invalid")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	action, subAction := actions[0], actions[1]
 	physicalMachineChaos.Spec.ExpInfo.Action = subAction
@@ -103,13 +103,13 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	err := json.Unmarshal(expInfoBytes, &expInfoMap)
 	if err != nil {
 		impl.Log.Error(err, "fail to unmarshal experiment info")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	configKV, ok := expInfoMap[string(physicalMachineChaos.Spec.Action)].(map[string]interface{})
 	if !ok {
 		err = errors.New("transform action config to map failed")
 		impl.Log.Error(err, "")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	delete(expInfoMap, string(physicalMachineChaos.Spec.Action))
 	for k, v := range configKV {
@@ -119,7 +119,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	expInfoBytes, err = json.Marshal(expInfoMap)
 	if err != nil {
 		impl.Log.Error(err, "fail to marshal experiment info")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	url := fmt.Sprintf("%s/api/attack/%s", address, action)
@@ -127,35 +127,35 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 
 	statusCode, body, err := impl.doHttpRequest("POST", url, bytes.NewBuffer(expInfoBytes))
 	if err != nil {
-		return v1alpha1.NotInjected, errors.Wrap(err, body)
+		return v1alpha2.NotInjected, errors.Wrap(err, body)
 	}
 
 	if statusCode != http.StatusOK {
 		err = errors.New("HTTP status is not OK")
 		impl.Log.Error(err, body)
-		return v1alpha1.NotInjected, errors.Wrap(err, body)
+		return v1alpha2.NotInjected, errors.Wrap(err, body)
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	impl.Log.Info("recover physical machine chaos")
 
-	physicalMachineChaos := obj.(*v1alpha1.PhysicalMachineChaos)
+	physicalMachineChaos := obj.(*v1alpha2.PhysicalMachineChaos)
 	var address string
 	if len(physicalMachineChaos.Spec.Address) > 0 {
 		address = records[index].Id
 	} else {
-		var physicalMachine v1alpha1.PhysicalMachine
+		var physicalMachine v1alpha2.PhysicalMachine
 		namespacedName, err := controller.ParseNamespacedName(records[index].Id)
 		if err != nil {
-			return v1alpha1.Injected, err
+			return v1alpha2.Injected, err
 		}
 		err = impl.Get(ctx, namespacedName, &physicalMachine)
 		if err != nil {
 			// TODO: handle this error
-			return v1alpha1.Injected, err
+			return v1alpha2.Injected, err
 		}
 		address = physicalMachine.Spec.Address
 	}
@@ -163,7 +163,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	url := fmt.Sprintf("%s/api/attack/%s", address, physicalMachineChaos.Spec.ExpInfo.UID)
 	statusCode, body, err := impl.doHttpRequest("DELETE", url, nil)
 	if err != nil {
-		return v1alpha1.Injected, errors.Wrap(err, body)
+		return v1alpha2.Injected, errors.Wrap(err, body)
 	}
 
 	if statusCode == http.StatusNotFound {
@@ -171,10 +171,10 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	} else if statusCode != http.StatusOK {
 		err = errors.New("HTTP status is not OK")
 		impl.Log.Error(err, body)
-		return v1alpha1.Injected, errors.Wrap(err, body)
+		return v1alpha2.Injected, errors.Wrap(err, body)
 	}
 
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
 func (impl *Impl) doHttpRequest(method, url string, data io.Reader) (int, string, error) {
@@ -244,7 +244,7 @@ func securityHTTPClient(url string) (*http.Client, error) {
 func NewImpl(c client.Client, log logr.Logger) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "physicalmachinechaos",
-		Object: &v1alpha1.PhysicalMachineChaos{},
+		Object: &v1alpha2.PhysicalMachineChaos{},
 		Impl: &Impl{
 			Client: c,
 			Log:    log.WithName("physicalmachinechaos"),

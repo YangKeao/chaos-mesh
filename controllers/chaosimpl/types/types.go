@@ -20,19 +20,19 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type ChaosImpl interface {
-	Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error)
-	Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error)
+	Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error)
+	Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error)
 }
 
 type ChaosImplPair struct {
 	Name   string
-	Object v1alpha1.InnerObjectWithSelector
+	Object v1alpha2.InnerObjectWithSelector
 	Impl   ChaosImpl
 
-	ObjectList v1alpha1.GenericChaosList
+	ObjectList v1alpha2.GenericChaosList
 	Controlls  []client.Object
 }

@@ -18,13 +18,13 @@ package types
 import (
 	"go.uber.org/fx"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type Controller string
 
 type Object struct {
-	Object v1alpha1.InnerObject
+	Object v1alpha2.InnerObject
 	Name   string
 }
 
@@ -33,7 +33,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "awschaos",
-			Object: &v1alpha1.AWSChaos{},
+			Object: &v1alpha2.AWSChaos{},
 		},
 	},
 
@@ -41,7 +41,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "dnschaos",
-			Object: &v1alpha1.DNSChaos{},
+			Object: &v1alpha2.DNSChaos{},
 		},
 	},
 
@@ -49,7 +49,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "httpchaos",
-			Object: &v1alpha1.HTTPChaos{},
+			Object: &v1alpha2.HTTPChaos{},
 		},
 	},
 
@@ -57,7 +57,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "iochaos",
-			Object: &v1alpha1.IOChaos{},
+			Object: &v1alpha2.IOChaos{},
 		},
 	},
 
@@ -65,7 +65,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "kernelchaos",
-			Object: &v1alpha1.KernelChaos{},
+			Object: &v1alpha2.KernelChaos{},
 		},
 	},
 
@@ -73,7 +73,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "jvmchaos",
-			Object: &v1alpha1.JVMChaos{},
+			Object: &v1alpha2.JVMChaos{},
 		},
 	},
 
@@ -81,7 +81,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "networkchaos",
-			Object: &v1alpha1.NetworkChaos{},
+			Object: &v1alpha2.NetworkChaos{},
 		},
 	},
 
@@ -89,7 +89,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "podchaos",
-			Object: &v1alpha1.PodChaos{},
+			Object: &v1alpha2.PodChaos{},
 		},
 	},
 
@@ -97,7 +97,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "stresschaos",
-			Object: &v1alpha1.StressChaos{},
+			Object: &v1alpha2.StressChaos{},
 		},
 	},
 
@@ -105,7 +105,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "timechaos",
-			Object: &v1alpha1.TimeChaos{},
+			Object: &v1alpha2.TimeChaos{},
 		},
 	},
 
@@ -113,7 +113,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "gcpchaos",
-			Object: &v1alpha1.GCPChaos{},
+			Object: &v1alpha2.GCPChaos{},
 		},
 	},
 
@@ -121,7 +121,7 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "physicalmachinechaos",
-			Object: &v1alpha1.PhysicalMachineChaos{},
+			Object: &v1alpha2.PhysicalMachineChaos{},
 		},
 	},
 
@@ -129,13 +129,13 @@ var ChaosObjects = fx.Supply(
 		Group: "objs",
 		Target: Object{
 			Name:   "blockchaos",
-			Object: &v1alpha1.BlockChaos{},
+			Object: &v1alpha2.BlockChaos{},
 		},
 	},
 )
 
 type WebhookObject struct {
-	Object v1alpha1.WebhookObject
+	Object v1alpha2.WebhookObject
 	Name   string
 }
 
@@ -144,7 +144,7 @@ var WebhookObjects = fx.Supply(
 		Group: "webhookObjs",
 		Target: WebhookObject{
 			Name:   "physicalmachine",
-			Object: &v1alpha1.PhysicalMachine{},
+			Object: &v1alpha2.PhysicalMachine{},
 		},
 	},
 )

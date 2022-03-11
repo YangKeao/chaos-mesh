@@ -23,7 +23,7 @@ import (
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/core"
 )
 
@@ -98,7 +98,7 @@ func (e *experimentStore) FindManagedByNamespaceName(_ context.Context, namespac
 			return nil, err
 		}
 
-		if meta.GetLabels()[v1alpha1.LabelManagedBy] != "" {
+		if meta.GetLabels()[v1alpha2.LabelManagedBy] != "" {
 			managedExperiments = append(managedExperiments, expr)
 		}
 	}

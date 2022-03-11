@@ -28,7 +28,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // integration tests
@@ -71,17 +71,17 @@ var _ = Describe("Workflow", func() {
 
 				toleratedJitter := 10 * time.Second
 
-				simpleSerialWorkflow := v1alpha1.Workflow{
+				simpleSerialWorkflow := v1alpha2.Workflow{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "simple-serial",
 						Namespace: ns,
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "serial",
-						Templates: []v1alpha1.Template{
+						Templates: []v1alpha2.Template{
 							{
 								Name: "serial",
-								Type: v1alpha1.TypeSerial,
+								Type: v1alpha2.TypeSerial,
 								Children: []string{
 									"network-chaos",
 									"pod-chaos",
@@ -89,69 +89,69 @@ var _ = Describe("Workflow", func() {
 								},
 							}, {
 								Name:     "network-chaos",
-								Type:     v1alpha1.TypeNetworkChaos,
+								Type:     v1alpha2.TypeNetworkChaos,
 								Deadline: &networkChaosDurationString,
-								EmbedChaos: &v1alpha1.EmbedChaos{
-									NetworkChaos: &v1alpha1.NetworkChaosSpec{
-										PodSelector: v1alpha1.PodSelector{
-											Selector: v1alpha1.PodSelectorSpec{
-												GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+								EmbedChaos: &v1alpha2.EmbedChaos{
+									NetworkChaos: &v1alpha2.NetworkChaosSpec{
+										PodSelector: v1alpha2.PodSelector{
+											Selector: v1alpha2.PodSelectorSpec{
+												GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 													Namespaces: []string{ns},
 													LabelSelectors: map[string]string{
 														"app": "not-exist",
 													},
 												},
 											},
-											Mode: v1alpha1.AllMode,
+											Mode: v1alpha2.AllMode,
 										},
-										Action: v1alpha1.PartitionAction,
+										Action: v1alpha2.PartitionAction,
 									},
 								},
 							}, {
 								Name:     "pod-chaos",
-								Type:     v1alpha1.TypePodChaos,
+								Type:     v1alpha2.TypePodChaos,
 								Deadline: &podChaosDurationString,
-								EmbedChaos: &v1alpha1.EmbedChaos{
-									PodChaos: &v1alpha1.PodChaosSpec{
-										ContainerSelector: v1alpha1.ContainerSelector{
-											PodSelector: v1alpha1.PodSelector{
-												Selector: v1alpha1.PodSelectorSpec{
-													GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+								EmbedChaos: &v1alpha2.EmbedChaos{
+									PodChaos: &v1alpha2.PodChaosSpec{
+										ContainerSelector: v1alpha2.ContainerSelector{
+											PodSelector: v1alpha2.PodSelector{
+												Selector: v1alpha2.PodSelectorSpec{
+													GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 														Namespaces: []string{ns},
 														LabelSelectors: map[string]string{
 															"app": "not-exist",
 														},
 													},
 												},
-												Mode: v1alpha1.AllMode,
+												Mode: v1alpha2.AllMode,
 											},
 										},
-										Action: v1alpha1.PodKillAction,
+										Action: v1alpha2.PodKillAction,
 									},
 								},
 							},
 							{
 								Name:     "stress-chaos",
-								Type:     v1alpha1.TypeStressChaos,
+								Type:     v1alpha2.TypeStressChaos,
 								Deadline: &stressChaosDurationString,
-								EmbedChaos: &v1alpha1.EmbedChaos{
-									StressChaos: &v1alpha1.StressChaosSpec{
-										ContainerSelector: v1alpha1.ContainerSelector{
-											PodSelector: v1alpha1.PodSelector{
-												Selector: v1alpha1.PodSelectorSpec{
-													GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+								EmbedChaos: &v1alpha2.EmbedChaos{
+									StressChaos: &v1alpha2.StressChaosSpec{
+										ContainerSelector: v1alpha2.ContainerSelector{
+											PodSelector: v1alpha2.PodSelector{
+												Selector: v1alpha2.PodSelectorSpec{
+													GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 														Namespaces: []string{ns},
 														LabelSelectors: map[string]string{
 															"app": "not-exist",
 														},
 													},
 												},
-												Mode: v1alpha1.AllMode,
+												Mode: v1alpha2.AllMode,
 											},
 										},
-										Stressors: &v1alpha1.Stressors{
-											CPUStressor: &v1alpha1.CPUStressor{
-												Stressor: v1alpha1.Stressor{
+										Stressors: &v1alpha2.Stressors{
+											CPUStressor: &v1alpha2.CPUStressor{
+												Stressor: v1alpha2.Stressor{
 													Workers: 2,
 												},
 											}},
@@ -166,14 +166,14 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that entry node created")
 				Eventually(func() int {
-					workflowNodeList := v1alpha1.WorkflowNodeList{}
+					workflowNodeList := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodeList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					return len(workflowNodeList.Items)
 				}, 10*time.Second, time.Second).Should(BeNumerically(">=", 1))
 
 				By("assert that network chaos has been created")
 				Eventually(func() bool {
-					chaosList := v1alpha1.NetworkChaosList{}
+					chaosList := v1alpha2.NetworkChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					if len(chaosList.Items) != 1 {
 						return false
@@ -183,14 +183,14 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that network chaos has been deleted")
 				Eventually(func() int {
-					chaosList := v1alpha1.NetworkChaosList{}
+					chaosList := v1alpha2.NetworkChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					return len(chaosList.Items)
 				}, networkChaosDuration+toleratedJitter, time.Second).Should(BeZero())
 
 				By("assert that pod chaos has been created")
 				Eventually(func() bool {
-					chaosList := v1alpha1.PodChaosList{}
+					chaosList := v1alpha2.PodChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					if len(chaosList.Items) != 1 {
 						return false
@@ -200,14 +200,14 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that pod chaos has been deleted")
 				Eventually(func() int {
-					chaosList := v1alpha1.PodChaosList{}
+					chaosList := v1alpha2.PodChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					return len(chaosList.Items)
 				}, podChaosDuration+toleratedJitter, time.Second).Should(BeZero())
 
 				By("assert that stress chaos has been created")
 				Eventually(func() bool {
-					chaosList := v1alpha1.StressChaosList{}
+					chaosList := v1alpha2.StressChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					if len(chaosList.Items) != 1 {
 						return false
@@ -217,23 +217,23 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that stress chaos has been deleted")
 				Eventually(func() int {
-					chaosList := v1alpha1.StressChaosList{}
+					chaosList := v1alpha2.StressChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					return len(chaosList.Items)
 				}, stressChaosDuration+toleratedJitter, time.Second).Should(BeZero())
 
 				By("assert that serial node marked as finished")
 				Eventually(func() bool {
-					workflowNodeList := v1alpha1.WorkflowNodeList{}
+					workflowNodeList := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodeList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					if len(workflowNodeList.Items) != 4 {
 						return false
 					}
 					entryFounded := false
-					var entry *v1alpha1.WorkflowNode = nil
+					var entry *v1alpha2.WorkflowNode = nil
 					for _, item := range workflowNodeList.Items {
 						item := item
-						if item.Spec.Type == v1alpha1.TypeSerial {
+						if item.Spec.Type == v1alpha2.TypeSerial {
 							entryFounded = true
 							entry = &item
 						}
@@ -241,7 +241,7 @@ var _ = Describe("Workflow", func() {
 					if !entryFounded || entry == nil {
 						return false
 					}
-					return ConditionEqualsTo(entry.Status, v1alpha1.ConditionAccomplished, corev1.ConditionTrue)
+					return ConditionEqualsTo(entry.Status, v1alpha2.ConditionAccomplished, corev1.ConditionTrue)
 				}, toleratedJitter, time.Second).Should(BeTrue())
 			})
 		})

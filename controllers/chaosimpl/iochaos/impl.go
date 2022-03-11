@@ -27,7 +27,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/iochaos/podiochaosmanager"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/controller"
@@ -36,8 +36,8 @@ import (
 var _ impltypes.ChaosImpl = (*Impl)(nil)
 
 const (
-	waitForApplySync   v1alpha1.Phase = "Not Injected/Wait"
-	waitForRecoverSync v1alpha1.Phase = "Injected/Wait"
+	waitForApplySync   v1alpha2.Phase = "Not Injected/Wait"
+	waitForRecoverSync v1alpha2.Phase = "Injected/Wait"
 )
 
 type Impl struct {
@@ -47,11 +47,11 @@ type Impl struct {
 	builder *podiochaosmanager.Builder
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	// The only possible phase to get in here is "Not Injected" or "Not Injected/Wait"
 
 	impl.Log.Info("iochaos Apply", "namespace", obj.GetNamespace(), "name", obj.GetName())
-	iochaos := obj.(*v1alpha1.IOChaos)
+	iochaos := obj.(*v1alpha2.IOChaos)
 	if iochaos.Status.Instances == nil {
 		iochaos.Status.Instances = make(map[string]int64)
 	}
@@ -60,7 +60,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	phase := record.Phase
 
 	if phase == waitForApplySync {
-		podiochaos := &v1alpha1.PodIOChaos{}
+		podiochaos := &v1alpha2.PodIOChaos{}
 		namespacedName, err := controller.ParseNamespacedName(record.Id)
 		if err != nil {
 			return waitForApplySync, err
@@ -68,12 +68,12 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		err = impl.Client.Get(ctx, namespacedName, podiochaos)
 		if err != nil {
 			if k8sError.IsNotFound(err) {
-				return v1alpha1.NotInjected, nil
+				return v1alpha2.NotInjected, nil
 			}
 
 			if k8sError.IsForbidden(err) {
 				if strings.Contains(err.Error(), "because it is being terminated") {
-					return v1alpha1.NotInjected, nil
+					return v1alpha2.NotInjected, nil
 				}
 			}
 
@@ -85,7 +85,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		}
 
 		if podiochaos.Status.ObservedGeneration >= iochaos.Status.Instances[record.Id] {
-			return v1alpha1.Injected, nil
+			return v1alpha2.Injected, nil
 		}
 
 		return waitForApplySync, nil
@@ -93,12 +93,12 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 
 	podId, containerName, err := controller.ParseNamespacedNameContainer(records[index].Id)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	var pod v1.Pod
 	err = impl.Client.Get(ctx, podId, &pod)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	source := iochaos.Namespace + "/" + iochaos.Name
@@ -110,14 +110,14 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	m.T.SetVolumePath(iochaos.Spec.VolumePath)
 	m.T.SetContainer(containerName)
 
-	m.T.Append(v1alpha1.IOChaosAction{
+	m.T.Append(v1alpha2.IOChaosAction{
 		Type: iochaos.Spec.Action,
-		Filter: v1alpha1.Filter{
+		Filter: v1alpha2.Filter{
 			Path:    iochaos.Spec.Path,
 			Percent: iochaos.Spec.Percent,
 			Methods: iochaos.Spec.Methods,
 		},
-		Faults: []v1alpha1.IoFault{
+		Faults: []v1alpha2.IoFault{
 			{
 				Errno:  iochaos.Spec.Errno,
 				Weight: 1,
@@ -130,7 +130,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	})
 	generationNumber, err := m.Commit(ctx, iochaos)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	// modify the custom status
@@ -138,10 +138,10 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	return waitForApplySync, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	// The only possible phase to get in here is "Injected" or "Injected/Wait"
 
-	iochaos := obj.(*v1alpha1.IOChaos)
+	iochaos := obj.(*v1alpha2.IOChaos)
 	if iochaos.Status.Instances == nil {
 		iochaos.Status.Instances = make(map[string]int64)
 	}
@@ -149,7 +149,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	record := records[index]
 	phase := record.Phase
 	if phase == waitForRecoverSync {
-		podiochaos := &v1alpha1.PodIOChaos{}
+		podiochaos := &v1alpha2.PodIOChaos{}
 		namespacedName, err := controller.ParseNamespacedName(record.Id)
 		if err != nil {
 			// This error is not expected to exist
@@ -159,7 +159,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		if err != nil {
 			// TODO: handle this error
 			if k8sError.IsNotFound(err) {
-				return v1alpha1.NotInjected, nil
+				return v1alpha2.NotInjected, nil
 			}
 			return waitForRecoverSync, err
 		}
@@ -169,7 +169,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		}
 
 		if podiochaos.Status.ObservedGeneration >= iochaos.Status.Instances[record.Id] {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
 
 		return waitForRecoverSync, nil
@@ -178,16 +178,16 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	podId, _, err := controller.ParseNamespacedNameContainer(records[index].Id)
 	if err != nil {
 		// This error is not expected to exist
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	var pod v1.Pod
 	err = impl.Client.Get(ctx, podId, &pod)
 	if err != nil {
 		// TODO: handle this error
 		if k8sError.IsNotFound(err) {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	source := iochaos.Namespace + "/" + iochaos.Name
@@ -199,15 +199,15 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	generationNumber, err := m.Commit(ctx, iochaos)
 	if err != nil {
 		if err == podiochaosmanager.ErrPodNotFound || err == podiochaosmanager.ErrPodNotRunning {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
 
 		if k8sError.IsForbidden(err) {
 			if strings.Contains(err.Error(), "because it is being terminated") {
-				return v1alpha1.NotInjected, nil
+				return v1alpha2.NotInjected, nil
 			}
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	// Now modify the custom status and phase
@@ -218,14 +218,14 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 func NewImpl(c client.Client, b *podiochaosmanager.Builder, log logr.Logger) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "iochaos",
-		Object: &v1alpha1.IOChaos{},
+		Object: &v1alpha2.IOChaos{},
 		Impl: &Impl{
 			Client:  c,
 			Log:     log.WithName("iochaos"),
 			builder: b,
 		},
-		ObjectList: &v1alpha1.IOChaosList{},
-		Controlls:  []client.Object{&v1alpha1.PodIOChaos{}},
+		ObjectList: &v1alpha2.IOChaosList{},
+		Controlls:  []client.Object{&v1alpha2.PodIOChaos{}},
 	}
 }
 

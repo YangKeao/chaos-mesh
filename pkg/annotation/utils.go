@@ -18,7 +18,7 @@ package annotation
 import (
 	"fmt"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 const (
@@ -26,7 +26,7 @@ const (
 	AnnotationPrefix = "chaos-mesh"
 )
 
-func GenKeyForImage(pc *v1alpha1.PodChaos, containerName string, isInit bool) string {
+func GenKeyForImage(pc *v1alpha2.PodChaos, containerName string, isInit bool) string {
 	if isInit {
 		containerName += "-init"
 	} else {

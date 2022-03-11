@@ -25,11 +25,11 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // GetComputeService is used to get the GCP compute Service.
-func GetComputeService(ctx context.Context, cli client.Client, gcpchaos *v1alpha1.GCPChaos) (*compute.Service, error) {
+func GetComputeService(ctx context.Context, cli client.Client, gcpchaos *v1alpha2.GCPChaos) (*compute.Service, error) {
 	if gcpchaos.Spec.SecretName != nil {
 		secret := &v1.Secret{}
 		err := cli.Get(ctx, types.NamespacedName{

@@ -26,14 +26,14 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 )
 
 // Reconciler for common chaos
 type Reconciler struct {
 	// Object is used to mark the target type of this Reconciler
-	Object v1alpha1.InnerObject
+	Object v1alpha2.InnerObject
 
 	// Client is used to operate on the Kubernetes cluster
 	client.Client
@@ -44,7 +44,7 @@ type Reconciler struct {
 
 // Reconcile the common chaos
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	obj := r.Object.DeepCopyObject().(v1alpha1.InnerObject)
+	obj := r.Object.DeepCopyObject().(v1alpha2.InnerObject)
 
 	if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 		if apierrors.IsNotFound(err) {
@@ -66,7 +66,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 // TODO: refactor: rename this struct, ambiguous with context.Context
 type reconcileContext struct {
-	obj v1alpha1.InnerObject
+	obj v1alpha2.InnerObject
 
 	*Reconciler
 	shouldUpdate bool
@@ -77,21 +77,21 @@ func (ctx *reconcileContext) GetCreationTimestamp() metav1.Time {
 	return ctx.obj.GetCreationTimestamp()
 }
 
-func (ctx *reconcileContext) CalcDesiredPhase() (v1alpha1.DesiredPhase, []recorder.ChaosEvent) {
+func (ctx *reconcileContext) CalcDesiredPhase() (v1alpha2.DesiredPhase, []recorder.ChaosEvent) {
 	events := []recorder.ChaosEvent{}
 
 	// Consider the finalizers
 	if ctx.obj.IsDeleted() {
-		if ctx.obj.GetStatus().Experiment.DesiredPhase != v1alpha1.StoppedPhase {
+		if ctx.obj.GetStatus().Experiment.DesiredPhase != v1alpha2.StoppedPhase {
 			events = append(events, recorder.Deleted{})
 		}
-		return v1alpha1.StoppedPhase, events
+		return v1alpha2.StoppedPhase, events
 	}
 
 	if ctx.obj.IsOneShot() {
 		// An oneshot chaos should always be in running phase, so that it cannot
 		// be applied multiple times or cause other bugs :(
-		return v1alpha1.RunningPhase, events
+		return v1alpha2.RunningPhase, events
 	}
 
 	// Consider the duration
@@ -102,26 +102,26 @@ func (ctx *reconcileContext) CalcDesiredPhase() (v1alpha1.DesiredPhase, []record
 		ctx.Log.Error(err, "failed to parse duration")
 	}
 	if durationExceeded {
-		if ctx.obj.GetStatus().Experiment.DesiredPhase != v1alpha1.StoppedPhase {
+		if ctx.obj.GetStatus().Experiment.DesiredPhase != v1alpha2.StoppedPhase {
 			events = append(events, recorder.TimeUp{})
 		}
-		return v1alpha1.StoppedPhase, events
+		return v1alpha2.StoppedPhase, events
 	}
 
 	ctx.requeueAfter = untilStop
 
 	// Then decide the pause logic
 	if ctx.obj.IsPaused() {
-		if ctx.obj.GetStatus().Experiment.DesiredPhase != v1alpha1.StoppedPhase {
+		if ctx.obj.GetStatus().Experiment.DesiredPhase != v1alpha2.StoppedPhase {
 			events = append(events, recorder.Paused{})
 		}
-		return v1alpha1.StoppedPhase, events
+		return v1alpha2.StoppedPhase, events
 	}
 
-	if ctx.obj.GetStatus().Experiment.DesiredPhase != v1alpha1.RunningPhase {
+	if ctx.obj.GetStatus().Experiment.DesiredPhase != v1alpha2.RunningPhase {
 		events = append(events, recorder.Started{})
 	}
-	return v1alpha1.RunningPhase, events
+	return v1alpha2.RunningPhase, events
 }
 
 func (ctx *reconcileContext) Reconcile(req ctrl.Request) (ctrl.Result, error) {
@@ -134,7 +134,7 @@ func (ctx *reconcileContext) Reconcile(req ctrl.Request) (ctrl.Result, error) {
 		}
 
 		updateError := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
-			obj := ctx.Object.DeepCopyObject().(v1alpha1.InnerObject)
+			obj := ctx.Object.DeepCopyObject().(v1alpha2.InnerObject)
 
 			if err := ctx.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 				ctx.Log.Error(err, "unable to get chaos")

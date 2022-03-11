@@ -23,7 +23,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
 )
 
@@ -61,7 +61,7 @@ func (s *nodeSelector) Match(obj client.Object) bool {
 }
 
 // if both setting Nodes and NodeSelectors, the node list will be combined.
-func newNodeSelector(ctx context.Context, c client.Client, spec v1alpha1.PodSelectorSpec) (generic.Selector, error) {
+func newNodeSelector(ctx context.Context, c client.Client, spec v1alpha2.PodSelectorSpec) (generic.Selector, error) {
 	if len(spec.Nodes) == 0 && len(spec.NodeSelectors) == 0 {
 		return &nodeSelector{empty: true}, nil
 	}

@@ -26,7 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/networkchaos/podnetworkchaosmanager"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
@@ -43,8 +43,8 @@ const (
 )
 
 const (
-	waitForApplySync   v1alpha1.Phase = "Not Injected/Wait"
-	waitForRecoverSync v1alpha1.Phase = "Injected/Wait"
+	waitForApplySync   v1alpha2.Phase = "Not Injected/Wait"
+	waitForRecoverSync v1alpha2.Phase = "Injected/Wait"
 )
 
 type Impl struct {
@@ -55,11 +55,11 @@ type Impl struct {
 	Log logr.Logger
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	// The only possible phase to get in here is "Not Injected" or "Not Injected/Wait"
 
 	impl.Log.Info("traffic control Apply", "namespace", obj.GetNamespace(), "name", obj.GetName())
-	networkchaos := obj.(*v1alpha1.NetworkChaos)
+	networkchaos := obj.(*v1alpha2.NetworkChaos)
 	if networkchaos.Status.Instances == nil {
 		networkchaos.Status.Instances = make(map[string]int64)
 	}
@@ -71,7 +71,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	phase := record.Phase
 
 	if phase == waitForApplySync {
-		podnetworkchaos := &v1alpha1.PodNetworkChaos{}
+		podnetworkchaos := &v1alpha2.PodNetworkChaos{}
 		namespacedName, err := controller.ParseNamespacedName(record.Id)
 		if err != nil {
 			return waitForApplySync, err
@@ -79,12 +79,12 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		err = impl.Client.Get(ctx, namespacedName, podnetworkchaos)
 		if err != nil {
 			if k8sError.IsNotFound(err) {
-				return v1alpha1.NotInjected, nil
+				return v1alpha2.NotInjected, nil
 			}
 
 			if k8sError.IsForbidden(err) {
 				if strings.Contains(err.Error(), "because it is being terminated") {
-					return v1alpha1.NotInjected, nil
+					return v1alpha2.NotInjected, nil
 				}
 			}
 
@@ -96,7 +96,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		}
 
 		if podnetworkchaos.Status.ObservedGeneration >= networkchaos.Status.Instances[record.Id] {
-			return v1alpha1.Injected, nil
+			return v1alpha2.Injected, nil
 		}
 
 		return waitForApplySync, nil
@@ -105,12 +105,12 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	var pod v1.Pod
 	namespacedName, err := controller.ParseNamespacedName(record.Id)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	err = impl.Client.Get(ctx, namespacedName, &pod)
 	if err != nil {
 		// TODO: handle this error
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	source := networkchaos.Namespace + "/" + networkchaos.Name
@@ -120,8 +120,8 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	})
 
 	if record.SelectorKey == "." {
-		if networkchaos.Spec.Direction == v1alpha1.To || networkchaos.Spec.Direction == v1alpha1.Both {
-			var targets []*v1alpha1.Record
+		if networkchaos.Spec.Direction == v1alpha2.To || networkchaos.Spec.Direction == v1alpha2.Both {
+			var targets []*v1alpha2.Record
 			for _, record := range records {
 				if record.SelectorKey == ".Target" {
 					targets = append(targets, record)
@@ -130,12 +130,12 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 
 			err := impl.ApplyTc(ctx, m, targets, networkchaos, targetIPSetPostFix, networkchaos.Spec.Device)
 			if err != nil {
-				return v1alpha1.NotInjected, err
+				return v1alpha2.NotInjected, err
 			}
 
 			generationNumber, err := m.Commit(ctx, networkchaos)
 			if err != nil {
-				return v1alpha1.NotInjected, err
+				return v1alpha2.NotInjected, err
 			}
 
 			// modify the custom status
@@ -143,10 +143,10 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 			return waitForApplySync, nil
 		}
 
-		return v1alpha1.Injected, nil
+		return v1alpha2.Injected, nil
 	} else if record.SelectorKey == ".Target" {
-		if networkchaos.Spec.Direction == v1alpha1.From || networkchaos.Spec.Direction == v1alpha1.Both {
-			var targets []*v1alpha1.Record
+		if networkchaos.Spec.Direction == v1alpha2.From || networkchaos.Spec.Direction == v1alpha2.Both {
+			var targets []*v1alpha2.Record
 			for _, record := range records {
 				if record.SelectorKey == "." {
 					targets = append(targets, record)
@@ -155,12 +155,12 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 
 			err := impl.ApplyTc(ctx, m, targets, networkchaos, sourceIPSetPostFix, networkchaos.Spec.TargetDevice)
 			if err != nil {
-				return v1alpha1.NotInjected, err
+				return v1alpha2.NotInjected, err
 			}
 
 			generationNumber, err := m.Commit(ctx, networkchaos)
 			if err != nil {
-				return v1alpha1.NotInjected, err
+				return v1alpha2.NotInjected, err
 			}
 
 			// modify the custom status
@@ -168,17 +168,17 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 			return waitForApplySync, nil
 		}
 
-		return v1alpha1.Injected, nil
+		return v1alpha2.Injected, nil
 	} else {
 		impl.Log.Info("unknown selector key", "record", record)
-		return v1alpha1.NotInjected, nil
+		return v1alpha2.NotInjected, nil
 	}
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	// The only possible phase to get in here is "Injected" or "Injected/Wait"
 
-	networkchaos := obj.(*v1alpha1.NetworkChaos)
+	networkchaos := obj.(*v1alpha2.NetworkChaos)
 	if networkchaos.Status.Instances == nil {
 		networkchaos.Status.Instances = make(map[string]int64)
 	}
@@ -190,7 +190,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	phase := record.Phase
 
 	if phase == waitForRecoverSync {
-		podnetworkchaos := &v1alpha1.PodNetworkChaos{}
+		podnetworkchaos := &v1alpha2.PodNetworkChaos{}
 		namespacedName, err := controller.ParseNamespacedName(record.Id)
 		if err != nil {
 			// This error is not expected to exist
@@ -200,7 +200,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		if err != nil {
 			// TODO: handle this error
 			if k8sError.IsNotFound(err) {
-				return v1alpha1.NotInjected, nil
+				return v1alpha2.NotInjected, nil
 			}
 			return waitForRecoverSync, err
 		}
@@ -210,7 +210,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		}
 
 		if podnetworkchaos.Status.ObservedGeneration >= networkchaos.Status.Instances[record.Id] {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
 
 		return waitForRecoverSync, nil
@@ -220,21 +220,21 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	namespacedName, err := controller.ParseNamespacedName(record.Id)
 	if err != nil {
 		// This error is not expected to exist
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 	err = impl.Client.Get(ctx, namespacedName, &pod)
 	if err != nil {
 		// TODO: handle this error
 		if k8sError.IsNotFound(err) {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
 
 		if k8sError.IsForbidden(err) {
 			if strings.Contains(err.Error(), "because it is being terminated") {
-				return v1alpha1.NotInjected, nil
+				return v1alpha2.NotInjected, nil
 			}
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	source := networkchaos.Namespace + "/" + networkchaos.Name
@@ -246,9 +246,9 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	generationNumber, err := m.Commit(ctx, networkchaos)
 	if err != nil {
 		if err == podnetworkchaosmanager.ErrPodNotFound || err == podnetworkchaosmanager.ErrPodNotRunning {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	// Now modify the custom status and phase
@@ -256,14 +256,14 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	return waitForRecoverSync, nil
 }
 
-func (impl *Impl) ApplyTc(ctx context.Context, m *podnetworkchaosmanager.PodNetworkManager, targets []*v1alpha1.Record, networkchaos *v1alpha1.NetworkChaos, ipSetPostFix string, device string) error {
+func (impl *Impl) ApplyTc(ctx context.Context, m *podnetworkchaosmanager.PodNetworkManager, targets []*v1alpha2.Record, networkchaos *v1alpha2.NetworkChaos, ipSetPostFix string, device string) error {
 	spec := networkchaos.Spec
-	tcType := v1alpha1.Bandwidth
+	tcType := v1alpha2.Bandwidth
 	switch spec.Action {
-	case v1alpha1.NetemAction, v1alpha1.DelayAction, v1alpha1.DuplicateAction, v1alpha1.CorruptAction, v1alpha1.LossAction:
-		tcType = v1alpha1.Netem
-	case v1alpha1.BandwidthAction:
-		tcType = v1alpha1.Bandwidth
+	case v1alpha2.NetemAction, v1alpha2.DelayAction, v1alpha2.DuplicateAction, v1alpha2.CorruptAction, v1alpha2.LossAction:
+		tcType = v1alpha2.Netem
+	case v1alpha2.BandwidthAction:
+		tcType = v1alpha2.Bandwidth
 	default:
 		return errors.Wrapf(utils.ErrUnknownAction, "action: %s", spec.Action)
 	}
@@ -275,7 +275,7 @@ func (impl *Impl) ApplyTc(ctx context.Context, m *podnetworkchaosmanager.PodNetw
 
 	if len(targets)+len(externalCidrs) == 0 {
 		impl.Log.Info("apply traffic control", "sources", m.Source)
-		m.T.Append(v1alpha1.RawTrafficControl{
+		m.T.Append(v1alpha2.RawTrafficControl{
 			Type:        tcType,
 			TcParameter: spec.TcParameter,
 			Source:      m.Source,
@@ -303,7 +303,7 @@ func (impl *Impl) ApplyTc(ctx context.Context, m *podnetworkchaosmanager.PodNetw
 	impl.Log.Info("apply traffic control with filter", "sources", m.Source, "ipset", dstIpset)
 
 	m.T.Append(dstIpset)
-	m.T.Append(v1alpha1.RawTrafficControl{
+	m.T.Append(v1alpha2.RawTrafficControl{
 		Type:        tcType,
 		TcParameter: spec.TcParameter,
 		Source:      m.Source,

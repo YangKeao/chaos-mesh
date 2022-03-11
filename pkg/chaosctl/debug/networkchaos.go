@@ -20,7 +20,7 @@ import (
 
 	"github.com/hasura/go-graphql-client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosctl/common"
 	ctrlclient "github.com/chaos-mesh/chaos-mesh/pkg/ctrl/client"
 )
@@ -49,7 +49,7 @@ func (d *networkDebugger) Collect(ctx context.Context, namespace, chaosName stri
 			NetworkChaos []struct {
 				Name       string
 				Podnetwork []struct {
-					Spec      *v1alpha1.PodNetworkChaosSpec
+					Spec      *v1alpha2.PodNetworkChaosSpec
 					Namespace string
 					Name      string
 					Pod       struct {

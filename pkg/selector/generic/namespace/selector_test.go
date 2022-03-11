@@ -21,7 +21,7 @@ import (
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
 	. "github.com/chaos-mesh/chaos-mesh/pkg/testutils"
 )
@@ -41,16 +41,16 @@ func TestMatch(t *testing.T) {
 		EnableFilterNamespace: false,
 	}
 
-	n2Selector, err := New(v1alpha1.GenericSelectorSpec{Namespaces: []string{"n2"}}, option)
+	n2Selector, err := New(v1alpha2.GenericSelectorSpec{Namespaces: []string{"n2"}}, option)
 	g.Expect(err).ShouldNot(HaveOccurred())
 
-	emptySelector, err := New(v1alpha1.GenericSelectorSpec{}, option)
+	emptySelector, err := New(v1alpha2.GenericSelectorSpec{}, option)
 	g.Expect(err).ShouldNot(HaveOccurred())
 
-	n2AndN3Selector, err := New(v1alpha1.GenericSelectorSpec{Namespaces: []string{"n2", "n3"}}, option)
+	n2AndN3Selector, err := New(v1alpha2.GenericSelectorSpec{Namespaces: []string{"n2", "n3"}}, option)
 	g.Expect(err).ShouldNot(HaveOccurred())
 
-	n2AndN4Selector, err := New(v1alpha1.GenericSelectorSpec{Namespaces: []string{"n2", "n4"}}, option)
+	n2AndN4Selector, err := New(v1alpha2.GenericSelectorSpec{Namespaces: []string{"n2", "n4"}}, option)
 	g.Expect(err).ShouldNot(HaveOccurred())
 
 	tcs := []struct {

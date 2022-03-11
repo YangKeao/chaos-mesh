@@ -21,7 +21,7 @@ import (
 	"github.com/go-logr/logr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
@@ -37,7 +37,7 @@ type Impl struct {
 	decoder *utils.ContainerRecordDecoder
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	pbClient := decodedContainer.PbClient
 	containerId := decodedContainer.ContainerId
@@ -45,7 +45,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		defer pbClient.Close()
 	}
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	if _, err = pbClient.ContainerKill(ctx, &pb.ContainerRequest{
@@ -55,14 +55,14 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		ContainerId: containerId,
 	}); err != nil {
 		impl.Log.Error(err, "kill container error", "containerID", containerId)
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	return v1alpha1.NotInjected, nil
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	return v1alpha2.NotInjected, nil
 }
 
 func NewImpl(c client.Client, log logr.Logger, decoder *utils.ContainerRecordDecoder) *Impl {

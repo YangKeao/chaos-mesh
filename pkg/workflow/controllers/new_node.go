@@ -22,24 +22,24 @@ import (
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 var (
 	isController       = true
 	blockOwnerDeletion = true
-	ApiVersion         = v1alpha1.GroupVersion.String()
+	ApiVersion         = v1alpha2.GroupVersion.String()
 	KindWorkflow       = "Workflow"
 	KindWorkflowNode   = "WorkflowNode"
 )
 
 // renderNodesByTemplates will render the nodes one by one, will setup owner by given parent. If parent is nil, it will use workflow as its owner.
-func renderNodesByTemplates(workflow *v1alpha1.Workflow, parent *v1alpha1.WorkflowNode, templates ...string) ([]*v1alpha1.WorkflowNode, error) {
-	templateNameSet := make(map[string]v1alpha1.Template)
+func renderNodesByTemplates(workflow *v1alpha2.Workflow, parent *v1alpha2.WorkflowNode, templates ...string) ([]*v1alpha2.WorkflowNode, error) {
+	templateNameSet := make(map[string]v1alpha2.Template)
 	for _, template := range workflow.Spec.Templates {
 		templateNameSet[template.Name] = template
 	}
-	var result []*v1alpha1.WorkflowNode
+	var result []*v1alpha2.WorkflowNode
 	for _, name := range templates {
 		if template, ok := templateNameSet[name]; ok {
 
@@ -56,12 +56,12 @@ func renderNodesByTemplates(workflow *v1alpha1.Workflow, parent *v1alpha1.Workfl
 				deadline = &copiedDuration
 			}
 
-			renderedNode := v1alpha1.WorkflowNode{
+			renderedNode := v1alpha2.WorkflowNode{
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace:    workflow.Namespace,
 					GenerateName: fmt.Sprintf("%s-", template.Name),
 				},
-				Spec: v1alpha1.WorkflowNodeSpec{
+				Spec: v1alpha2.WorkflowNodeSpec{
 					TemplateName:        template.Name,
 					WorkflowName:        workflow.Name,
 					Type:                template.Type,
@@ -88,7 +88,7 @@ func renderNodesByTemplates(workflow *v1alpha1.Workflow, parent *v1alpha1.Workfl
 				if renderedNode.Labels == nil {
 					renderedNode.Labels = make(map[string]string)
 				}
-				renderedNode.Labels[v1alpha1.LabelControlledBy] = parent.Name
+				renderedNode.Labels[v1alpha2.LabelControlledBy] = parent.Name
 			} else {
 				renderedNode.OwnerReferences = append(renderedNode.OwnerReferences, metav1.OwnerReference{
 					APIVersion:         ApiVersion,
@@ -101,10 +101,10 @@ func renderNodesByTemplates(workflow *v1alpha1.Workflow, parent *v1alpha1.Workfl
 				if renderedNode.Labels == nil {
 					renderedNode.Labels = make(map[string]string)
 				}
-				renderedNode.Labels[v1alpha1.LabelControlledBy] = workflow.Name
+				renderedNode.Labels[v1alpha2.LabelControlledBy] = workflow.Name
 			}
 
-			renderedNode.Labels[v1alpha1.LabelWorkflow] = workflow.Name
+			renderedNode.Labels[v1alpha2.LabelWorkflow] = workflow.Name
 			renderedNode.Finalizers = append(renderedNode.Finalizers, metav1.FinalizerDeleteDependents)
 
 			result = append(result, &renderedNode)
@@ -119,18 +119,18 @@ func renderNodesByTemplates(workflow *v1alpha1.Workflow, parent *v1alpha1.Workfl
 	return result, nil
 }
 
-func conversionSchedule(origin *v1alpha1.ChaosOnlyScheduleSpec) *v1alpha1.ScheduleSpec {
+func conversionSchedule(origin *v1alpha2.ChaosOnlyScheduleSpec) *v1alpha2.ScheduleSpec {
 	if origin == nil {
 		return nil
 	}
-	return &v1alpha1.ScheduleSpec{
+	return &v1alpha2.ScheduleSpec{
 		Schedule:                origin.Schedule,
 		StartingDeadlineSeconds: origin.StartingDeadlineSeconds,
 		ConcurrencyPolicy:       origin.ConcurrencyPolicy,
 		HistoryLimit:            origin.HistoryLimit,
 		Type:                    origin.Type,
-		ScheduleItem: v1alpha1.ScheduleItem{
-			EmbedChaos: v1alpha1.EmbedChaos{
+		ScheduleItem: v1alpha2.ScheduleItem{
+			EmbedChaos: v1alpha2.EmbedChaos{
 				AWSChaos:             origin.EmbedChaos.AWSChaos,
 				DNSChaos:             origin.EmbedChaos.DNSChaos,
 				GCPChaos:             origin.EmbedChaos.GCPChaos,

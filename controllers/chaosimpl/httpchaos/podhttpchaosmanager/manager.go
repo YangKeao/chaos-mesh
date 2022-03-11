@@ -28,7 +28,7 @@ import (
 	"k8s.io/client-go/util/retry"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 var (
@@ -63,7 +63,7 @@ type CommitResponse struct {
 func (m *PodHttpManager) Commit(ctx context.Context) (int64, error) {
 	m.Log.Info("running modification on pod", "key", m.Key, "modification", m.T)
 	updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		chaos := &v1alpha1.PodHttpChaos{}
+		chaos := &v1alpha2.PodHttpChaos{}
 
 		err := m.Client.Get(ctx, m.Key, chaos)
 		if err != nil {
@@ -94,7 +94,7 @@ func (m *PodHttpManager) Commit(ctx context.Context) (int64, error) {
 		return 0, updateError
 	}
 
-	chaos := &v1alpha1.PodHttpChaos{}
+	chaos := &v1alpha2.PodHttpChaos{}
 	err := m.Reader.Get(ctx, m.Key, chaos)
 	if err != nil {
 		m.Log.Error(err, "error while getting the latest generation number")
@@ -105,7 +105,7 @@ func (m *PodHttpManager) Commit(ctx context.Context) (int64, error) {
 
 func (m *PodHttpManager) CreateNewPodHttpChaos(ctx context.Context) error {
 	var err error
-	chaos := &v1alpha1.PodHttpChaos{}
+	chaos := &v1alpha2.PodHttpChaos{}
 
 	pod := v1.Pod{}
 	err = m.Client.Get(ctx, m.Key, &pod)

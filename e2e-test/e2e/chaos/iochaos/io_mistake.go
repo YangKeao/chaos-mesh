@@ -28,7 +28,7 @@ import (
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 )
 
@@ -43,34 +43,34 @@ func TestcaseIOMistakeDurationForATimeThenRecover(
 	err := util.WaitE2EHelperReady(c, port)
 	framework.ExpectNoError(err, "wait e2e helper ready error")
 
-	ioChaos := &v1alpha1.IOChaos{
+	ioChaos := &v1alpha2.IOChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "io-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.IOChaosSpec{
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.IOChaosSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "io"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 			},
-			Action:     v1alpha1.IoMistake,
+			Action:     v1alpha2.IoMistake,
 			VolumePath: "/var/run/data",
 			Path:       "/var/run/data/*",
 			Percent:    100,
-			Mistake: &v1alpha1.MistakeSpec{
+			Mistake: &v1alpha2.MistakeSpec{
 				MaxOccurrences: 1,
 				MaxLength:      10000,
-				Filling:        v1alpha1.Zero,
+				Filling:        v1alpha2.Zero,
 			},
 			// only inject read or write method. Other method may or may not run properly, but is not recommended
-			Methods:  []v1alpha1.IoMethod{v1alpha1.Read, v1alpha1.Write},
+			Methods:  []v1alpha2.IoMethod{v1alpha2.Read, v1alpha2.Write},
 			Duration: pointer.StringPtr("9m"),
 		},
 	}
@@ -117,34 +117,34 @@ func TestcaseIOMistakeDurationForATimePauseAndUnPause(
 	err := util.WaitE2EHelperReady(c, port)
 	framework.ExpectNoError(err, "wait e2e helper ready error")
 
-	ioChaos := &v1alpha1.IOChaos{
+	ioChaos := &v1alpha2.IOChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "io-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.IOChaosSpec{
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.IOChaosSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "io"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 			},
-			Action:     v1alpha1.IoMistake,
+			Action:     v1alpha2.IoMistake,
 			VolumePath: "/var/run/data",
 			Path:       "/var/run/data/*",
 			Percent:    100,
-			Mistake: &v1alpha1.MistakeSpec{
+			Mistake: &v1alpha2.MistakeSpec{
 				MaxOccurrences: 1,
 				MaxLength:      10000,
-				Filling:        v1alpha1.Zero,
+				Filling:        v1alpha2.Zero,
 			},
 			// only inject read or write method. Other method may or may not run properly, but is not recommended
-			Methods:  []v1alpha1.IoMethod{v1alpha1.Read, v1alpha1.Write},
+			Methods:  []v1alpha2.IoMethod{v1alpha2.Read, v1alpha2.Write},
 			Duration: pointer.StringPtr("9m"),
 		},
 	}
@@ -177,10 +177,10 @@ func TestcaseIOMistakeDurationForATimePauseAndUnPause(
 	klog.Info("pause iochaos")
 
 	err = wait.Poll(5*time.Second, 5*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.IOChaos{}
+		chaos := &v1alpha2.IOChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get io chaos error")
-		if chaos.Status.Experiment.DesiredPhase == v1alpha1.StoppedPhase {
+		if chaos.Status.Experiment.DesiredPhase == v1alpha2.StoppedPhase {
 			return true, nil
 		}
 		return false, err
@@ -205,10 +205,10 @@ func TestcaseIOMistakeDurationForATimePauseAndUnPause(
 	framework.ExpectNoError(err, "resume chaos error")
 
 	err = wait.Poll(5*time.Second, 1*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.IOChaos{}
+		chaos := &v1alpha2.IOChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get io chaos error")
-		if chaos.Status.Experiment.DesiredPhase == v1alpha1.RunningPhase {
+		if chaos.Status.Experiment.DesiredPhase == v1alpha2.RunningPhase {
 			return true, nil
 		}
 		return false, err
@@ -242,35 +242,35 @@ func TestcaseIOMistakeWithSpecifiedContainer(
 	framework.ExpectNoError(err, "wait e2e helper ready error")
 
 	containerName := "io"
-	ioChaos := &v1alpha1.IOChaos{
+	ioChaos := &v1alpha2.IOChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "io-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.IOChaosSpec{
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.IOChaosSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "io"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 				ContainerNames: []string{containerName},
 			},
-			Action:     v1alpha1.IoMistake,
+			Action:     v1alpha2.IoMistake,
 			VolumePath: "/var/run/data",
 			Path:       "/var/run/data/*",
 			Percent:    100,
-			Mistake: &v1alpha1.MistakeSpec{
+			Mistake: &v1alpha2.MistakeSpec{
 				MaxOccurrences: 1,
 				MaxLength:      10000,
-				Filling:        v1alpha1.Zero,
+				Filling:        v1alpha2.Zero,
 			},
 			// only inject read or write method. Other method may or may not run properly, but is not recommended
-			Methods:  []v1alpha1.IoMethod{v1alpha1.Read, v1alpha1.Write},
+			Methods:  []v1alpha2.IoMethod{v1alpha2.Read, v1alpha2.Write},
 			Duration: pointer.StringPtr("9m"),
 		},
 	}

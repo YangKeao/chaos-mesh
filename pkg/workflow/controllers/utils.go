@@ -26,10 +26,10 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
-func SetCondition(status *v1alpha1.WorkflowNodeStatus, condition v1alpha1.WorkflowNodeCondition) {
+func SetCondition(status *v1alpha2.WorkflowNodeStatus, condition v1alpha2.WorkflowNodeCondition) {
 	currentCond := GetCondition(*status, condition.Type)
 	if currentCond != nil && currentCond.Status == condition.Status && currentCond.Reason == condition.Reason {
 		return
@@ -38,7 +38,7 @@ func SetCondition(status *v1alpha1.WorkflowNodeStatus, condition v1alpha1.Workfl
 	status.Conditions = append(newConditions, condition)
 }
 
-func GetCondition(status v1alpha1.WorkflowNodeStatus, conditionType v1alpha1.WorkflowNodeConditionType) *v1alpha1.WorkflowNodeCondition {
+func GetCondition(status v1alpha2.WorkflowNodeStatus, conditionType v1alpha2.WorkflowNodeConditionType) *v1alpha2.WorkflowNodeCondition {
 	for _, item := range status.Conditions {
 		if item.Type == conditionType {
 			return &item
@@ -47,7 +47,7 @@ func GetCondition(status v1alpha1.WorkflowNodeStatus, conditionType v1alpha1.Wor
 	return nil
 }
 
-func ConditionEqualsTo(status v1alpha1.WorkflowNodeStatus, conditionType v1alpha1.WorkflowNodeConditionType, expected corev1.ConditionStatus) bool {
+func ConditionEqualsTo(status v1alpha2.WorkflowNodeStatus, conditionType v1alpha2.WorkflowNodeConditionType, expected corev1.ConditionStatus) bool {
 	condition := GetCondition(status, conditionType)
 	if condition == nil {
 		return false
@@ -55,8 +55,8 @@ func ConditionEqualsTo(status v1alpha1.WorkflowNodeStatus, conditionType v1alpha
 	return condition.Status == expected
 }
 
-func filterOutCondition(conditions []v1alpha1.WorkflowNodeCondition, except v1alpha1.WorkflowNodeConditionType) []v1alpha1.WorkflowNodeCondition {
-	var newConditions []v1alpha1.WorkflowNodeCondition
+func filterOutCondition(conditions []v1alpha2.WorkflowNodeCondition, except v1alpha2.WorkflowNodeConditionType) []v1alpha2.WorkflowNodeCondition {
+	var newConditions []v1alpha2.WorkflowNodeCondition
 	for _, c := range conditions {
 		if c.Type == except {
 			continue
@@ -66,12 +66,12 @@ func filterOutCondition(conditions []v1alpha1.WorkflowNodeCondition, except v1al
 	return newConditions
 }
 
-func WorkflowNodeFinished(status v1alpha1.WorkflowNodeStatus) bool {
-	return ConditionEqualsTo(status, v1alpha1.ConditionAccomplished, corev1.ConditionTrue) ||
-		ConditionEqualsTo(status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionTrue)
+func WorkflowNodeFinished(status v1alpha2.WorkflowNodeStatus) bool {
+	return ConditionEqualsTo(status, v1alpha2.ConditionAccomplished, corev1.ConditionTrue) ||
+		ConditionEqualsTo(status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionTrue)
 }
 
-func SetWorkflowCondition(status *v1alpha1.WorkflowStatus, condition v1alpha1.WorkflowCondition) {
+func SetWorkflowCondition(status *v1alpha2.WorkflowStatus, condition v1alpha2.WorkflowCondition) {
 	currentCond := GetWorkflowCondition(*status, condition.Type)
 	if currentCond != nil && currentCond.Status == condition.Status && currentCond.Reason == condition.Reason {
 		return
@@ -80,7 +80,7 @@ func SetWorkflowCondition(status *v1alpha1.WorkflowStatus, condition v1alpha1.Wo
 	status.Conditions = append(newConditions, condition)
 }
 
-func GetWorkflowCondition(status v1alpha1.WorkflowStatus, conditionType v1alpha1.WorkflowConditionType) *v1alpha1.WorkflowCondition {
+func GetWorkflowCondition(status v1alpha2.WorkflowStatus, conditionType v1alpha2.WorkflowConditionType) *v1alpha2.WorkflowCondition {
 	for _, item := range status.Conditions {
 		if item.Type == conditionType {
 			return &item
@@ -89,7 +89,7 @@ func GetWorkflowCondition(status v1alpha1.WorkflowStatus, conditionType v1alpha1
 	return nil
 }
 
-func WorkflowConditionEqualsTo(status v1alpha1.WorkflowStatus, conditionType v1alpha1.WorkflowConditionType, expected corev1.ConditionStatus) bool {
+func WorkflowConditionEqualsTo(status v1alpha2.WorkflowStatus, conditionType v1alpha2.WorkflowConditionType, expected corev1.ConditionStatus) bool {
 	condition := GetWorkflowCondition(status, conditionType)
 	if condition == nil {
 		return false
@@ -97,8 +97,8 @@ func WorkflowConditionEqualsTo(status v1alpha1.WorkflowStatus, conditionType v1a
 	return condition.Status == expected
 }
 
-func filterOutWorkflowCondition(conditions []v1alpha1.WorkflowCondition, except v1alpha1.WorkflowConditionType) []v1alpha1.WorkflowCondition {
-	var newConditions []v1alpha1.WorkflowCondition
+func filterOutWorkflowCondition(conditions []v1alpha2.WorkflowCondition, except v1alpha2.WorkflowConditionType) []v1alpha2.WorkflowCondition {
+	var newConditions []v1alpha2.WorkflowCondition
 	for _, c := range conditions {
 		if c.Type == except {
 			continue
@@ -108,7 +108,7 @@ func filterOutWorkflowCondition(conditions []v1alpha1.WorkflowCondition, except 
 	return newConditions
 }
 
-type SortByCreationTimestamp []v1alpha1.WorkflowNode
+type SortByCreationTimestamp []v1alpha2.WorkflowNode
 
 func (it SortByCreationTimestamp) Len() int {
 	return len(it)
@@ -133,11 +133,11 @@ func NewChildNodesFetcher(kubeClient client.Client, logger logr.Logger) *ChildNo
 
 // fetchChildNodes will return children workflow nodes controlled by given node
 // Should only be used with Parallel and Serial Node
-func (it *ChildNodesFetcher) fetchChildNodes(ctx context.Context, node v1alpha1.WorkflowNode) (activeChildNodes []v1alpha1.WorkflowNode, finishedChildNodes []v1alpha1.WorkflowNode, err error) {
-	childNodes := v1alpha1.WorkflowNodeList{}
+func (it *ChildNodesFetcher) fetchChildNodes(ctx context.Context, node v1alpha2.WorkflowNode) (activeChildNodes []v1alpha2.WorkflowNode, finishedChildNodes []v1alpha2.WorkflowNode, err error) {
+	childNodes := v1alpha2.WorkflowNodeList{}
 	controlledByThisNode, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
 		MatchLabels: map[string]string{
-			v1alpha1.LabelControlledBy: node.Name,
+			v1alpha2.LabelControlledBy: node.Name,
 		},
 	})
 
@@ -165,8 +165,8 @@ func (it *ChildNodesFetcher) fetchChildNodes(ctx context.Context, node v1alpha1.
 		"current node", fmt.Sprintf("%s/%s", node.Namespace, node.Name),
 		len(sortedChildNodes), "children", sortedChildNodes)
 
-	var activeChildren []v1alpha1.WorkflowNode
-	var finishedChildren []v1alpha1.WorkflowNode
+	var activeChildren []v1alpha2.WorkflowNode
+	var finishedChildren []v1alpha2.WorkflowNode
 
 	for _, item := range sortedChildNodes {
 		childNode := item

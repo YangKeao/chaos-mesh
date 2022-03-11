@@ -18,15 +18,15 @@ package controller
 import (
 	"time"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
-func IsChaosFinished(obj v1alpha1.InnerObject, now time.Time) bool {
+func IsChaosFinished(obj v1alpha2.InnerObject, now time.Time) bool {
 	finished, _ := IsChaosFinishedWithUntilStop(obj, now)
 	return finished
 }
 
-func IsChaosFinishedWithUntilStop(obj v1alpha1.InnerObject, now time.Time) (bool, time.Duration) {
+func IsChaosFinishedWithUntilStop(obj v1alpha2.InnerObject, now time.Time) (bool, time.Duration) {
 	status := obj.GetStatus()
 	if obj.IsOneShot() {
 		finished := true
@@ -34,7 +34,7 @@ func IsChaosFinishedWithUntilStop(obj v1alpha1.InnerObject, now time.Time) (bool
 			finished = false
 		} else {
 			for _, record := range status.Experiment.Records {
-				if record.Phase != v1alpha1.Injected {
+				if record.Phase != v1alpha2.Injected {
 					finished = false
 				}
 			}
@@ -45,12 +45,12 @@ func IsChaosFinishedWithUntilStop(obj v1alpha1.InnerObject, now time.Time) (bool
 
 	finished := true
 
-	if status.Experiment.DesiredPhase == v1alpha1.RunningPhase {
+	if status.Experiment.DesiredPhase == v1alpha2.RunningPhase {
 		finished = false
 	} else {
 		// If one of the record has not been recovered, it's not finished
 		for _, record := range status.Experiment.Records {
-			if record.Phase != v1alpha1.NotInjected {
+			if record.Phase != v1alpha2.NotInjected {
 				finished = false
 			}
 		}

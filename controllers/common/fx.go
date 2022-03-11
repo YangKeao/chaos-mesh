@@ -28,7 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 	"sigs.k8s.io/controller-runtime/pkg/source"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	chaosimpltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/common/pipeline"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
@@ -96,7 +96,7 @@ func Bootstrap(params Params) error {
 
 						items := reflect.ValueOf(list).Elem().FieldByName("Items")
 						for i := 0; i < items.Len(); i++ {
-							item := items.Index(i).Addr().Interface().(v1alpha1.InnerObjectWithSelector)
+							item := items.Index(i).Addr().Interface().(v1alpha2.InnerObjectWithSelector)
 							for _, record := range item.GetStatus().Experiment.Records {
 								namespacedName, err := controller.ParseNamespacedName(record.Id)
 								if err != nil {

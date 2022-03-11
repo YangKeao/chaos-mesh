@@ -23,7 +23,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/cache"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/status"
 )
 
@@ -151,7 +151,7 @@ func (collector *ChaosControllerManagerMetricsCollector) collectChaosExperiments
 	// the experiment status will be lost
 	collector.chaosExperiments.Reset()
 
-	for kind, obj := range v1alpha1.AllKinds() {
+	for kind, obj := range v1alpha2.AllKinds() {
 		expCache := map[string]map[string]int{}
 		chaosList := obj.SpawnList()
 		if err := collector.store.List(context.TODO(), chaosList); err != nil {
@@ -165,7 +165,7 @@ func (collector *ChaosControllerManagerMetricsCollector) collectChaosExperiments
 				// There is only 4 supported phases
 				expCache[item.GetNamespace()] = make(map[string]int, 4)
 			}
-			innerObject := reflect.ValueOf(item).Interface().(v1alpha1.InnerObject)
+			innerObject := reflect.ValueOf(item).Interface().(v1alpha2.InnerObject)
 			expCache[item.GetNamespace()][string(status.GetChaosStatus(innerObject))]++
 		}
 
@@ -180,7 +180,7 @@ func (collector *ChaosControllerManagerMetricsCollector) collectChaosExperiments
 func (collector *ChaosControllerManagerMetricsCollector) collectChaosSchedules() {
 	collector.chaosSchedules.Reset()
 
-	schedules := &v1alpha1.ScheduleList{}
+	schedules := &v1alpha2.ScheduleList{}
 	if err := collector.store.List(context.TODO(), schedules); err != nil {
 		log.Error(err, "failed to list schedules")
 		return
@@ -200,7 +200,7 @@ func (collector *ChaosControllerManagerMetricsCollector) collectChaosSchedules()
 func (collector *ChaosControllerManagerMetricsCollector) collectChaosWorkflows() {
 	collector.chaosWorkflows.Reset()
 
-	workflows := &v1alpha1.WorkflowList{}
+	workflows := &v1alpha2.WorkflowList{}
 	if err := collector.store.List(context.TODO(), workflows); err != nil {
 		log.Error(err, "failed to list workflows")
 		return

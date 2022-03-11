@@ -30,7 +30,7 @@ import (
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/pkg/fixture"
 )
@@ -45,17 +45,17 @@ func TestcaseContainerKillOnceThenDelete(ns string, kubeCli kubernetes.Interface
 	err = util.WaitDeploymentReady("nginx", ns, kubeCli)
 	framework.ExpectNoError(err, "wait nginx deployment ready error")
 
-	containerKillChaos := &v1alpha1.PodChaos{
+	containerKillChaos := &v1alpha2.PodChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "nginx-container-kill",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.PodChaosSpec{
-			Action: v1alpha1.ContainerKillAction,
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.PodChaosSpec{
+			Action: v1alpha2.ContainerKillAction,
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces: []string{
 								ns,
 							},
@@ -64,7 +64,7 @@ func TestcaseContainerKillOnceThenDelete(ns string, kubeCli kubernetes.Interface
 							},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 				ContainerNames: []string{"nginx"},
 			},
@@ -147,18 +147,18 @@ func TestcaseContainerKillPauseThenUnPause(ns string, kubeCli kubernetes.Interfa
 	// Get the running nginx container ID
 	containerID := pods.Items[0].Status.ContainerStatuses[0].ContainerID
 
-	containerKillChaos := &v1alpha1.PodChaos{
+	containerKillChaos := &v1alpha2.PodChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "nginx-container-kill",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.PodChaosSpec{
-			Action:   v1alpha1.ContainerKillAction,
+		Spec: v1alpha2.PodChaosSpec{
+			Action:   v1alpha2.ContainerKillAction,
 			Duration: pointer.StringPtr("9m"),
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces: []string{
 								ns,
 							},
@@ -167,7 +167,7 @@ func TestcaseContainerKillPauseThenUnPause(ns string, kubeCli kubernetes.Interfa
 							},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 				ContainerNames: []string{"nginx"},
 			},
@@ -194,10 +194,10 @@ func TestcaseContainerKillPauseThenUnPause(ns string, kubeCli kubernetes.Interfa
 	framework.ExpectNoError(err, "pause chaos error")
 
 	err = wait.Poll(1*time.Second, 10*time.Second, func() (done bool, err error) {
-		chaos := &v1alpha1.PodChaos{}
+		chaos := &v1alpha2.PodChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get pod chaos error")
-		if chaos.Status.Experiment.DesiredPhase == v1alpha1.StoppedPhase {
+		if chaos.Status.Experiment.DesiredPhase == v1alpha2.StoppedPhase {
 			return true, nil
 		}
 		return false, err
@@ -221,10 +221,10 @@ func TestcaseContainerKillPauseThenUnPause(ns string, kubeCli kubernetes.Interfa
 	framework.ExpectNoError(err, "resume chaos error")
 
 	err = wait.Poll(5*time.Second, 5*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.PodChaos{}
+		chaos := &v1alpha2.PodChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get pod chaos error")
-		if chaos.Status.Experiment.DesiredPhase == v1alpha1.RunningPhase {
+		if chaos.Status.Experiment.DesiredPhase == v1alpha2.RunningPhase {
 			return true, nil
 		}
 		return false, err

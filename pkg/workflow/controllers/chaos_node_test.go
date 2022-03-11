@@ -28,7 +28,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // integration tests
@@ -64,37 +64,37 @@ var _ = Describe("Workflow", func() {
 			By("create simple chaos node with pod chaos")
 			startTime := metav1.NewTime(now)
 			deadline := metav1.NewTime(now.Add(duration))
-			workflowNode := v1alpha1.WorkflowNode{
+			workflowNode := v1alpha2.WorkflowNode{
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace:    ns,
 					GenerateName: "chaos-node-with-chaos-",
 				},
-				Spec: v1alpha1.WorkflowNodeSpec{
+				Spec: v1alpha2.WorkflowNodeSpec{
 					TemplateName: "",
 					WorkflowName: "",
-					Type:         v1alpha1.TypePodChaos,
+					Type:         v1alpha2.TypePodChaos,
 					StartTime:    &startTime,
 					Deadline:     &deadline,
-					EmbedChaos: &v1alpha1.EmbedChaos{
-						PodChaos: &v1alpha1.PodChaosSpec{
-							ContainerSelector: v1alpha1.ContainerSelector{
-								PodSelector: v1alpha1.PodSelector{
-									Selector: v1alpha1.PodSelectorSpec{
-										GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+					EmbedChaos: &v1alpha2.EmbedChaos{
+						PodChaos: &v1alpha2.PodChaosSpec{
+							ContainerSelector: v1alpha2.ContainerSelector{
+								PodSelector: v1alpha2.PodSelector{
+									Selector: v1alpha2.PodSelectorSpec{
+										GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 											Namespaces: []string{ns},
 										},
 									},
-									Mode: v1alpha1.AllMode,
+									Mode: v1alpha2.AllMode,
 								},
 							},
-							Action: v1alpha1.PodKillAction,
+							Action: v1alpha2.PodKillAction,
 						},
 					},
 				},
 			}
 			Expect(kubeClient.Create(ctx, &workflowNode)).To(Succeed())
 			Eventually(func() bool {
-				podChaosList := v1alpha1.PodChaosList{}
+				podChaosList := v1alpha2.PodChaosList{}
 				Expect(kubeClient.List(ctx, &podChaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 				if len(podChaosList.Items) == 0 {
 					return false
@@ -111,40 +111,40 @@ var _ = Describe("Workflow", func() {
 			By("create simple chaos node with schedule")
 			startTime := metav1.NewTime(now)
 			deadline := metav1.NewTime(now.Add(duration))
-			node := v1alpha1.WorkflowNode{
+			node := v1alpha2.WorkflowNode{
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace:    ns,
 					GenerateName: "chaos-node-schedule-",
 				},
-				Spec: v1alpha1.WorkflowNodeSpec{
+				Spec: v1alpha2.WorkflowNodeSpec{
 					WorkflowName: "",
-					Type:         v1alpha1.TypeSchedule,
+					Type:         v1alpha2.TypeSchedule,
 					StartTime:    &startTime,
 					Deadline:     &deadline,
-					Schedule: &v1alpha1.ScheduleSpec{
+					Schedule: &v1alpha2.ScheduleSpec{
 						Schedule:                "@every 1s",
 						StartingDeadlineSeconds: nil,
-						ConcurrencyPolicy:       v1alpha1.AllowConcurrent,
+						ConcurrencyPolicy:       v1alpha2.AllowConcurrent,
 						HistoryLimit:            5,
-						Type:                    v1alpha1.ScheduleTypePodChaos,
-						ScheduleItem: v1alpha1.ScheduleItem{
-							EmbedChaos: v1alpha1.EmbedChaos{
-								PodChaos: &v1alpha1.PodChaosSpec{
-									ContainerSelector: v1alpha1.ContainerSelector{
-										PodSelector: v1alpha1.PodSelector{
-											Selector: v1alpha1.PodSelectorSpec{
-												GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+						Type:                    v1alpha2.ScheduleTypePodChaos,
+						ScheduleItem: v1alpha2.ScheduleItem{
+							EmbedChaos: v1alpha2.EmbedChaos{
+								PodChaos: &v1alpha2.PodChaosSpec{
+									ContainerSelector: v1alpha2.ContainerSelector{
+										PodSelector: v1alpha2.PodSelector{
+											Selector: v1alpha2.PodSelectorSpec{
+												GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 													Namespaces: []string{ns},
 													LabelSelectors: map[string]string{
 														"app": "not-actually-exist",
 													},
 												},
 											},
-											Mode: v1alpha1.AllMode,
+											Mode: v1alpha2.AllMode,
 										},
 										ContainerNames: nil,
 									},
-									Action: v1alpha1.PodKillAction,
+									Action: v1alpha2.PodKillAction,
 								},
 							},
 						},
@@ -153,7 +153,7 @@ var _ = Describe("Workflow", func() {
 			}
 			Expect(kubeClient.Create(ctx, &node)).To(Succeed())
 			Eventually(func() bool {
-				scheduleList := v1alpha1.ScheduleList{}
+				scheduleList := v1alpha2.ScheduleList{}
 				Expect(kubeClient.List(ctx, &scheduleList, &client.ListOptions{Namespace: ns})).To(Succeed())
 				if len(scheduleList.Items) == 0 {
 					return false

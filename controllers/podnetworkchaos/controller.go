@@ -27,7 +27,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/podnetworkchaos/ipset"
 	"github.com/chaos-mesh/chaos-mesh/controllers/podnetworkchaos/iptable"
 	tcpkg "github.com/chaos-mesh/chaos-mesh/controllers/podnetworkchaos/tc"
@@ -54,7 +54,7 @@ type Reconciler struct {
 }
 
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	obj := &v1alpha1.PodNetworkChaos{}
+	obj := &v1alpha2.PodNetworkChaos{}
 
 	if err := r.Client.Get(ctx, req.NamespacedName, obj); err != nil {
 		if apierrors.IsNotFound(err) {
@@ -92,7 +92,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		}
 
 		updateError := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
-			obj := &v1alpha1.PodNetworkChaos{}
+			obj := &v1alpha2.PodNetworkChaos{}
 
 			if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 				r.Log.Error(err, "unable to get chaos")
@@ -176,7 +176,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 }
 
 // SetIPSets sets ipset on pod
-func (r *Reconciler) SetIPSets(ctx context.Context, pod *corev1.Pod, chaos *v1alpha1.PodNetworkChaos, chaosdaemonClient chaosdaemonclient.ChaosDaemonClientInterface) error {
+func (r *Reconciler) SetIPSets(ctx context.Context, pod *corev1.Pod, chaos *v1alpha2.PodNetworkChaos, chaosdaemonClient chaosdaemonclient.ChaosDaemonClientInterface) error {
 	ipsets := []*pb.IPSet{}
 	for _, ipset := range chaos.Spec.IPSets {
 		ipsets = append(ipsets, &pb.IPSet{
@@ -188,13 +188,13 @@ func (r *Reconciler) SetIPSets(ctx context.Context, pod *corev1.Pod, chaos *v1al
 }
 
 // SetIptables sets iptables on pod
-func (r *Reconciler) SetIptables(ctx context.Context, pod *corev1.Pod, chaos *v1alpha1.PodNetworkChaos, chaosdaemonClient chaosdaemonclient.ChaosDaemonClientInterface) error {
+func (r *Reconciler) SetIptables(ctx context.Context, pod *corev1.Pod, chaos *v1alpha2.PodNetworkChaos, chaosdaemonClient chaosdaemonclient.ChaosDaemonClientInterface) error {
 	chains := []*pb.Chain{}
 	for _, chain := range chaos.Spec.Iptables {
 		var direction pb.Chain_Direction
-		if chain.Direction == v1alpha1.Input {
+		if chain.Direction == v1alpha2.Input {
 			direction = pb.Chain_INPUT
-		} else if chain.Direction == v1alpha1.Output {
+		} else if chain.Direction == v1alpha2.Output {
 			direction = pb.Chain_OUTPUT
 		} else {
 			err := errors.Errorf("unknown direction %s", string(chain.Direction))
@@ -213,10 +213,10 @@ func (r *Reconciler) SetIptables(ctx context.Context, pod *corev1.Pod, chaos *v1
 }
 
 // SetTcs sets traffic control related chaos on pod
-func (r *Reconciler) SetTcs(ctx context.Context, pod *corev1.Pod, chaos *v1alpha1.PodNetworkChaos, chaosdaemonClient chaosdaemonclient.ChaosDaemonClientInterface) error {
+func (r *Reconciler) SetTcs(ctx context.Context, pod *corev1.Pod, chaos *v1alpha2.PodNetworkChaos, chaosdaemonClient chaosdaemonclient.ChaosDaemonClientInterface) error {
 	tcs := []*pb.Tc{}
 	for _, tc := range chaos.Spec.TrafficControls {
-		if tc.Type == v1alpha1.Bandwidth {
+		if tc.Type == v1alpha2.Bandwidth {
 			tbf, err := netem.FromBandwidth(tc.Bandwidth)
 			if err != nil {
 				return err
@@ -227,7 +227,7 @@ func (r *Reconciler) SetTcs(ctx context.Context, pod *corev1.Pod, chaos *v1alpha
 				Ipset:  tc.IPSet,
 				Device: tc.Device,
 			})
-		} else if tc.Type == v1alpha1.Netem {
+		} else if tc.Type == v1alpha2.Netem {
 			netem, err := mergeNetem(tc.TcParameter)
 			if err != nil {
 				return err
@@ -253,7 +253,7 @@ type NetemSpec interface {
 }
 
 // mergeNetem calls ToNetem on all non nil network emulation specs and merges them into one request.
-func mergeNetem(spec v1alpha1.TcParameter) (*pb.Netem, error) {
+func mergeNetem(spec v1alpha2.TcParameter) (*pb.Netem, error) {
 	// NOTE: a cleaner way like
 	// emSpecs = []NetemSpec{spec.Delay, spec.Loss} won't work.
 	// Because in the for _, spec := range emSpecs loop,

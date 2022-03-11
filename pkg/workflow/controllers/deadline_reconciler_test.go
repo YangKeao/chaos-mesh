@@ -30,7 +30,7 @@ import (
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // integration tests
@@ -68,14 +68,14 @@ var _ = Describe("Workflow", func() {
 				By("create simple suspend node")
 				startTime := metav1.NewTime(now)
 				deadline := metav1.NewTime(now.Add(duration))
-				node := v1alpha1.WorkflowNode{
+				node := v1alpha2.WorkflowNode{
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace:    ns,
 						GenerateName: "suspend-node-",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						WorkflowName: "",
-						Type:         v1alpha1.TypeSuspend,
+						Type:         v1alpha2.TypeSuspend,
 						StartTime:    &startTime,
 						Deadline:     &deadline,
 					},
@@ -86,13 +86,13 @@ var _ = Describe("Workflow", func() {
 
 				By("assert this node is finished")
 				Eventually(func() bool {
-					updatedNode := v1alpha1.WorkflowNode{}
+					updatedNode := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &updatedNode)).To(Succeed())
-					return ConditionEqualsTo(updatedNode.Status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionTrue)
+					return ConditionEqualsTo(updatedNode.Status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionTrue)
 				}, duration+toleratedJitter, time.Second).Should(BeTrue())
 
 				Eventually(func() bool {
-					updatedNode := v1alpha1.WorkflowNode{}
+					updatedNode := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &updatedNode)).To(Succeed())
 					return WorkflowNodeFinished(updatedNode.Status)
 				}, toleratedJitter, time.Second).Should(BeTrue())
@@ -109,33 +109,33 @@ var _ = Describe("Workflow", func() {
 				By("create simple chaos node with pod chaos")
 				startTime := metav1.NewTime(now)
 				deadline := metav1.NewTime(now.Add(duration))
-				node := v1alpha1.WorkflowNode{
+				node := v1alpha2.WorkflowNode{
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace:    ns,
 						GenerateName: "pod-chaos-",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						WorkflowName: "",
-						Type:         v1alpha1.TypePodChaos,
+						Type:         v1alpha2.TypePodChaos,
 						StartTime:    &startTime,
 						Deadline:     &deadline,
-						EmbedChaos: &v1alpha1.EmbedChaos{
-							PodChaos: &v1alpha1.PodChaosSpec{
-								ContainerSelector: v1alpha1.ContainerSelector{
-									PodSelector: v1alpha1.PodSelector{
-										Selector: v1alpha1.PodSelectorSpec{
-											GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+						EmbedChaos: &v1alpha2.EmbedChaos{
+							PodChaos: &v1alpha2.PodChaosSpec{
+								ContainerSelector: v1alpha2.ContainerSelector{
+									PodSelector: v1alpha2.PodSelector{
+										Selector: v1alpha2.PodSelectorSpec{
+											GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 												Namespaces: []string{ns},
 												LabelSelectors: map[string]string{
 													"app": "not-actually-exist",
 												},
 											},
 										},
-										Mode: v1alpha1.AllMode,
+										Mode: v1alpha2.AllMode,
 									},
 									ContainerNames: nil,
 								},
-								Action: v1alpha1.PodKillAction,
+								Action: v1alpha2.PodKillAction,
 							},
 						},
 					},
@@ -144,19 +144,19 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that pod chaos CR is created")
 				Eventually(func() bool {
-					updatedNode := v1alpha1.WorkflowNode{}
+					updatedNode := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &updatedNode)).To(Succeed())
-					if !ConditionEqualsTo(updatedNode.Status, v1alpha1.ConditionChaosInjected, corev1.ConditionTrue) {
+					if !ConditionEqualsTo(updatedNode.Status, v1alpha2.ConditionChaosInjected, corev1.ConditionTrue) {
 						return false
 					}
-					chaos := v1alpha1.PodChaos{}
+					chaos := v1alpha2.PodChaos{}
 					err := kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: updatedNode.Status.ChaosResource.Name}, &chaos)
 					return err == nil
 				}, toleratedJitter, time.Second).Should(BeTrue())
 
 				By("assert that pod chaos should be purged")
 				Eventually(func() bool {
-					podChaosList := v1alpha1.PodChaosList{}
+					podChaosList := v1alpha2.PodChaosList{}
 					Expect(kubeClient.List(ctx, &podChaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					return len(podChaosList.Items) == 0
 				}, duration+toleratedJitter, time.Second).Should(BeTrue())
@@ -173,40 +173,40 @@ var _ = Describe("Workflow", func() {
 				By("create simple chaos node with pod chaos")
 				startTime := metav1.NewTime(now)
 				deadline := metav1.NewTime(now.Add(duration))
-				node := v1alpha1.WorkflowNode{
+				node := v1alpha2.WorkflowNode{
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace:    ns,
 						GenerateName: "pod-chaos-",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						WorkflowName: "",
-						Type:         v1alpha1.TypeSchedule,
+						Type:         v1alpha2.TypeSchedule,
 						StartTime:    &startTime,
 						Deadline:     &deadline,
-						Schedule: &v1alpha1.ScheduleSpec{
+						Schedule: &v1alpha2.ScheduleSpec{
 							Schedule:                "@every 1s",
 							StartingDeadlineSeconds: nil,
-							ConcurrencyPolicy:       v1alpha1.AllowConcurrent,
+							ConcurrencyPolicy:       v1alpha2.AllowConcurrent,
 							HistoryLimit:            5,
-							Type:                    v1alpha1.ScheduleTypePodChaos,
-							ScheduleItem: v1alpha1.ScheduleItem{
-								EmbedChaos: v1alpha1.EmbedChaos{
-									PodChaos: &v1alpha1.PodChaosSpec{
-										ContainerSelector: v1alpha1.ContainerSelector{
-											PodSelector: v1alpha1.PodSelector{
-												Selector: v1alpha1.PodSelectorSpec{
-													GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+							Type:                    v1alpha2.ScheduleTypePodChaos,
+							ScheduleItem: v1alpha2.ScheduleItem{
+								EmbedChaos: v1alpha2.EmbedChaos{
+									PodChaos: &v1alpha2.PodChaosSpec{
+										ContainerSelector: v1alpha2.ContainerSelector{
+											PodSelector: v1alpha2.PodSelector{
+												Selector: v1alpha2.PodSelectorSpec{
+													GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 														Namespaces: []string{ns},
 														LabelSelectors: map[string]string{
 															"app": "not-actually-exist",
 														},
 													},
 												},
-												Mode: v1alpha1.AllMode,
+												Mode: v1alpha2.AllMode,
 											},
 											ContainerNames: nil,
 										},
-										Action: v1alpha1.PodKillAction,
+										Action: v1alpha2.PodKillAction,
 									},
 								},
 							},
@@ -217,19 +217,19 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that schedule CR is created")
 				Eventually(func() bool {
-					updatedNode := v1alpha1.WorkflowNode{}
+					updatedNode := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &updatedNode)).To(Succeed())
-					if !ConditionEqualsTo(updatedNode.Status, v1alpha1.ConditionChaosInjected, corev1.ConditionTrue) {
+					if !ConditionEqualsTo(updatedNode.Status, v1alpha2.ConditionChaosInjected, corev1.ConditionTrue) {
 						return false
 					}
-					schedule := v1alpha1.Schedule{}
+					schedule := v1alpha2.Schedule{}
 					err := kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: updatedNode.Status.ChaosResource.Name}, &schedule)
 					return err == nil
 				}, toleratedJitter, time.Second).Should(BeTrue())
 
 				By("assert that schedule should be purged")
 				Eventually(func() bool {
-					scheduleList := v1alpha1.ScheduleList{}
+					scheduleList := v1alpha2.ScheduleList{}
 					Expect(kubeClient.List(ctx, &scheduleList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					return len(scheduleList.Items) == 0
 				}, duration+toleratedJitter, time.Second).Should(BeTrue())
@@ -247,16 +247,16 @@ var _ = Describe("Workflow", func() {
 
 				maxConsisting := durationOfSubTask1 + durationOfSubTask2 + durationOfSubTask3
 
-				workflow := v1alpha1.Workflow{
+				workflow := v1alpha2.Workflow{
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace:    ns,
 						GenerateName: "fake-workflow-serial-",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "entry-serial",
-						Templates: []v1alpha1.Template{{
+						Templates: []v1alpha2.Template{{
 							Name:     "entry-serial",
-							Type:     v1alpha1.TypeSerial,
+							Type:     v1alpha2.TypeSerial,
 							Deadline: pointer.StringPtr(serialDuration.String()),
 							Children: []string{
 								"serial-task-1",
@@ -265,19 +265,19 @@ var _ = Describe("Workflow", func() {
 							},
 						}, {
 							Name:     "serial-task-1",
-							Type:     v1alpha1.TypeSuspend,
+							Type:     v1alpha2.TypeSuspend,
 							Deadline: pointer.StringPtr(durationOfSubTask1.String()),
 						}, {
 							Name:     "serial-task-2",
-							Type:     v1alpha1.TypeSuspend,
+							Type:     v1alpha2.TypeSuspend,
 							Deadline: pointer.StringPtr(durationOfSubTask2.String()),
 						}, {
 							Name:     "serial-task-3",
-							Type:     v1alpha1.TypeSuspend,
+							Type:     v1alpha2.TypeSuspend,
 							Deadline: pointer.StringPtr(durationOfSubTask3.String()),
 						}},
 					},
-					Status: v1alpha1.WorkflowStatus{},
+					Status: v1alpha2.WorkflowStatus{},
 				}
 
 				By("create workflow with serial entry")
@@ -286,7 +286,7 @@ var _ = Describe("Workflow", func() {
 				By("task 1 should be created")
 				task1Name := ""
 				Eventually(func() bool {
-					workflowNodes := v1alpha1.WorkflowNodeList{}
+					workflowNodes := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 					for _, item := range workflowNodes.Items {
 						if strings.HasPrefix(item.Name, "serial-task-1") {
@@ -301,16 +301,16 @@ var _ = Describe("Workflow", func() {
 
 				By("task 1 will be DeadlineExceed by itself")
 				Eventually(func() bool {
-					taskNode1 := v1alpha1.WorkflowNode{}
+					taskNode1 := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: task1Name}, &taskNode1)).To(Succeed())
-					condition := GetCondition(taskNode1.Status, v1alpha1.ConditionDeadlineExceed)
+					condition := GetCondition(taskNode1.Status, v1alpha2.ConditionDeadlineExceed)
 					if condition == nil {
 						return false
 					}
 					if condition.Status != corev1.ConditionTrue {
 						return false
 					}
-					if condition.Reason != v1alpha1.NodeDeadlineExceed {
+					if condition.Reason != v1alpha2.NodeDeadlineExceed {
 						return false
 					}
 					return true
@@ -319,7 +319,7 @@ var _ = Describe("Workflow", func() {
 				By("task 2 should be created")
 				task2Name := ""
 				Eventually(func() bool {
-					workflowNodes := v1alpha1.WorkflowNodeList{}
+					workflowNodes := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 					for _, item := range workflowNodes.Items {
 						if strings.HasPrefix(item.Name, "serial-task-2") {
@@ -332,36 +332,36 @@ var _ = Describe("Workflow", func() {
 				Expect(task2Name).NotTo(BeEmpty())
 
 				By("task 2 should be DeadlineExceed by parent")
-				taskNode2 := v1alpha1.WorkflowNode{}
+				taskNode2 := v1alpha2.WorkflowNode{}
 				Eventually(func() bool {
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: task2Name}, &taskNode2)).To(Succeed())
-					condition := GetCondition(taskNode2.Status, v1alpha1.ConditionDeadlineExceed)
+					condition := GetCondition(taskNode2.Status, v1alpha2.ConditionDeadlineExceed)
 					if condition == nil {
 						return false
 					}
 					if condition.Status != corev1.ConditionTrue {
 						return false
 					}
-					if condition.Reason != v1alpha1.ParentNodeDeadlineExceed {
+					if condition.Reason != v1alpha2.ParentNodeDeadlineExceed {
 						return false
 					}
 					return true
 				}, durationOfSubTask1+toleratedJitter, 200*time.Millisecond).Should(BeTrue())
 
 				By("entry serial should also be DeadlineExceed by itself")
-				entryNode := v1alpha1.WorkflowNode{}
-				entryNodeName := taskNode2.Labels[v1alpha1.LabelControlledBy]
+				entryNode := v1alpha2.WorkflowNode{}
+				entryNodeName := taskNode2.Labels[v1alpha2.LabelControlledBy]
 				Expect(entryNodeName).NotTo(BeEmpty())
 				Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: entryNodeName}, &entryNode)).To(Succeed())
-				condition := GetCondition(entryNode.Status, v1alpha1.ConditionDeadlineExceed)
+				condition := GetCondition(entryNode.Status, v1alpha2.ConditionDeadlineExceed)
 				Expect(condition).NotTo(BeNil())
 				Expect(condition.Status).To(Equal(corev1.ConditionTrue))
-				Expect(condition.Reason).To(Equal(v1alpha1.NodeDeadlineExceed))
+				Expect(condition.Reason).To(Equal(v1alpha2.NodeDeadlineExceed))
 
 				By("task 3 should NEVER be created")
 				Consistently(
 					func() bool {
-						workflowNodes := v1alpha1.WorkflowNodeList{}
+						workflowNodes := v1alpha2.WorkflowNodeList{}
 						Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 						for _, item := range workflowNodes.Items {
 							if strings.HasPrefix(item.Name, "serial-task-3") {
@@ -383,16 +383,16 @@ var _ = Describe("Workflow", func() {
 				durationOfSubTask3 := 5 * time.Second
 				toleratedJitter := 2 * time.Second
 
-				workflow := v1alpha1.Workflow{
+				workflow := v1alpha2.Workflow{
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace:    ns,
 						GenerateName: "fake-workflow-parallel-",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "entry-parallel",
-						Templates: []v1alpha1.Template{{
+						Templates: []v1alpha2.Template{{
 							Name:     "entry-parallel",
-							Type:     v1alpha1.TypeParallel,
+							Type:     v1alpha2.TypeParallel,
 							Deadline: pointer.StringPtr(parallelDuration.String()),
 							Children: []string{
 								"parallel-task-1",
@@ -401,19 +401,19 @@ var _ = Describe("Workflow", func() {
 							},
 						}, {
 							Name:     "parallel-task-1",
-							Type:     v1alpha1.TypeSuspend,
+							Type:     v1alpha2.TypeSuspend,
 							Deadline: pointer.StringPtr(durationOfSubTask1.String()),
 						}, {
 							Name:     "parallel-task-2",
-							Type:     v1alpha1.TypeSuspend,
+							Type:     v1alpha2.TypeSuspend,
 							Deadline: pointer.StringPtr(durationOfSubTask2.String()),
 						}, {
 							Name:     "parallel-task-3",
-							Type:     v1alpha1.TypeSuspend,
+							Type:     v1alpha2.TypeSuspend,
 							Deadline: pointer.StringPtr(durationOfSubTask3.String()),
 						}},
 					},
-					Status: v1alpha1.WorkflowStatus{},
+					Status: v1alpha2.WorkflowStatus{},
 				}
 
 				By("create workflow with parallel entry")
@@ -424,7 +424,7 @@ var _ = Describe("Workflow", func() {
 				task2Name := ""
 				task3Name := ""
 				Eventually(func() bool {
-					workflowNodes := v1alpha1.WorkflowNodeList{}
+					workflowNodes := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 					for _, item := range workflowNodes.Items {
 						if strings.HasPrefix(item.Name, "parallel-task-1") {
@@ -435,7 +435,7 @@ var _ = Describe("Workflow", func() {
 					return false
 				}, toleratedJitter, 200*time.Millisecond).Should(BeTrue())
 				Eventually(func() bool {
-					workflowNodes := v1alpha1.WorkflowNodeList{}
+					workflowNodes := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 					for _, item := range workflowNodes.Items {
 						if strings.HasPrefix(item.Name, "parallel-task-2") {
@@ -446,7 +446,7 @@ var _ = Describe("Workflow", func() {
 					return false
 				}, toleratedJitter, 200*time.Millisecond).Should(BeTrue())
 				Eventually(func() bool {
-					workflowNodes := v1alpha1.WorkflowNodeList{}
+					workflowNodes := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 					for _, item := range workflowNodes.Items {
 						if strings.HasPrefix(item.Name, "parallel-task-3") {
@@ -463,16 +463,16 @@ var _ = Describe("Workflow", func() {
 
 				By("task 1 should be DeadlineExceed by itself")
 				Eventually(func() bool {
-					taskNode := v1alpha1.WorkflowNode{}
+					taskNode := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: task1Name}, &taskNode)).To(Succeed())
-					condition := GetCondition(taskNode.Status, v1alpha1.ConditionDeadlineExceed)
+					condition := GetCondition(taskNode.Status, v1alpha2.ConditionDeadlineExceed)
 					if condition == nil {
 						return false
 					}
 					if condition.Status != corev1.ConditionTrue {
 						return false
 					}
-					if condition.Reason != v1alpha1.NodeDeadlineExceed {
+					if condition.Reason != v1alpha2.NodeDeadlineExceed {
 						return false
 					}
 					return true
@@ -481,33 +481,33 @@ var _ = Describe("Workflow", func() {
 				By("task 2 and task 3 should be DeadlineExceed by parent")
 				for _, nodeName := range []string{task2Name, task3Name} {
 					Eventually(func() bool {
-						taskNode := v1alpha1.WorkflowNode{}
+						taskNode := v1alpha2.WorkflowNode{}
 						Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: nodeName}, &taskNode)).To(Succeed())
-						condition := GetCondition(taskNode.Status, v1alpha1.ConditionDeadlineExceed)
+						condition := GetCondition(taskNode.Status, v1alpha2.ConditionDeadlineExceed)
 						if condition == nil {
 							return false
 						}
 						if condition.Status != corev1.ConditionTrue {
 							return false
 						}
-						if condition.Reason != v1alpha1.ParentNodeDeadlineExceed {
+						if condition.Reason != v1alpha2.ParentNodeDeadlineExceed {
 							return false
 						}
 						return true
 					}, parallelDuration+toleratedJitter, 200*time.Millisecond).Should(BeTrue())
 				}
 				By("entry parallel should also be DeadlineExceed by itself")
-				updateWorkflow := v1alpha1.Workflow{}
+				updateWorkflow := v1alpha2.Workflow{}
 				Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: workflow.Name}, &updateWorkflow)).To(Succeed())
 				entryNodeName := updateWorkflow.Status.EntryNode
 				Expect(entryNodeName).NotTo(BeNil())
 				Expect(*entryNodeName).NotTo(BeEmpty())
-				entryNode := v1alpha1.WorkflowNode{}
+				entryNode := v1alpha2.WorkflowNode{}
 				Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: *entryNodeName}, &entryNode)).To(Succeed())
-				condition := GetCondition(entryNode.Status, v1alpha1.ConditionDeadlineExceed)
+				condition := GetCondition(entryNode.Status, v1alpha2.ConditionDeadlineExceed)
 				Expect(condition).NotTo(BeNil())
 				Expect(condition.Status).To(Equal(corev1.ConditionTrue))
-				Expect(condition.Reason).To(Equal(v1alpha1.NodeDeadlineExceed))
+				Expect(condition.Reason).To(Equal(v1alpha2.NodeDeadlineExceed))
 			})
 		})
 
@@ -518,39 +518,39 @@ var _ = Describe("Workflow", func() {
 				durationOfSuspend := 10 * time.Second
 				toleratedJitter := 2 * time.Second
 
-				workflow := v1alpha1.Workflow{
+				workflow := v1alpha2.Workflow{
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace:    ns,
 						GenerateName: "fake-workflow-parallel-",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "entry-parallel",
-						Templates: []v1alpha1.Template{{
+						Templates: []v1alpha2.Template{{
 							Name:     "entry-parallel",
-							Type:     v1alpha1.TypeParallel,
+							Type:     v1alpha2.TypeParallel,
 							Deadline: pointer.StringPtr(parallelDuration.String()),
 							Children: []string{
 								"parallel-level-1",
 							},
 						}, {
 							Name: "parallel-level-1",
-							Type: v1alpha1.TypeParallel,
+							Type: v1alpha2.TypeParallel,
 							Children: []string{
 								"parallel-level-2",
 							},
 						}, {
 							Name: "parallel-level-2",
-							Type: v1alpha1.TypeParallel,
+							Type: v1alpha2.TypeParallel,
 							Children: []string{
 								"suspend-task",
 							},
 						}, {
 							Name:     "suspend-task",
-							Type:     v1alpha1.TypeSuspend,
+							Type:     v1alpha2.TypeSuspend,
 							Deadline: pointer.StringPtr(durationOfSuspend.String()),
 						}},
 					},
-					Status: v1alpha1.WorkflowStatus{},
+					Status: v1alpha2.WorkflowStatus{},
 				}
 
 				By("create workflow with parallel entry")
@@ -561,7 +561,7 @@ var _ = Describe("Workflow", func() {
 				parallelLevel2NodeName := ""
 				suspendTaskNodeName := ""
 				Eventually(func() bool {
-					workflowNodes := v1alpha1.WorkflowNodeList{}
+					workflowNodes := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 					for _, item := range workflowNodes.Items {
 						if strings.HasPrefix(item.Name, "parallel-level-1") {
@@ -572,7 +572,7 @@ var _ = Describe("Workflow", func() {
 					return false
 				}, toleratedJitter, 200*time.Millisecond).Should(BeTrue())
 				Eventually(func() bool {
-					workflowNodes := v1alpha1.WorkflowNodeList{}
+					workflowNodes := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 					for _, item := range workflowNodes.Items {
 						if strings.HasPrefix(item.Name, "parallel-level-2") {
@@ -583,7 +583,7 @@ var _ = Describe("Workflow", func() {
 					return false
 				}, toleratedJitter, 200*time.Millisecond).Should(BeTrue())
 				Eventually(func() bool {
-					workflowNodes := v1alpha1.WorkflowNodeList{}
+					workflowNodes := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodes)).To(Succeed())
 					for _, item := range workflowNodes.Items {
 						if strings.HasPrefix(item.Name, "suspend-task") {
@@ -601,16 +601,16 @@ var _ = Describe("Workflow", func() {
 				By("parallel level 1, parallel level 2 and suspend task should be DeadlineExceed by parent")
 				for _, nodeName := range []string{parallelLevel1NodeName, parallelLevel2NodeName, suspendTaskNodeName} {
 					Eventually(func() bool {
-						taskNode := v1alpha1.WorkflowNode{}
+						taskNode := v1alpha2.WorkflowNode{}
 						Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: nodeName}, &taskNode)).To(Succeed())
-						condition := GetCondition(taskNode.Status, v1alpha1.ConditionDeadlineExceed)
+						condition := GetCondition(taskNode.Status, v1alpha2.ConditionDeadlineExceed)
 						if condition == nil {
 							return false
 						}
 						if condition.Status != corev1.ConditionTrue {
 							return false
 						}
-						if condition.Reason != v1alpha1.ParentNodeDeadlineExceed {
+						if condition.Reason != v1alpha2.ParentNodeDeadlineExceed {
 							return false
 						}
 						return true
@@ -618,17 +618,17 @@ var _ = Describe("Workflow", func() {
 				}
 
 				By("entry parallel should also be DeadlineExceed by itself")
-				updateWorkflow := v1alpha1.Workflow{}
+				updateWorkflow := v1alpha2.Workflow{}
 				Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: workflow.Name}, &updateWorkflow)).To(Succeed())
 				entryNodeName := updateWorkflow.Status.EntryNode
 				Expect(entryNodeName).NotTo(BeNil())
 				Expect(*entryNodeName).NotTo(BeEmpty())
-				entryNode := v1alpha1.WorkflowNode{}
+				entryNode := v1alpha2.WorkflowNode{}
 				Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: *entryNodeName}, &entryNode)).To(Succeed())
-				condition := GetCondition(entryNode.Status, v1alpha1.ConditionDeadlineExceed)
+				condition := GetCondition(entryNode.Status, v1alpha2.ConditionDeadlineExceed)
 				Expect(condition).NotTo(BeNil())
 				Expect(condition.Status).To(Equal(corev1.ConditionTrue))
-				Expect(condition.Reason).To(Equal(v1alpha1.NodeDeadlineExceed))
+				Expect(condition.Reason).To(Equal(v1alpha2.NodeDeadlineExceed))
 
 			})
 		})
@@ -644,52 +644,52 @@ var _ = Describe("Workflow", func() {
 				deadline := metav1.NewTime(now.Add(duration))
 
 				By("create one empty podchaos workflow node, with deadline: 3s")
-				node := v1alpha1.WorkflowNode{
+				node := v1alpha2.WorkflowNode{
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace:    ns,
 						GenerateName: "pod-chaos-",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						WorkflowName: "",
-						Type:         v1alpha1.TypePodChaos,
+						Type:         v1alpha2.TypePodChaos,
 						StartTime:    &startTime,
 						Deadline:     &deadline,
-						EmbedChaos: &v1alpha1.EmbedChaos{
-							PodChaos: &v1alpha1.PodChaosSpec{
-								ContainerSelector: v1alpha1.ContainerSelector{
-									PodSelector: v1alpha1.PodSelector{
-										Selector: v1alpha1.PodSelectorSpec{
-											GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+						EmbedChaos: &v1alpha2.EmbedChaos{
+							PodChaos: &v1alpha2.PodChaosSpec{
+								ContainerSelector: v1alpha2.ContainerSelector{
+									PodSelector: v1alpha2.PodSelector{
+										Selector: v1alpha2.PodSelectorSpec{
+											GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 												Namespaces: []string{ns},
 												LabelSelectors: map[string]string{
 													"app": "not-actually-exist",
 												},
 											},
 										},
-										Mode: v1alpha1.AllMode,
+										Mode: v1alpha2.AllMode,
 									},
 									ContainerNames: nil,
 								},
-								Action: v1alpha1.PodKillAction,
+								Action: v1alpha2.PodKillAction,
 							},
 						},
 					},
-					Status: v1alpha1.WorkflowNodeStatus{},
+					Status: v1alpha2.WorkflowNodeStatus{},
 				}
 				Expect(kubeClient.Create(ctx, &node)).To(Succeed())
 				By("manually set condition ConditionDeadlineExceed to true, because of v1alpha1.ParentNodeDeadlineExceed")
 				updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-					deadlineExceedNode := v1alpha1.WorkflowNode{}
+					deadlineExceedNode := v1alpha2.WorkflowNode{}
 
 					err := kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &deadlineExceedNode)
 					if err != nil {
 						return err
 					}
-					deadlineExceedNode.Status.Conditions = []v1alpha1.WorkflowNodeCondition{
+					deadlineExceedNode.Status.Conditions = []v1alpha2.WorkflowNodeCondition{
 						{
-							Type:   v1alpha1.ConditionDeadlineExceed,
+							Type:   v1alpha2.ConditionDeadlineExceed,
 							Status: corev1.ConditionTrue,
-							Reason: v1alpha1.ParentNodeDeadlineExceed,
+							Reason: v1alpha2.ParentNodeDeadlineExceed,
 						},
 					}
 					err = kubeClient.Status().Update(ctx, &deadlineExceedNode)
@@ -701,17 +701,17 @@ var _ = Describe("Workflow", func() {
 				Expect(updateError).To(BeNil())
 				By("after 3 seconds, the condition ConditionDeadlineExceed should not be modified")
 				Consistently(func() bool {
-					updatedNode := v1alpha1.WorkflowNode{}
+					updatedNode := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &updatedNode)).To(Succeed())
 
-					condition := GetCondition(updatedNode.Status, v1alpha1.ConditionDeadlineExceed)
+					condition := GetCondition(updatedNode.Status, v1alpha2.ConditionDeadlineExceed)
 					if condition == nil {
 						return false
 					}
 					if condition.Status != corev1.ConditionTrue {
 						return false
 					}
-					if condition.Reason != v1alpha1.ParentNodeDeadlineExceed {
+					if condition.Reason != v1alpha2.ParentNodeDeadlineExceed {
 						return false
 					}
 					return true
@@ -730,52 +730,52 @@ var _ = Describe("Workflow", func() {
 				deadline := metav1.NewTime(now.Add(duration))
 
 				By("create one empty podchaos workflow node, with deadline: 3s")
-				node := v1alpha1.WorkflowNode{
+				node := v1alpha2.WorkflowNode{
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace:    ns,
 						GenerateName: "pod-chaos-",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						WorkflowName: "",
-						Type:         v1alpha1.TypePodChaos,
+						Type:         v1alpha2.TypePodChaos,
 						StartTime:    &startTime,
 						Deadline:     &deadline,
-						EmbedChaos: &v1alpha1.EmbedChaos{
-							PodChaos: &v1alpha1.PodChaosSpec{
-								ContainerSelector: v1alpha1.ContainerSelector{
-									PodSelector: v1alpha1.PodSelector{
-										Selector: v1alpha1.PodSelectorSpec{
-											GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+						EmbedChaos: &v1alpha2.EmbedChaos{
+							PodChaos: &v1alpha2.PodChaosSpec{
+								ContainerSelector: v1alpha2.ContainerSelector{
+									PodSelector: v1alpha2.PodSelector{
+										Selector: v1alpha2.PodSelectorSpec{
+											GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 												Namespaces: []string{ns},
 												LabelSelectors: map[string]string{
 													"app": "not-actually-exist",
 												},
 											},
 										},
-										Mode: v1alpha1.AllMode,
+										Mode: v1alpha2.AllMode,
 									},
 									ContainerNames: nil,
 								},
-								Action: v1alpha1.PodKillAction,
+								Action: v1alpha2.PodKillAction,
 							},
 						},
 					},
-					Status: v1alpha1.WorkflowNodeStatus{},
+					Status: v1alpha2.WorkflowNodeStatus{},
 				}
 				Expect(kubeClient.Create(ctx, &node)).To(Succeed())
 				By("manually set condition ConditionDeadlineExceed to true, but NOT caused by v1alpha1.ParentNodeDeadlineExceed")
 				updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-					deadlineExceedNode := v1alpha1.WorkflowNode{}
+					deadlineExceedNode := v1alpha2.WorkflowNode{}
 
 					err := kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &deadlineExceedNode)
 					if err != nil {
 						return err
 					}
-					deadlineExceedNode.Status.Conditions = []v1alpha1.WorkflowNodeCondition{
+					deadlineExceedNode.Status.Conditions = []v1alpha2.WorkflowNodeCondition{
 						{
-							Type:   v1alpha1.ConditionDeadlineExceed,
+							Type:   v1alpha2.ConditionDeadlineExceed,
 							Status: corev1.ConditionTrue,
-							Reason: v1alpha1.NodeDeadlineExceed,
+							Reason: v1alpha2.NodeDeadlineExceed,
 						},
 					}
 					err = kubeClient.Status().Update(ctx, &deadlineExceedNode)
@@ -787,25 +787,25 @@ var _ = Describe("Workflow", func() {
 				Expect(updateError).To(BeNil())
 				By("condition ConditionDeadlineExceed should be corrected soon")
 				Eventually(func() bool {
-					updatedNode := v1alpha1.WorkflowNode{}
+					updatedNode := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &updatedNode)).To(Succeed())
-					return ConditionEqualsTo(updatedNode.Status, v1alpha1.ConditionDeadlineExceed, corev1.ConditionFalse)
+					return ConditionEqualsTo(updatedNode.Status, v1alpha2.ConditionDeadlineExceed, corev1.ConditionFalse)
 				},
 					toleratedJitter,
 					time.Second)
 				By("after 5 seconds, the condition ConditionDeadlineExceed should not be modified, caused by NodeDeadlineExceed itself")
 				Eventually(func() bool {
-					updatedNode := v1alpha1.WorkflowNode{}
+					updatedNode := v1alpha2.WorkflowNode{}
 					Expect(kubeClient.Get(ctx, types.NamespacedName{Namespace: ns, Name: node.Name}, &updatedNode)).To(Succeed())
 
-					condition := GetCondition(updatedNode.Status, v1alpha1.ConditionDeadlineExceed)
+					condition := GetCondition(updatedNode.Status, v1alpha2.ConditionDeadlineExceed)
 					if condition == nil {
 						return false
 					}
 					if condition.Status != corev1.ConditionTrue {
 						return false
 					}
-					if condition.Reason != v1alpha1.NodeDeadlineExceed {
+					if condition.Reason != v1alpha2.NodeDeadlineExceed {
 						return false
 					}
 					return true

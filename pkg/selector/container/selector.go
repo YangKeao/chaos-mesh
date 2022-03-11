@@ -22,7 +22,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/pod"
@@ -44,7 +44,7 @@ func (c *Container) Id() string {
 	return c.Pod.Namespace + "/" + c.Pod.Name + "/" + c.ContainerName
 }
 
-func (impl *SelectImpl) Select(ctx context.Context, cs *v1alpha1.ContainerSelector) ([]*Container, error) {
+func (impl *SelectImpl) Select(ctx context.Context, cs *v1alpha2.ContainerSelector) ([]*Container, error) {
 	pods, err := pod.SelectAndFilterPods(ctx, impl.c, impl.r, &cs.PodSelector, impl.ClusterScoped, impl.TargetNamespace, impl.EnableFilterNamespace)
 	if err != nil {
 		return nil, err

@@ -19,7 +19,7 @@ import (
 	"go.uber.org/fx"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/action"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/networkchaos/partition"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/networkchaos/podnetworkchaosmanager"
@@ -38,10 +38,10 @@ func NewImpl(impl Impl) *impltypes.ChaosImplPair {
 	delegate := action.NewMultiplexer(&impl)
 	return &impltypes.ChaosImplPair{
 		Name:       "networkchaos",
-		Object:     &v1alpha1.NetworkChaos{},
+		Object:     &v1alpha2.NetworkChaos{},
 		Impl:       &delegate,
-		ObjectList: &v1alpha1.NetworkChaosList{},
-		Controlls:  []client.Object{&v1alpha1.PodNetworkChaos{}},
+		ObjectList: &v1alpha2.NetworkChaosList{},
+		Controlls:  []client.Object{&v1alpha2.PodNetworkChaos{}},
 	}
 }
 

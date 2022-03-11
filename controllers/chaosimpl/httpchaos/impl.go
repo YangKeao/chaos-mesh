@@ -27,7 +27,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/httpchaos/podhttpchaosmanager"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/iochaos/podiochaosmanager"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
@@ -37,8 +37,8 @@ import (
 var _ impltypes.ChaosImpl = (*Impl)(nil)
 
 const (
-	waitForApplySync   v1alpha1.Phase = "Not Injected/Wait"
-	waitForRecoverSync v1alpha1.Phase = "Injected/Wait"
+	waitForApplySync   v1alpha2.Phase = "Not Injected/Wait"
+	waitForRecoverSync v1alpha2.Phase = "Injected/Wait"
 )
 
 type Impl struct {
@@ -48,11 +48,11 @@ type Impl struct {
 	builder *podhttpchaosmanager.Builder
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	// The only possible phase to get in here is "Not Injected" or "Not Injected/Wait"
 
 	impl.Log.Info("httpchaos Apply", "namespace", obj.GetNamespace(), "name", obj.GetName())
-	httpchaos := obj.(*v1alpha1.HTTPChaos)
+	httpchaos := obj.(*v1alpha2.HTTPChaos)
 	if httpchaos.Status.Instances == nil {
 		httpchaos.Status.Instances = make(map[string]int64)
 	}
@@ -61,7 +61,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	phase := record.Phase
 
 	if phase == waitForApplySync {
-		podhttpchaos := &v1alpha1.PodHttpChaos{}
+		podhttpchaos := &v1alpha2.PodHttpChaos{}
 		namespacedName, err := controller.ParseNamespacedName(record.Id)
 		if err != nil {
 			return waitForApplySync, err
@@ -76,7 +76,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		}
 
 		if podhttpchaos.Status.ObservedGeneration >= httpchaos.Status.Instances[record.Id] {
-			return v1alpha1.Injected, nil
+			return v1alpha2.Injected, nil
 		}
 
 		return waitForApplySync, nil
@@ -84,12 +84,12 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 
 	podId, err := controller.ParseNamespacedName(records[index].Id)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	var pod v1.Pod
 	err = impl.Client.Get(ctx, podId, &pod)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	source := httpchaos.Namespace + "/" + httpchaos.Name
@@ -98,12 +98,12 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		Name:      pod.Name,
 	})
 
-	m.T.Append(v1alpha1.PodHttpChaosRule{
+	m.T.Append(v1alpha2.PodHttpChaosRule{
 		Source: m.Source,
 		Port:   httpchaos.Spec.Port,
-		PodHttpChaosBaseRule: v1alpha1.PodHttpChaosBaseRule{
+		PodHttpChaosBaseRule: v1alpha2.PodHttpChaosBaseRule{
 			Target: httpchaos.Spec.Target,
-			Selector: v1alpha1.PodHttpChaosSelector{
+			Selector: v1alpha2.PodHttpChaosSelector{
 				Port:            &httpchaos.Spec.Port,
 				Path:            httpchaos.Spec.Path,
 				Method:          httpchaos.Spec.Method,
@@ -116,7 +116,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	})
 	generationNumber, err := m.Commit(ctx)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	// modify the custom status
@@ -124,10 +124,10 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	return waitForApplySync, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	// The only possible phase to get in here is "Injected" or "Injected/Wait"
 
-	httpchaos := obj.(*v1alpha1.HTTPChaos)
+	httpchaos := obj.(*v1alpha2.HTTPChaos)
 	if httpchaos.Status.Instances == nil {
 		httpchaos.Status.Instances = make(map[string]int64)
 	}
@@ -135,7 +135,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	record := records[index]
 	phase := record.Phase
 	if phase == waitForRecoverSync {
-		podhttpchaos := &v1alpha1.PodHttpChaos{}
+		podhttpchaos := &v1alpha2.PodHttpChaos{}
 		namespacedName, err := controller.ParseNamespacedName(record.Id)
 		if err != nil {
 			// This error is not expected to exist
@@ -145,12 +145,12 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		if err != nil {
 			// TODO: handle this error
 			if k8sError.IsNotFound(err) {
-				return v1alpha1.NotInjected, nil
+				return v1alpha2.NotInjected, nil
 			}
 
 			if k8sError.IsForbidden(err) {
 				if strings.Contains(err.Error(), "because it is being terminated") {
-					return v1alpha1.NotInjected, nil
+					return v1alpha2.NotInjected, nil
 				}
 			}
 
@@ -162,7 +162,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		}
 
 		if podhttpchaos.Status.ObservedGeneration >= httpchaos.Status.Instances[record.Id] {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
 
 		return waitForRecoverSync, nil
@@ -171,16 +171,16 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	podId, err := controller.ParseNamespacedName(records[index].Id)
 	if err != nil {
 		// This error is not expected to exist
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	var pod v1.Pod
 	err = impl.Client.Get(ctx, podId, &pod)
 	if err != nil {
 		// TODO: handle this error
 		if k8sError.IsNotFound(err) {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	source := httpchaos.Namespace + "/" + httpchaos.Name
@@ -192,15 +192,15 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	generationNumber, err := m.Commit(ctx)
 	if err != nil {
 		if err == podiochaosmanager.ErrPodNotFound || err == podiochaosmanager.ErrPodNotRunning {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
 
 		if k8sError.IsForbidden(err) {
 			if strings.Contains(err.Error(), "because it is being terminated") {
-				return v1alpha1.NotInjected, nil
+				return v1alpha2.NotInjected, nil
 			}
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	// Now modify the custom status and phase
@@ -211,14 +211,14 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 func NewImpl(c client.Client, b *podhttpchaosmanager.Builder, log logr.Logger) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "httpchaos",
-		Object: &v1alpha1.HTTPChaos{},
+		Object: &v1alpha2.HTTPChaos{},
 		Impl: &Impl{
 			Client:  c,
 			Log:     log.WithName("httpchaos"),
 			builder: b,
 		},
-		ObjectList: &v1alpha1.HTTPChaosList{},
-		Controlls:  []client.Object{&v1alpha1.PodHttpChaos{}},
+		ObjectList: &v1alpha2.HTTPChaosList{},
+		Controlls:  []client.Object{&v1alpha2.PodHttpChaos{}},
 	}
 }
 

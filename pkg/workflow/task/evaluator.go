@@ -20,7 +20,7 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/expr"
 )
 
@@ -33,9 +33,9 @@ func NewEvaluator(logger logr.Logger, kubeclient client.Client) *Evaluator {
 	return &Evaluator{logger: logger, kubeclient: kubeclient}
 }
 
-func (it *Evaluator) EvaluateConditionBranches(tasks []v1alpha1.ConditionalBranch, resultEnv map[string]interface{}) (branches []v1alpha1.ConditionalBranchStatus, err error) {
+func (it *Evaluator) EvaluateConditionBranches(tasks []v1alpha2.ConditionalBranch, resultEnv map[string]interface{}) (branches []v1alpha2.ConditionalBranchStatus, err error) {
 
-	var result []v1alpha1.ConditionalBranchStatus
+	var result []v1alpha2.ConditionalBranchStatus
 	for _, task := range tasks {
 		it.logger.V(4).Info("evaluate for expression", "expression", task.Expression, "env", resultEnv)
 		var evalResult corev1.ConditionStatus
@@ -52,7 +52,7 @@ func (it *Evaluator) EvaluateConditionBranches(tasks []v1alpha1.ConditionalBranc
 			}
 		}
 
-		result = append(result, v1alpha1.ConditionalBranchStatus{
+		result = append(result, v1alpha2.ConditionalBranchStatus{
 			Target:           task.Target,
 			EvaluationResult: evalResult,
 		})

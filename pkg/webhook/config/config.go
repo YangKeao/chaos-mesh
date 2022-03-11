@@ -24,7 +24,7 @@ import (
 	"github.com/pkg/errors"
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 var (
@@ -51,7 +51,7 @@ type ExecAction struct {
 type InjectionConfig struct {
 	Name string
 	// Selector is used to select pods that are used to inject sidecar.
-	Selector *v1alpha1.PodSelectorSpec
+	Selector *v1alpha2.PodSelectorSpec
 
 	Containers            []corev1.Container   `json:"containers"`
 	Volumes               []corev1.Volume      `json:"volumes"`
@@ -83,7 +83,7 @@ type TemplateArgs struct {
 	Template  string            `yaml:"template"`
 	Arguments map[string]string `yaml:"arguments"`
 	// Selector is used to select pods that are used to inject sidecar.
-	Selector *v1alpha1.PodSelectorSpec `json:"selector,omitempty"`
+	Selector *v1alpha2.PodSelectorSpec `json:"selector,omitempty"`
 }
 
 // NewConfigWatcherConf creates a configuration for watcher

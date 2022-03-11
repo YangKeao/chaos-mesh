@@ -31,7 +31,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // unit tests
@@ -158,17 +158,17 @@ var _ = Describe("Workflow", func() {
 			It("should spawn all the children at the same time", func() {
 				By("create simple workflow")
 				ctx := context.TODO()
-				simpleParallelWorkflow := v1alpha1.Workflow{
+				simpleParallelWorkflow := v1alpha2.Workflow{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "simple-parallel",
 						Namespace: ns,
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "parallel",
-						Templates: []v1alpha1.Template{
+						Templates: []v1alpha2.Template{
 							{
 								Name: "parallel",
-								Type: v1alpha1.TypeParallel,
+								Type: v1alpha2.TypeParallel,
 								Children: []string{
 									"network-chaos",
 									"pod-chaos",
@@ -176,66 +176,66 @@ var _ = Describe("Workflow", func() {
 								},
 							}, {
 								Name: "network-chaos",
-								Type: v1alpha1.TypeNetworkChaos,
-								EmbedChaos: &v1alpha1.EmbedChaos{
-									NetworkChaos: &v1alpha1.NetworkChaosSpec{
-										PodSelector: v1alpha1.PodSelector{
-											Selector: v1alpha1.PodSelectorSpec{
-												GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+								Type: v1alpha2.TypeNetworkChaos,
+								EmbedChaos: &v1alpha2.EmbedChaos{
+									NetworkChaos: &v1alpha2.NetworkChaosSpec{
+										PodSelector: v1alpha2.PodSelector{
+											Selector: v1alpha2.PodSelectorSpec{
+												GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 													Namespaces: []string{ns},
 													LabelSelectors: map[string]string{
 														"app": "not-exist",
 													},
 												},
 											},
-											Mode: v1alpha1.AllMode,
+											Mode: v1alpha2.AllMode,
 										},
-										Action: v1alpha1.PartitionAction,
+										Action: v1alpha2.PartitionAction,
 									},
 								},
 							}, {
 								Name: "pod-chaos",
-								Type: v1alpha1.TypePodChaos,
-								EmbedChaos: &v1alpha1.EmbedChaos{
-									PodChaos: &v1alpha1.PodChaosSpec{
-										ContainerSelector: v1alpha1.ContainerSelector{
-											PodSelector: v1alpha1.PodSelector{
-												Selector: v1alpha1.PodSelectorSpec{
-													GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+								Type: v1alpha2.TypePodChaos,
+								EmbedChaos: &v1alpha2.EmbedChaos{
+									PodChaos: &v1alpha2.PodChaosSpec{
+										ContainerSelector: v1alpha2.ContainerSelector{
+											PodSelector: v1alpha2.PodSelector{
+												Selector: v1alpha2.PodSelectorSpec{
+													GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 														Namespaces: []string{ns},
 														LabelSelectors: map[string]string{
 															"app": "not-exist",
 														},
 													},
 												},
-												Mode: v1alpha1.AllMode,
+												Mode: v1alpha2.AllMode,
 											},
 										},
-										Action: v1alpha1.PodKillAction,
+										Action: v1alpha2.PodKillAction,
 									},
 								},
 							},
 							{
 								Name: "stress-chaos",
-								Type: v1alpha1.TypeStressChaos,
-								EmbedChaos: &v1alpha1.EmbedChaos{
-									StressChaos: &v1alpha1.StressChaosSpec{
-										ContainerSelector: v1alpha1.ContainerSelector{
-											PodSelector: v1alpha1.PodSelector{
-												Selector: v1alpha1.PodSelectorSpec{
-													GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+								Type: v1alpha2.TypeStressChaos,
+								EmbedChaos: &v1alpha2.EmbedChaos{
+									StressChaos: &v1alpha2.StressChaosSpec{
+										ContainerSelector: v1alpha2.ContainerSelector{
+											PodSelector: v1alpha2.PodSelector{
+												Selector: v1alpha2.PodSelectorSpec{
+													GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 														Namespaces: []string{ns},
 														LabelSelectors: map[string]string{
 															"app": "not-exist",
 														},
 													},
 												},
-												Mode: v1alpha1.AllMode,
+												Mode: v1alpha2.AllMode,
 											},
 										},
-										Stressors: &v1alpha1.Stressors{
-											CPUStressor: &v1alpha1.CPUStressor{
-												Stressor: v1alpha1.Stressor{
+										Stressors: &v1alpha2.Stressors{
+											CPUStressor: &v1alpha2.CPUStressor{
+												Stressor: v1alpha2.Stressor{
 													Workers: 2,
 												},
 											}},
@@ -250,14 +250,14 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that 1 entry node and 3 chaos nodes created")
 				Eventually(func() int {
-					workflowNodeList := v1alpha1.WorkflowNodeList{}
+					workflowNodeList := v1alpha2.WorkflowNodeList{}
 					Expect(kubeClient.List(ctx, &workflowNodeList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					return len(workflowNodeList.Items)
 				}, 10*time.Second, time.Second).Should(Equal(4))
 
 				By("assert that network chaos has been created")
 				Eventually(func() bool {
-					chaosList := v1alpha1.NetworkChaosList{}
+					chaosList := v1alpha2.NetworkChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					if len(chaosList.Items) != 1 {
 						return false
@@ -267,7 +267,7 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that pod chaos has been created")
 				Eventually(func() bool {
-					chaosList := v1alpha1.PodChaosList{}
+					chaosList := v1alpha2.PodChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					if len(chaosList.Items) != 1 {
 						return false
@@ -277,7 +277,7 @@ var _ = Describe("Workflow", func() {
 
 				By("assert that stress chaos has been created")
 				Eventually(func() bool {
-					chaosList := v1alpha1.StressChaosList{}
+					chaosList := v1alpha2.StressChaosList{}
 					Expect(kubeClient.List(ctx, &chaosList, &client.ListOptions{Namespace: ns})).To(Succeed())
 					if len(chaosList.Items) != 1 {
 						return false

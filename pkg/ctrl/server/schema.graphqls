@@ -328,7 +328,7 @@ type PodSpec @goModel(model: "k8s.io/api/core/v1.PodSpec") {
 
 }
 
-type PodIOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodIOChaos") {
+type PodIOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodIOChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -355,7 +355,7 @@ type PodIOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.P
 }
 
 # PodIOChaosSpec defines the desired state of PodIOChaos
-type PodIOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodIOChaosSpec") {
+type PodIOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodIOChaosSpec") {
     # volumeMountPath represents the target mount path
     # It must be a root of mount path now.
     volumeMountPath: String!
@@ -366,7 +366,7 @@ type PodIOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alph
     actions: [IOChaosAction!]
 }
 
-type PodIOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodIOChaosStatus") {
+type PodIOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodIOChaosStatus") {
 
     # pid represents a running toda process id
     pid: Int
@@ -378,7 +378,7 @@ type PodIOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1al
 }
 
 # IOChaosAction defines an possible action of IOChaos
-type IOChaosAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOChaosAction") {
+type IOChaosAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IOChaosAction") {
     type: String!
 
     # path represents a glob of injecting path
@@ -425,19 +425,19 @@ type IOChaosAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha
     source: String!
 }
 
-type IoFault @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IoFault") {
+type IoFault @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IoFault") {
     errno: Int!
     weight: Int!
 }
 
 # Timespec represents a time
-type Timespec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.Timespec") {
+type Timespec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.Timespec") {
     sec: Int!
     nsec: Int!
 }
 
 
-type IOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOChaos") {
+type IOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IOChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -463,7 +463,7 @@ type IOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOCh
 }
 
 # IOChaosSpec defines the desired state of IOChaos
-type IOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOChaosSpec") {
+type IOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IOChaosSpec") {
     # containerNames indicates list of the name of affected container.
     # If not set, the first container will be injected
     containerNames: [String!]
@@ -527,7 +527,7 @@ type IOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.
 }
 
 # AttrOverrideSpec represents an override of attribution
-type AttrOverrideSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.AttrOverrideSpec") {
+type AttrOverrideSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.AttrOverrideSpec") {
     ino: Int
     size: Int
     blocks: Int
@@ -543,7 +543,7 @@ type AttrOverrideSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1al
 }
 
 # MistakeSpec represents one type of mistake
-type MistakeSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.MistakeSpec") {
+type MistakeSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.MistakeSpec") {
     # filling determines what is filled in the miskate data.
     filling: String
 
@@ -554,7 +554,7 @@ type MistakeSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.
     maxLength: Int
 }
 
-type IOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOChaosStatus") {
+type IOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IOChaosStatus") {
     # conditions represents the current global condition of the chaos
     conditions: [ChaosCondition!]
 
@@ -565,7 +565,7 @@ type IOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha
     instances: Map
 }
 
-type PodHTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaos") {
+type PodHTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -591,13 +591,13 @@ type PodHTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1
 }
 
 # PodHttpChaosSpec defines the desired state of PodHttpChaos.
-type PodHttpChaosSpec  @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosSpec") {
+type PodHttpChaosSpec  @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosSpec") {
     # rules are a list of injection rule for http request.
     rules: [PodHttpChaosRule!]!
 }
 
 # PodHttpChaosStatus defines the actual state of PodHttpChaos.
-type PodHttpChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosStatus") {
+type PodHttpChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosStatus") {
     # pid represents a running tproxy process id.
     pid: Int
 
@@ -609,7 +609,7 @@ type PodHttpChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1
 }
 
 # PodHttpChaosRule defines the injection rule for http.
-type PodHttpChaosRule @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosRule") {
+type PodHttpChaosRule @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosRule") {
     # target is the object to be selected and injected, <Request|Response>.
     target: String!
 
@@ -624,7 +624,7 @@ type PodHttpChaosRule @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1al
     port: Int!
 }
 
-type PodHttpChaosSelector @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosSelector") {
+type PodHttpChaosSelector @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosSelector") {
     # port represents the target port to be proxy of.
     port: Int
 
@@ -647,7 +647,7 @@ type PodHttpChaosSelector @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/
 }
 
 # PodHttpChaosAction defines possible actions of HttpChaos.
-type PodHttpChaosActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosActions") {
+type PodHttpChaosActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosActions") {
     # abort is a rule to abort a http session.
     abort: Boolean
 
@@ -665,7 +665,7 @@ type PodHttpChaosActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v
     patch: PodHttpChaosPatchActions
 }
 
-type HTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.HTTPChaos") {
+type HTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.HTTPChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -690,7 +690,7 @@ type HTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.HT
     podhttp: [PodHTTPChaos!]    @goField(forceResolver: true)
 }
 
-type HTTPChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.HTTPChaosSpec") {
+type HTTPChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.HTTPChaosSpec") {
     # selector is used to select pods that are used to inject chaos action.
     selector: PodSelectorSpec!
 
@@ -749,7 +749,7 @@ type HTTPChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha
 
 # PodSelectorSpec defines the some selectors to select objects.
 # If the all selectors are empty, all objects will be used in chaos experiment.
-type PodSelectorSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodSelectorSpec") {
+type PodSelectorSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodSelectorSpec") {
     # namespaces is a set of namespace to which objects belong.
     namespaces: [String!]
 
@@ -783,7 +783,7 @@ type PodSelectorSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alp
     podPhaseSelectors: [String!]
 }
 
-type PodHttpChaosReplaceActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosReplaceActions") {
+type PodHttpChaosReplaceActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosReplaceActions") {
     # path is rule to to replace uri path in http request.
     path: String
 
@@ -806,7 +806,7 @@ type PodHttpChaosReplaceActions @goModel(model: "github.com/chaos-mesh/chaos-mes
 }
 
 # PodHttpChaosPatchActions defines possible patch-actions of HttpChaos.
-type PodHttpChaosPatchActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosPatchActions") {
+type PodHttpChaosPatchActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosPatchActions") {
     # body is a rule to patch message body of target.
     body: PodHttpChaosPatchBodyAction
 
@@ -820,7 +820,7 @@ type PodHttpChaosPatchActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/
 }
 
 # PodHttpChaosPatchBodyAction defines patch body action of HttpChaos.
-type PodHttpChaosPatchBodyAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosPatchBodyAction") {
+type PodHttpChaosPatchBodyAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosPatchBodyAction") {
     # type represents the patch type, only support `JSON` as [merge patch json](https://tools.ietf.org/html/rfc7396) currently.
     type: String!
 
@@ -828,7 +828,7 @@ type PodHttpChaosPatchBodyAction @goModel(model: "github.com/chaos-mesh/chaos-me
     value: String!
 }
 
-type HTTPChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.HTTPChaosStatus") {
+type HTTPChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.HTTPChaosStatus") {
     # conditions represents the current global condition of the chaos
     conditions: [ChaosCondition!]
 
@@ -839,26 +839,26 @@ type HTTPChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alp
     instances: Map
 }
 
-type ChaosCondition @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.ChaosCondition") {
+type ChaosCondition @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.ChaosCondition") {
     type: String!
     status: String!
     reason: String
 }
 
-type ExperimentStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.ExperimentStatus") {
+type ExperimentStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.ExperimentStatus") {
     desiredPhase: String!
 
     # Records are used to track the running status
     Records: [Record!]
 }
 
-type Record @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.Record") {
+type Record @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.Record") {
     id: String!
     selectorKey: String!
     phase: String!
 }
 
-type PodNetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodNetworkChaos") {
+type PodNetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodNetworkChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -884,7 +884,7 @@ type PodNetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alp
 }
 
 # PodNetworkChaosSpec defines the desired state of PodNetworkChaos
-type PodNetworkChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodNetworkChaosSpec") {
+type PodNetworkChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodNetworkChaosSpec") {
     # The ipset on the pod
     ipSets: [RawIPSet!]
 
@@ -896,13 +896,13 @@ type PodNetworkChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v
 }
 
 # PodNetworkChaosStatus defines the observed state of PodNetworkChaos
-type PodNetworkChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodNetworkChaosStatus") {
+type PodNetworkChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodNetworkChaosStatus") {
     failedMessage: String!
     observedGeneration: Int!
 }
 
 # RawIPSet represents an ipset on specific pod
-type RawIPSet @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.RawIPSet") {
+type RawIPSet @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.RawIPSet") {
     # The name of ipset
     name: String!
 
@@ -914,7 +914,7 @@ type RawIPSet @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.Raw
 }
 
 # RawIptables represents the iptables rules on specific pod
-type RawIptables @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.RawIptables") {
+type RawIptables @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.RawIptables") {
     # The name of iptables chain
     name: String!
 
@@ -932,7 +932,7 @@ type RawIptables @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.
 }
 
 # RawTrafficControl represents the traffic control chaos on specific pod
-type RawTrafficControl @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.RawTrafficControl") {
+type RawTrafficControl @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.RawTrafficControl") {
     # The type of traffic control
     type: String!
 
@@ -962,7 +962,7 @@ type RawTrafficControl @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1a
 }
 
 # DelaySpec defines detail of a delay action
-type DelaySpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.DelaySpec") {
+type DelaySpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.DelaySpec") {
     latency: String!
     correlation: String
     jitter: String
@@ -970,25 +970,25 @@ type DelaySpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.De
 }
 
 # LossSpec defines detail of a loss action
-type LossSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.LossSpec") {
+type LossSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.LossSpec") {
     loss: String!
     correlation: String
 }
 
 # DuplicateSpec defines detail of a duplicate action
-type DuplicateSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.DuplicateSpec") {
+type DuplicateSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.DuplicateSpec") {
     duplicate: String!
     correlation: String
 }
 
 # CorruptSpec defines detail of a corrupt action
-type CorruptSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.CorruptSpec") {
+type CorruptSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.CorruptSpec") {
     corrupt: String!
     correlation: String
 }
 
 # BandwidthSpec defines detail of bandwidth limit.
-type BandwidthSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.BandwidthSpec") {
+type BandwidthSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.BandwidthSpec") {
     # rate is the speed knob. Allows bps, kbps, mbps, gbps, tbps unit. bps means bytes per second.
     rate: String!
 
@@ -1012,13 +1012,13 @@ type BandwidthSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha
 }
 
 # ReorderSpec defines details of packet reorder.
-type ReorderSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.ReorderSpec") {
+type ReorderSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.ReorderSpec") {
     reorder: String!
     correlation: String
     gap: Int
 }
 
-type NetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.NetworkChaos") {
+type NetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.NetworkChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -1040,7 +1040,7 @@ type NetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1
     podnetwork: [PodNetworkChaos!]	@goField(forceResolver: true)
 }
 
-type MemoryStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.MemoryStressor") {
+type MemoryStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.MemoryStressor") {
     # Workers specifies N workers to apply the stressor.
 	# Maximum 8192 workers can run by stress-ng
 	workers: Int!
@@ -1054,7 +1054,7 @@ type MemoryStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alph
 	options: [String!]
 }
 
-type CPUStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.CPUStressor") {
+type CPUStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.CPUStressor") {
      # Workers specifies N workers to apply the stressor.
 	# Maximum 8192 workers can run by stress-ng
 	workers: Int!
@@ -1067,13 +1067,13 @@ type CPUStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.
 	options: [String!]
 }
 
-type Stressors @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.Stressors") {
+type Stressors @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.Stressors") {
     memoryStressor: MemoryStressor
     cpuStressor: CPUStressor
 }
 
 # StressChaosSpec defines the desired state of StressChaos
-type StressChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.StressChaosSpec") {
+type StressChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.StressChaosSpec") {
     # containerNames indicates list of the name of affected container.
     # If not set, all containers will be injected
     containerNames: [String!]
@@ -1111,7 +1111,7 @@ type StressChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alp
     duration: String
 }
 
-type StressChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.StressChaosStatus") {
+type StressChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.StressChaosStatus") {
     # conditions represents the current global condition of the chaos
     conditions: [ChaosCondition!]
 
@@ -1122,7 +1122,7 @@ type StressChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1a
     instances: Map
 }
 
-type StressChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.StressChaos") {
+type StressChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.StressChaos") {
     kind: String!
     apiVersion: String!
     name: String!

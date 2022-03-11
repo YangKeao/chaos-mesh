@@ -18,7 +18,7 @@ package gcpchaos
 import (
 	"go.uber.org/fx"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/action"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/gcpchaos/diskloss"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/gcpchaos/nodereset"
@@ -38,7 +38,7 @@ func NewImpl(impl Impl) *impltypes.ChaosImplPair {
 	delegate := action.NewMultiplexer(&impl)
 	return &impltypes.ChaosImplPair{
 		Name:   "gcpchaos",
-		Object: &v1alpha1.GCPChaos{},
+		Object: &v1alpha2.GCPChaos{},
 		Impl:   &delegate,
 	}
 }

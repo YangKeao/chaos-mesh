@@ -29,7 +29,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 )
 
@@ -53,7 +53,7 @@ func (it *WorkflowEntryReconciler) Reconcile(ctx context.Context, request reconc
 		)
 	}()
 
-	workflow := v1alpha1.Workflow{}
+	workflow := v1alpha2.Workflow{}
 	err := it.kubeClient.Get(ctx, request.NamespacedName, &workflow)
 	if err != nil {
 		return reconcile.Result{}, client.IgnoreNotFound(err)
@@ -114,7 +114,7 @@ func (it *WorkflowEntryReconciler) Reconcile(ctx context.Context, request reconc
 
 	// sync the status
 	updateError := retry.RetryOnConflict(retry.DefaultRetry, func() error {
-		workflowNeedUpdate := v1alpha1.Workflow{}
+		workflowNeedUpdate := v1alpha2.Workflow{}
 		err := it.kubeClient.Get(ctx, request.NamespacedName, &workflowNeedUpdate)
 		if err != nil {
 			it.logger.Error(err,
@@ -146,15 +146,15 @@ func (it *WorkflowEntryReconciler) Reconcile(ctx context.Context, request reconc
 			}
 
 			workflowNeedUpdate.Status.EntryNode = pointer.StringPtr(entryNodes[0].Name)
-			SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha1.WorkflowCondition{
-				Type:   v1alpha1.WorkflowConditionScheduled,
+			SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha2.WorkflowCondition{
+				Type:   v1alpha2.WorkflowConditionScheduled,
 				Status: corev1.ConditionTrue,
 				Reason: "",
 			})
 
 			if WorkflowNodeFinished(entryNodes[0].Status) {
-				SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha1.WorkflowCondition{
-					Type:   v1alpha1.WorkflowConditionAccomplished,
+				SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha2.WorkflowCondition{
+					Type:   v1alpha2.WorkflowConditionAccomplished,
 					Status: corev1.ConditionTrue,
 					Reason: "",
 				})
@@ -164,21 +164,21 @@ func (it *WorkflowEntryReconciler) Reconcile(ctx context.Context, request reconc
 					it.eventRecorder.Event(&workflow, recorder.WorkflowAccomplished{})
 				}
 			} else {
-				SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha1.WorkflowCondition{
-					Type:   v1alpha1.WorkflowConditionAccomplished,
+				SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha2.WorkflowCondition{
+					Type:   v1alpha2.WorkflowConditionAccomplished,
 					Status: corev1.ConditionFalse,
 					Reason: "",
 				})
 				workflowNeedUpdate.Status.EndTime = nil
 			}
 		} else {
-			SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha1.WorkflowCondition{
-				Type:   v1alpha1.WorkflowConditionScheduled,
+			SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha2.WorkflowCondition{
+				Type:   v1alpha2.WorkflowConditionScheduled,
 				Status: corev1.ConditionFalse,
 				Reason: "",
 			})
-			SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha1.WorkflowCondition{
-				Type:   v1alpha1.WorkflowConditionAccomplished,
+			SetWorkflowCondition(&workflowNeedUpdate.Status, v1alpha2.WorkflowCondition{
+				Type:   v1alpha2.WorkflowConditionAccomplished,
 				Status: corev1.ConditionFalse,
 				Reason: "",
 			})
@@ -205,11 +205,11 @@ func (it *WorkflowEntryReconciler) Reconcile(ctx context.Context, request reconc
 //
 // The expected length of result is 1, but due to the reconcile and the inconsistent cache, there might be more than one
 // entry nodes created, if should be reported to the upper logic.
-func (it *WorkflowEntryReconciler) fetchEntryNode(ctx context.Context, workflow v1alpha1.Workflow) ([]v1alpha1.WorkflowNode, error) {
-	entryNodesList := v1alpha1.WorkflowNodeList{}
+func (it *WorkflowEntryReconciler) fetchEntryNode(ctx context.Context, workflow v1alpha2.Workflow) ([]v1alpha2.WorkflowNode, error) {
+	entryNodesList := v1alpha2.WorkflowNodeList{}
 	controlledByWorkflow, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{
 		MatchLabels: map[string]string{
-			v1alpha1.LabelControlledBy: workflow.Name,
+			v1alpha2.LabelControlledBy: workflow.Name,
 		},
 	})
 	if err != nil {
@@ -235,7 +235,7 @@ func (it *WorkflowEntryReconciler) fetchEntryNode(ctx context.Context, workflow 
 }
 
 // spawnEntryNode will create **one** entry workflow node for current workflow
-func (it *WorkflowEntryReconciler) spawnEntryNode(ctx context.Context, workflow v1alpha1.Workflow) (*v1alpha1.WorkflowNode, error) {
+func (it *WorkflowEntryReconciler) spawnEntryNode(ctx context.Context, workflow v1alpha2.Workflow) (*v1alpha2.WorkflowNode, error) {
 	// This workflow is just created, create entry node
 	nodes, err := renderNodesByTemplates(&workflow, nil, workflow.Spec.Entry)
 	if err != nil {

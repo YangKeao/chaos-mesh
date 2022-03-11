@@ -25,7 +25,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/fake"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	. "github.com/chaos-mesh/chaos-mesh/pkg/testutils"
 )
 
@@ -38,7 +38,7 @@ func TestSelectPhysicalMachines(t *testing.T) {
 	objects = append(objects, objects2...)
 	physicalMachines = append(physicalMachines, physicalMachines2...)
 
-	err := v1alpha1.SchemeBuilder.AddToScheme(scheme.Scheme)
+	err := v1alpha2.SchemeBuilder.AddToScheme(scheme.Scheme)
 	g.Expect(err).NotTo(HaveOccurred())
 
 	c := fake.NewClientBuilder().WithScheme(scheme.Scheme).WithRuntimeObjects(objects...).Build()
@@ -46,34 +46,34 @@ func TestSelectPhysicalMachines(t *testing.T) {
 
 	type TestCase struct {
 		name     string
-		selector v1alpha1.PhysicalMachineSelectorSpec
-		expected []v1alpha1.PhysicalMachine
+		selector v1alpha2.PhysicalMachineSelectorSpec
+		expected []v1alpha2.PhysicalMachine
 	}
 
 	tcs := []TestCase{
 		{
 			name: "filter specified physical machines",
-			selector: v1alpha1.PhysicalMachineSelectorSpec{
+			selector: v1alpha2.PhysicalMachineSelectorSpec{
 				PhysicalMachines: map[string][]string{
 					metav1.NamespaceDefault: {"p3", "p4"},
 					"test-s":                {"s1"},
 				},
 			},
-			expected: []v1alpha1.PhysicalMachine{physicalMachines[3], physicalMachines[4], physicalMachines[6]},
+			expected: []v1alpha2.PhysicalMachine{physicalMachines[3], physicalMachines[4], physicalMachines[6]},
 		},
 		{
 			name: "filter labels physical machines",
-			selector: v1alpha1.PhysicalMachineSelectorSpec{
-				GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			selector: v1alpha2.PhysicalMachineSelectorSpec{
+				GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 					LabelSelectors: map[string]string{"l2": "l2"},
 				},
 			},
-			expected: []v1alpha1.PhysicalMachine{physicalMachines[5], physicalMachines[6]},
+			expected: []v1alpha2.PhysicalMachine{physicalMachines[5], physicalMachines[6]},
 		},
 		{
 			name: "filter physicalMachines by label expressions",
-			selector: v1alpha1.PhysicalMachineSelectorSpec{
-				GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			selector: v1alpha2.PhysicalMachineSelectorSpec{
+				GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 					ExpressionSelectors: []metav1.LabelSelectorRequirement{
 						{
 							Key:      "l2",
@@ -83,12 +83,12 @@ func TestSelectPhysicalMachines(t *testing.T) {
 					},
 				},
 			},
-			expected: []v1alpha1.PhysicalMachine{physicalMachines[5], physicalMachines[6]},
+			expected: []v1alpha2.PhysicalMachine{physicalMachines[5], physicalMachines[6]},
 		},
 		{
 			name: "filter physicalMachines by label selectors and expression selectors",
-			selector: v1alpha1.PhysicalMachineSelectorSpec{
-				GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			selector: v1alpha2.PhysicalMachineSelectorSpec{
+				GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 					LabelSelectors: map[string]string{"l1": "l1"},
 					ExpressionSelectors: []metav1.LabelSelectorRequirement{
 						{
@@ -103,18 +103,18 @@ func TestSelectPhysicalMachines(t *testing.T) {
 		},
 		{
 			name: "filter namespace and labels",
-			selector: v1alpha1.PhysicalMachineSelectorSpec{
-				GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			selector: v1alpha2.PhysicalMachineSelectorSpec{
+				GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 					Namespaces:     []string{"test-s"},
 					LabelSelectors: map[string]string{"l2": "l2"},
 				},
 			},
-			expected: []v1alpha1.PhysicalMachine{physicalMachines[5], physicalMachines[6]},
+			expected: []v1alpha2.PhysicalMachine{physicalMachines[5], physicalMachines[6]},
 		},
 		{
 			name: "filter namespace and labels",
-			selector: v1alpha1.PhysicalMachineSelectorSpec{
-				GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			selector: v1alpha2.PhysicalMachineSelectorSpec{
+				GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 					Namespaces:     []string{metav1.NamespaceDefault},
 					LabelSelectors: map[string]string{"l2": "l2"},
 				},

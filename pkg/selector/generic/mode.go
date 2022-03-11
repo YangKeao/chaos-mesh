@@ -23,22 +23,22 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // FilterObjectsByMode filters objects by mode
-func FilterObjectsByMode(mode v1alpha1.SelectorMode, value string, count int) ([]uint, error) {
+func FilterObjectsByMode(mode v1alpha2.SelectorMode, value string, count int) ([]uint, error) {
 	if count == 0 {
 		return nil, errors.New("cannot generate objects from empty list")
 	}
 
 	switch mode {
-	case v1alpha1.OneMode:
+	case v1alpha2.OneMode:
 		index := getRandomNumber(count)
 		return []uint{uint(index)}, nil
-	case v1alpha1.AllMode:
+	case v1alpha2.AllMode:
 		return RandomFixedIndexes(0, uint(count), uint(count)+1), nil
-	case v1alpha1.FixedMode:
+	case v1alpha2.FixedMode:
 		num, err := strconv.Atoi(value)
 		if err != nil {
 			return nil, err
@@ -53,7 +53,7 @@ func FilterObjectsByMode(mode v1alpha1.SelectorMode, value string, count int) ([
 		}
 
 		return RandomFixedIndexes(0, uint(count), uint(num)), nil
-	case v1alpha1.FixedPercentMode:
+	case v1alpha2.FixedPercentMode:
 		percentage, err := strconv.Atoi(value)
 		if err != nil {
 			return nil, err
@@ -70,7 +70,7 @@ func FilterObjectsByMode(mode v1alpha1.SelectorMode, value string, count int) ([
 		num := int(math.Floor(float64(count) * float64(percentage) / 100))
 
 		return RandomFixedIndexes(0, uint(count), uint(num)), nil
-	case v1alpha1.RandomMaxPercentMode:
+	case v1alpha2.RandomMaxPercentMode:
 		maxPercentage, err := strconv.Atoi(value)
 		if err != nil {
 			return nil, err

@@ -26,7 +26,7 @@ import (
 	jrpc "github.com/ethereum/go-ethereum/rpc"
 	"github.com/pkg/errors"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/bpm"
 	pb "github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
 )
@@ -52,7 +52,7 @@ func (s *DaemonServer) ApplyIOChaos(ctx context.Context, in *pb.ApplyIOChaosRequ
 		}
 	}
 
-	actions := []v1alpha1.IOChaosAction{}
+	actions := []v1alpha2.IOChaosAction{}
 	err := json.Unmarshal([]byte(in.Actions), &actions)
 	if err != nil {
 		return nil, errors.Wrap(err, "unmarshal json bytes")

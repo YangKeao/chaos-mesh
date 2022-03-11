@@ -21,7 +21,7 @@ import (
 	. "github.com/onsi/gomega"
 	v1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
 	. "github.com/chaos-mesh/chaos-mesh/pkg/testutils"
 )
@@ -29,10 +29,10 @@ import (
 func TestMatch(t *testing.T) {
 	g := NewGomegaWithT(t)
 
-	p2Selector, err := New(v1alpha1.GenericSelectorSpec{LabelSelectors: map[string]string{"p2": "p2"}}, generic.Option{})
+	p2Selector, err := New(v1alpha2.GenericSelectorSpec{LabelSelectors: map[string]string{"p2": "p2"}}, generic.Option{})
 	g.Expect(err).ShouldNot(HaveOccurred())
 
-	emptySelector, err := New(v1alpha1.GenericSelectorSpec{}, generic.Option{})
+	emptySelector, err := New(v1alpha2.GenericSelectorSpec{}, generic.Option{})
 	g.Expect(err).ShouldNot(HaveOccurred())
 
 	tcs := []struct {

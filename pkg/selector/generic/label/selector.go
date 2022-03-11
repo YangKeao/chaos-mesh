@@ -20,7 +20,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
 )
 
@@ -45,7 +45,7 @@ func (s *labelSelector) Match(obj client.Object) bool {
 	return s.Matches(objLabels)
 }
 
-func New(spec v1alpha1.GenericSelectorSpec, _ generic.Option) (generic.Selector, error) {
+func New(spec v1alpha2.GenericSelectorSpec, _ generic.Option) (generic.Selector, error) {
 	metav1Ls := &metav1.LabelSelector{
 		MatchLabels:      spec.LabelSelectors,
 		MatchExpressions: spec.ExpressionSelectors,

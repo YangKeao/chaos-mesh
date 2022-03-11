@@ -19,33 +19,33 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type chaosImplForAction1 struct {
 }
 
-func (it *chaosImplForAction1) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (it *chaosImplForAction1) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	fmt.Println("action1-apply")
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (it *chaosImplForAction1) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (it *chaosImplForAction1) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	fmt.Println("action1-recover")
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
 type chaosImplForAction2 struct {
 }
 
-func (it *chaosImplForAction2) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (it *chaosImplForAction2) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	fmt.Println("action2-apply")
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (it *chaosImplForAction2) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (it *chaosImplForAction2) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	fmt.Println("action2-recover")
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
 func ExampleMultiplexer() {
@@ -59,13 +59,13 @@ func ExampleMultiplexer() {
 	})
 
 	// Just use PodChaos as example, you could use any struct that contains Spec.Action for it.
-	chaosA := v1alpha1.PodChaos{
-		Spec: v1alpha1.PodChaosSpec{
+	chaosA := v1alpha2.PodChaos{
+		Spec: v1alpha2.PodChaosSpec{
 			Action: "struct-tag",
 		},
 	}
-	chaosB := v1alpha1.PodChaos{
-		Spec: v1alpha1.PodChaosSpec{
+	chaosB := v1alpha2.PodChaos{
+		Spec: v1alpha2.PodChaosSpec{
 			Action: "is-important",
 		},
 	}

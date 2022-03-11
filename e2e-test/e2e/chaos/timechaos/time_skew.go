@@ -28,7 +28,7 @@ import (
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 )
 
@@ -50,23 +50,23 @@ func TestcaseTimeSkewOnceThenRecover(
 	initTime, err := getPodTimeNS(c, port)
 	framework.ExpectNoError(err, "failed to get pod time")
 
-	timeChaos := &v1alpha1.TimeChaos{
+	timeChaos := &v1alpha2.TimeChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "timer-time-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.TimeChaosSpec{
+		Spec: v1alpha2.TimeChaosSpec{
 			Duration:   pointer.StringPtr("9m"),
 			TimeOffset: "-1h",
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "timer"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 			},
 		},
@@ -122,23 +122,23 @@ func TestcaseTimeSkewPauseThenUnpause(
 	framework.ExpectNoError(err, "failed to get pod time")
 
 	By("create chaos CRD objects")
-	timeChaos := &v1alpha1.TimeChaos{
+	timeChaos := &v1alpha2.TimeChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "timer-time-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.TimeChaosSpec{
+		Spec: v1alpha2.TimeChaosSpec{
 			Duration:   pointer.StringPtr("9m"),
 			TimeOffset: "-1h",
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "timer"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 			},
 		},
@@ -169,10 +169,10 @@ func TestcaseTimeSkewPauseThenUnpause(
 
 	By("assert pause is effective")
 	err = wait.Poll(5*time.Second, 5*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.TimeChaos{}
+		chaos := &v1alpha2.TimeChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get time chaos error")
-		if chaos.Status.Experiment.DesiredPhase == v1alpha1.StoppedPhase {
+		if chaos.Status.Experiment.DesiredPhase == v1alpha2.StoppedPhase {
 			return true, nil
 		}
 		return false, err
@@ -198,10 +198,10 @@ func TestcaseTimeSkewPauseThenUnpause(
 
 	By("assert chaos experiment resumed")
 	err = wait.Poll(5*time.Second, 5*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.TimeChaos{}
+		chaos := &v1alpha2.TimeChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get time chaos error")
-		if chaos.Status.Experiment.DesiredPhase == v1alpha1.RunningPhase {
+		if chaos.Status.Experiment.DesiredPhase == v1alpha2.RunningPhase {
 			return true, nil
 		}
 		return false, err

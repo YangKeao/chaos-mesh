@@ -30,7 +30,7 @@ import (
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 )
 
@@ -47,26 +47,26 @@ func TestcaseIODelayDurationForATimeThenRecover(
 	err := util.WaitE2EHelperReady(c, port)
 	framework.ExpectNoError(err, "wait e2e helper ready error")
 	By("create IO delay chaos CRD objects")
-	ioChaos := &v1alpha1.IOChaos{
+	ioChaos := &v1alpha2.IOChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "io-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.IOChaosSpec{
-			Action:     v1alpha1.IoLatency,
+		Spec: v1alpha2.IOChaosSpec{
+			Action:     v1alpha2.IoLatency,
 			VolumePath: "/var/run/data",
 			Path:       "/var/run/data/*",
 			Delay:      "1s",
 			Percent:    100,
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "io"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 			},
 		},
@@ -118,26 +118,26 @@ func TestcaseIODelayDurationForATimePauseAndUnPause(
 	framework.ExpectNoError(err, "wait e2e helper ready error")
 
 	By("create io chaos crd object")
-	ioChaos := &v1alpha1.IOChaos{
+	ioChaos := &v1alpha2.IOChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "io-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.IOChaosSpec{
-			Action:     v1alpha1.IoLatency,
+		Spec: v1alpha2.IOChaosSpec{
+			Action:     v1alpha2.IoLatency,
 			VolumePath: "/var/run/data",
 			Path:       "/var/run/data/*",
 			Delay:      "10ms",
 			Percent:    100,
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "io"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 			},
 		},
@@ -152,16 +152,16 @@ func TestcaseIODelayDurationForATimePauseAndUnPause(
 
 	By("waiting for assertion io chaos")
 	err = wait.PollImmediate(5*time.Second, 1*time.Minute, func() (bool, error) {
-		chaos := &v1alpha1.IOChaos{}
+		chaos := &v1alpha2.IOChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get io chaos error")
 
 		for _, c := range chaos.GetStatus().Conditions {
-			if c.Type == v1alpha1.ConditionAllInjected {
+			if c.Type == v1alpha2.ConditionAllInjected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
-			} else if c.Type == v1alpha1.ConditionSelected {
+			} else if c.Type == v1alpha2.ConditionSelected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
@@ -187,16 +187,16 @@ func TestcaseIODelayDurationForATimePauseAndUnPause(
 
 	By("waiting for assertion about pause")
 	err = wait.Poll(5*time.Second, 5*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.IOChaos{}
+		chaos := &v1alpha2.IOChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get io chaos error")
 
 		for _, c := range chaos.GetStatus().Conditions {
-			if c.Type == v1alpha1.ConditionAllRecovered {
+			if c.Type == v1alpha2.ConditionAllRecovered {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
-			} else if c.Type == v1alpha1.ConditionSelected {
+			} else if c.Type == v1alpha2.ConditionSelected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
@@ -228,16 +228,16 @@ func TestcaseIODelayDurationForATimePauseAndUnPause(
 
 	By("assert that io delay is effective again")
 	err = wait.Poll(5*time.Second, 1*time.Minute, func() (done bool, err error) {
-		chaos := &v1alpha1.IOChaos{}
+		chaos := &v1alpha2.IOChaos{}
 		err = cli.Get(ctx, chaosKey, chaos)
 		framework.ExpectNoError(err, "get io chaos error")
 
 		for _, c := range chaos.GetStatus().Conditions {
-			if c.Type == v1alpha1.ConditionAllInjected {
+			if c.Type == v1alpha2.ConditionAllInjected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
-			} else if c.Type == v1alpha1.ConditionSelected {
+			} else if c.Type == v1alpha2.ConditionSelected {
 				if c.Status != corev1.ConditionTrue {
 					return false, nil
 				}
@@ -277,26 +277,26 @@ func TestcaseIODelayWithSpecifiedContainer(
 	framework.ExpectNoError(err, "wait e2e helper ready error")
 
 	containerName := "io"
-	ioChaos := &v1alpha1.IOChaos{
+	ioChaos := &v1alpha2.IOChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "io-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.IOChaosSpec{
-			Action:     v1alpha1.IoLatency,
+		Spec: v1alpha2.IOChaosSpec{
+			Action:     v1alpha2.IoLatency,
 			VolumePath: "/var/run/data",
 			Path:       "/var/run/data/*",
 			Delay:      "10ms",
 			Percent:    100,
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "io"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 				ContainerNames: []string{containerName},
 			},
@@ -349,24 +349,24 @@ func TestcaseIODelayWithWrongSpec(
 	err := util.WaitE2EHelperReady(c, port)
 	framework.ExpectNoError(err, "wait e2e helper ready error")
 	By("create IO delay chaos CRD objects")
-	ioChaos := &v1alpha1.IOChaos{
+	ioChaos := &v1alpha2.IOChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "io-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.IOChaosSpec{
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.IOChaosSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "io"},
 						},
 					},
-					Mode: v1alpha1.OneMode,
+					Mode: v1alpha2.OneMode,
 				},
 			},
-			Action:     v1alpha1.IoLatency,
+			Action:     v1alpha2.IoLatency,
 			VolumePath: "/var/run/data/123",
 			Path:       "/var/run/data/*",
 			Delay:      "1s",

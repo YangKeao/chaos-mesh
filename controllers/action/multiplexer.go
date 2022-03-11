@@ -24,7 +24,7 @@ import (
 
 	"k8s.io/apimachinery/pkg/runtime"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 )
 
@@ -60,7 +60,7 @@ type Multiplexer struct {
 	impl interface{}
 }
 
-func (i *Multiplexer) callAccordingToAction(action, methodName string, defaultPhase v1alpha1.Phase, args ...interface{}) (v1alpha1.Phase, error) {
+func (i *Multiplexer) callAccordingToAction(action, methodName string, defaultPhase v1alpha2.Phase, args ...interface{}) (v1alpha2.Phase, error) {
 	implType := reflect.TypeOf(i.impl).Elem()
 	implVal := reflect.ValueOf(i.impl)
 
@@ -79,10 +79,10 @@ func (i *Multiplexer) callAccordingToAction(action, methodName string, defaultPh
 				// nil.(error) will panic :(
 				err := rets[1].Interface()
 				if err == nil {
-					return rets[0].Interface().(v1alpha1.Phase), nil
+					return rets[0].Interface().(v1alpha2.Phase), nil
 				}
 
-				return rets[0].Interface().(v1alpha1.Phase), err.(error)
+				return rets[0].Interface().(v1alpha2.Phase), err.(error)
 			}
 		}
 	}
@@ -107,16 +107,16 @@ func (it ErrorUnknownAction) Error() string {
 }
 
 // TODO: refactor this by introduce a new interface called ContainsAction
-func (i *Multiplexer) getAction(obj v1alpha1.InnerObject) string {
+func (i *Multiplexer) getAction(obj v1alpha2.InnerObject) string {
 	return reflect.ValueOf(obj).Elem().FieldByName("Spec").FieldByName("Action").String()
 }
 
-func (i *Multiplexer) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	return i.callAccordingToAction(i.getAction(obj), "Apply", v1alpha1.NotInjected, ctx, index, records, obj)
+func (i *Multiplexer) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	return i.callAccordingToAction(i.getAction(obj), "Apply", v1alpha2.NotInjected, ctx, index, records, obj)
 }
 
-func (i *Multiplexer) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	return i.callAccordingToAction(i.getAction(obj), "Recover", v1alpha1.Injected, ctx, index, records, obj)
+func (i *Multiplexer) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	return i.callAccordingToAction(i.getAction(obj), "Recover", v1alpha2.Injected, ctx, index, records, obj)
 }
 
 // NewMultiplexer is a constructor of Multiplexer.

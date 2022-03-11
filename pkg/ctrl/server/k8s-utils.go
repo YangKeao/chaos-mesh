@@ -25,7 +25,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	ctrlconfig "github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/pkg/ctrl/server/model"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/pod"
@@ -61,7 +61,7 @@ func parseNamespacedName(namespacedName string) types.NamespacedName {
 }
 
 // GetPods returns pod list and corresponding chaos daemon
-func GetPods(ctx context.Context, status v1alpha1.ChaosStatus, selectorSpec v1alpha1.PodSelectorSpec, c client.Client) ([]v1.Pod, []v1.Pod, error) {
+func GetPods(ctx context.Context, status v1alpha2.ChaosStatus, selectorSpec v1alpha2.PodSelectorSpec, c client.Client) ([]v1.Pod, []v1.Pod, error) {
 	pods, err := pod.SelectPods(ctx, c, c, selectorSpec, ctrlconfig.ControllerCfg.ClusterScoped, ctrlconfig.ControllerCfg.TargetNamespace, false)
 	if err != nil {
 		return nil, nil, errors.Wrap(err, "failed to SelectPods")
@@ -74,9 +74,9 @@ func GetPods(ctx context.Context, status v1alpha1.ChaosStatus, selectorSpec v1al
 	// get chaos daemon
 	for _, chaosPod := range pods {
 		nodeName := chaosPod.Spec.NodeName
-		daemonSelector := v1alpha1.PodSelectorSpec{
+		daemonSelector := v1alpha2.PodSelectorSpec{
 			Nodes: []string{nodeName},
-			GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 				LabelSelectors: map[string]string{"app.kubernetes.io/component": "chaos-daemon"},
 			},
 		}

@@ -19,7 +19,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	v11 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/ctrl/server/model"
 )
 
@@ -720,26 +720,26 @@ type ComplexityRoot struct {
 }
 
 type AttrOverrideSpecResolver interface {
-	Ino(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error)
-	Size(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error)
-	Blocks(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error)
+	Ino(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error)
+	Size(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error)
+	Blocks(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error)
 
-	Kind(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*string, error)
-	Perm(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error)
-	Nlink(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error)
-	UID(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error)
-	Gid(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error)
-	Rdev(ctx context.Context, obj *v1alpha1.AttrOverrideSpec) (*int, error)
+	Kind(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*string, error)
+	Perm(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error)
+	Nlink(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error)
+	UID(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error)
+	Gid(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error)
+	Rdev(ctx context.Context, obj *v1alpha2.AttrOverrideSpec) (*int, error)
 }
 type BandwidthSpecResolver interface {
-	Limit(ctx context.Context, obj *v1alpha1.BandwidthSpec) (int, error)
-	Buffer(ctx context.Context, obj *v1alpha1.BandwidthSpec) (int, error)
-	Peakrate(ctx context.Context, obj *v1alpha1.BandwidthSpec) (*int, error)
-	Minburst(ctx context.Context, obj *v1alpha1.BandwidthSpec) (*int, error)
+	Limit(ctx context.Context, obj *v1alpha2.BandwidthSpec) (int, error)
+	Buffer(ctx context.Context, obj *v1alpha2.BandwidthSpec) (int, error)
+	Peakrate(ctx context.Context, obj *v1alpha2.BandwidthSpec) (*int, error)
+	Minburst(ctx context.Context, obj *v1alpha2.BandwidthSpec) (*int, error)
 }
 type ChaosConditionResolver interface {
-	Type(ctx context.Context, obj *v1alpha1.ChaosCondition) (string, error)
-	Status(ctx context.Context, obj *v1alpha1.ChaosCondition) (string, error)
+	Type(ctx context.Context, obj *v1alpha2.ChaosCondition) (string, error)
+	Status(ctx context.Context, obj *v1alpha2.ChaosCondition) (string, error)
 }
 type ContainerStateRunningResolver interface {
 	StartedAt(ctx context.Context, obj *v1.ContainerStateRunning) (*time.Time, error)
@@ -749,105 +749,105 @@ type ContainerStateTerminatedResolver interface {
 	FinishedAt(ctx context.Context, obj *v1.ContainerStateTerminated) (*time.Time, error)
 }
 type ExperimentStatusResolver interface {
-	DesiredPhase(ctx context.Context, obj *v1alpha1.ExperimentStatus) (string, error)
+	DesiredPhase(ctx context.Context, obj *v1alpha2.ExperimentStatus) (string, error)
 }
 type HTTPChaosResolver interface {
-	UID(ctx context.Context, obj *v1alpha1.HTTPChaos) (string, error)
+	UID(ctx context.Context, obj *v1alpha2.HTTPChaos) (string, error)
 
-	CreationTimestamp(ctx context.Context, obj *v1alpha1.HTTPChaos) (*time.Time, error)
-	DeletionTimestamp(ctx context.Context, obj *v1alpha1.HTTPChaos) (*time.Time, error)
+	CreationTimestamp(ctx context.Context, obj *v1alpha2.HTTPChaos) (*time.Time, error)
+	DeletionTimestamp(ctx context.Context, obj *v1alpha2.HTTPChaos) (*time.Time, error)
 
-	Labels(ctx context.Context, obj *v1alpha1.HTTPChaos) (map[string]interface{}, error)
-	Annotations(ctx context.Context, obj *v1alpha1.HTTPChaos) (map[string]interface{}, error)
+	Labels(ctx context.Context, obj *v1alpha2.HTTPChaos) (map[string]interface{}, error)
+	Annotations(ctx context.Context, obj *v1alpha2.HTTPChaos) (map[string]interface{}, error)
 
-	Podhttp(ctx context.Context, obj *v1alpha1.HTTPChaos) ([]*v1alpha1.PodHttpChaos, error)
+	Podhttp(ctx context.Context, obj *v1alpha2.HTTPChaos) ([]*v1alpha2.PodHttpChaos, error)
 }
 type HTTPChaosSpecResolver interface {
-	Mode(ctx context.Context, obj *v1alpha1.HTTPChaosSpec) (string, error)
+	Mode(ctx context.Context, obj *v1alpha2.HTTPChaosSpec) (string, error)
 
-	Target(ctx context.Context, obj *v1alpha1.HTTPChaosSpec) (string, error)
+	Target(ctx context.Context, obj *v1alpha2.HTTPChaosSpec) (string, error)
 
-	RequestHeaders(ctx context.Context, obj *v1alpha1.HTTPChaosSpec) (map[string]interface{}, error)
-	ResponseHeaders(ctx context.Context, obj *v1alpha1.HTTPChaosSpec) (map[string]interface{}, error)
+	RequestHeaders(ctx context.Context, obj *v1alpha2.HTTPChaosSpec) (map[string]interface{}, error)
+	ResponseHeaders(ctx context.Context, obj *v1alpha2.HTTPChaosSpec) (map[string]interface{}, error)
 }
 type HTTPChaosStatusResolver interface {
-	Instances(ctx context.Context, obj *v1alpha1.HTTPChaosStatus) (map[string]interface{}, error)
+	Instances(ctx context.Context, obj *v1alpha2.HTTPChaosStatus) (map[string]interface{}, error)
 }
 type IOChaosResolver interface {
-	UID(ctx context.Context, obj *v1alpha1.IOChaos) (string, error)
+	UID(ctx context.Context, obj *v1alpha2.IOChaos) (string, error)
 
-	CreationTimestamp(ctx context.Context, obj *v1alpha1.IOChaos) (*time.Time, error)
-	DeletionTimestamp(ctx context.Context, obj *v1alpha1.IOChaos) (*time.Time, error)
+	CreationTimestamp(ctx context.Context, obj *v1alpha2.IOChaos) (*time.Time, error)
+	DeletionTimestamp(ctx context.Context, obj *v1alpha2.IOChaos) (*time.Time, error)
 
-	Labels(ctx context.Context, obj *v1alpha1.IOChaos) (map[string]interface{}, error)
-	Annotations(ctx context.Context, obj *v1alpha1.IOChaos) (map[string]interface{}, error)
+	Labels(ctx context.Context, obj *v1alpha2.IOChaos) (map[string]interface{}, error)
+	Annotations(ctx context.Context, obj *v1alpha2.IOChaos) (map[string]interface{}, error)
 
-	Podios(ctx context.Context, obj *v1alpha1.IOChaos) ([]*v1alpha1.PodIOChaos, error)
+	Podios(ctx context.Context, obj *v1alpha2.IOChaos) ([]*v1alpha2.PodIOChaos, error)
 }
 type IOChaosActionResolver interface {
-	Type(ctx context.Context, obj *v1alpha1.IOChaosAction) (string, error)
+	Type(ctx context.Context, obj *v1alpha2.IOChaosAction) (string, error)
 
-	Methods(ctx context.Context, obj *v1alpha1.IOChaosAction) ([]string, error)
+	Methods(ctx context.Context, obj *v1alpha2.IOChaosAction) ([]string, error)
 
-	Ino(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
-	Size(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
-	Blocks(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
-	Atime(ctx context.Context, obj *v1alpha1.IOChaosAction) (*v1alpha1.Timespec, error)
-	Mtime(ctx context.Context, obj *v1alpha1.IOChaosAction) (*v1alpha1.Timespec, error)
-	Ctime(ctx context.Context, obj *v1alpha1.IOChaosAction) (*v1alpha1.Timespec, error)
-	Kind(ctx context.Context, obj *v1alpha1.IOChaosAction) (*string, error)
-	Perm(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int, error)
-	Nlink(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
-	UID(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
-	Gid(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
-	Rdev(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
-	Filling(ctx context.Context, obj *v1alpha1.IOChaosAction) (*string, error)
-	MaxOccurrences(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
-	MaxLength(ctx context.Context, obj *v1alpha1.IOChaosAction) (*int64, error)
+	Ino(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
+	Size(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
+	Blocks(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
+	Atime(ctx context.Context, obj *v1alpha2.IOChaosAction) (*v1alpha2.Timespec, error)
+	Mtime(ctx context.Context, obj *v1alpha2.IOChaosAction) (*v1alpha2.Timespec, error)
+	Ctime(ctx context.Context, obj *v1alpha2.IOChaosAction) (*v1alpha2.Timespec, error)
+	Kind(ctx context.Context, obj *v1alpha2.IOChaosAction) (*string, error)
+	Perm(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int, error)
+	Nlink(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
+	UID(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
+	Gid(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
+	Rdev(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
+	Filling(ctx context.Context, obj *v1alpha2.IOChaosAction) (*string, error)
+	MaxOccurrences(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
+	MaxLength(ctx context.Context, obj *v1alpha2.IOChaosAction) (*int64, error)
 }
 type IOChaosSpecResolver interface {
-	Mode(ctx context.Context, obj *v1alpha1.IOChaosSpec) (string, error)
+	Mode(ctx context.Context, obj *v1alpha2.IOChaosSpec) (string, error)
 
-	Action(ctx context.Context, obj *v1alpha1.IOChaosSpec) (string, error)
+	Action(ctx context.Context, obj *v1alpha2.IOChaosSpec) (string, error)
 
-	Errno(ctx context.Context, obj *v1alpha1.IOChaosSpec) (*int, error)
+	Errno(ctx context.Context, obj *v1alpha2.IOChaosSpec) (*int, error)
 
-	Methods(ctx context.Context, obj *v1alpha1.IOChaosSpec) ([]string, error)
+	Methods(ctx context.Context, obj *v1alpha2.IOChaosSpec) ([]string, error)
 }
 type IOChaosStatusResolver interface {
-	Instances(ctx context.Context, obj *v1alpha1.IOChaosStatus) (map[string]interface{}, error)
+	Instances(ctx context.Context, obj *v1alpha2.IOChaosStatus) (map[string]interface{}, error)
 }
 type IoFaultResolver interface {
-	Errno(ctx context.Context, obj *v1alpha1.IoFault) (int, error)
+	Errno(ctx context.Context, obj *v1alpha2.IoFault) (int, error)
 }
 type LoggerResolver interface {
 	Component(ctx context.Context, ns string, component model.Component) (<-chan string, error)
 	Pod(ctx context.Context, ns string, name string) (<-chan string, error)
 }
 type MistakeSpecResolver interface {
-	Filling(ctx context.Context, obj *v1alpha1.MistakeSpec) (*string, error)
+	Filling(ctx context.Context, obj *v1alpha2.MistakeSpec) (*string, error)
 }
 type NamespaceResolver interface {
 	Component(ctx context.Context, obj *model.Namespace, component model.Component) ([]*v1.Pod, error)
 	Pod(ctx context.Context, obj *model.Namespace, name *string) ([]*v1.Pod, error)
-	Stresschaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.StressChaos, error)
-	Iochaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.IOChaos, error)
-	Podiochaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.PodIOChaos, error)
-	Httpchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.HTTPChaos, error)
-	Podhttpchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.PodHttpChaos, error)
-	Networkchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.NetworkChaos, error)
-	Podnetworkchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha1.PodNetworkChaos, error)
+	Stresschaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.StressChaos, error)
+	Iochaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.IOChaos, error)
+	Podiochaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.PodIOChaos, error)
+	Httpchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.HTTPChaos, error)
+	Podhttpchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.PodHttpChaos, error)
+	Networkchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.NetworkChaos, error)
+	Podnetworkchaos(ctx context.Context, obj *model.Namespace, name *string) ([]*v1alpha2.PodNetworkChaos, error)
 }
 type NetworkChaosResolver interface {
-	UID(ctx context.Context, obj *v1alpha1.NetworkChaos) (string, error)
+	UID(ctx context.Context, obj *v1alpha2.NetworkChaos) (string, error)
 
-	CreationTimestamp(ctx context.Context, obj *v1alpha1.NetworkChaos) (*time.Time, error)
-	DeletionTimestamp(ctx context.Context, obj *v1alpha1.NetworkChaos) (*time.Time, error)
+	CreationTimestamp(ctx context.Context, obj *v1alpha2.NetworkChaos) (*time.Time, error)
+	DeletionTimestamp(ctx context.Context, obj *v1alpha2.NetworkChaos) (*time.Time, error)
 
-	Labels(ctx context.Context, obj *v1alpha1.NetworkChaos) (map[string]interface{}, error)
-	Annotations(ctx context.Context, obj *v1alpha1.NetworkChaos) (map[string]interface{}, error)
+	Labels(ctx context.Context, obj *v1alpha2.NetworkChaos) (map[string]interface{}, error)
+	Annotations(ctx context.Context, obj *v1alpha2.NetworkChaos) (map[string]interface{}, error)
 
-	Podnetwork(ctx context.Context, obj *v1alpha1.NetworkChaos) ([]*v1alpha1.PodNetworkChaos, error)
+	Podnetwork(ctx context.Context, obj *v1alpha2.NetworkChaos) ([]*v1alpha2.PodNetworkChaos, error)
 }
 type OwnerReferenceResolver interface {
 	UID(ctx context.Context, obj *v11.OwnerReference) (string, error)
@@ -876,57 +876,57 @@ type PodConditionResolver interface {
 	LastTransitionTime(ctx context.Context, obj *v1.PodCondition) (*time.Time, error)
 }
 type PodHTTPChaosResolver interface {
-	UID(ctx context.Context, obj *v1alpha1.PodHttpChaos) (string, error)
+	UID(ctx context.Context, obj *v1alpha2.PodHttpChaos) (string, error)
 
-	CreationTimestamp(ctx context.Context, obj *v1alpha1.PodHttpChaos) (*time.Time, error)
-	DeletionTimestamp(ctx context.Context, obj *v1alpha1.PodHttpChaos) (*time.Time, error)
+	CreationTimestamp(ctx context.Context, obj *v1alpha2.PodHttpChaos) (*time.Time, error)
+	DeletionTimestamp(ctx context.Context, obj *v1alpha2.PodHttpChaos) (*time.Time, error)
 
-	Labels(ctx context.Context, obj *v1alpha1.PodHttpChaos) (map[string]interface{}, error)
-	Annotations(ctx context.Context, obj *v1alpha1.PodHttpChaos) (map[string]interface{}, error)
+	Labels(ctx context.Context, obj *v1alpha2.PodHttpChaos) (map[string]interface{}, error)
+	Annotations(ctx context.Context, obj *v1alpha2.PodHttpChaos) (map[string]interface{}, error)
 
-	Pod(ctx context.Context, obj *v1alpha1.PodHttpChaos) (*v1.Pod, error)
+	Pod(ctx context.Context, obj *v1alpha2.PodHttpChaos) (*v1.Pod, error)
 }
 type PodHttpChaosReplaceActionsResolver interface {
-	Body(ctx context.Context, obj *v1alpha1.PodHttpChaosReplaceActions) (*string, error)
-	Queries(ctx context.Context, obj *v1alpha1.PodHttpChaosReplaceActions) (map[string]interface{}, error)
-	Headers(ctx context.Context, obj *v1alpha1.PodHttpChaosReplaceActions) (map[string]interface{}, error)
+	Body(ctx context.Context, obj *v1alpha2.PodHttpChaosReplaceActions) (*string, error)
+	Queries(ctx context.Context, obj *v1alpha2.PodHttpChaosReplaceActions) (map[string]interface{}, error)
+	Headers(ctx context.Context, obj *v1alpha2.PodHttpChaosReplaceActions) (map[string]interface{}, error)
 }
 type PodHttpChaosRuleResolver interface {
-	Target(ctx context.Context, obj *v1alpha1.PodHttpChaosRule) (string, error)
+	Target(ctx context.Context, obj *v1alpha2.PodHttpChaosRule) (string, error)
 }
 type PodHttpChaosSelectorResolver interface {
-	RequestHeaders(ctx context.Context, obj *v1alpha1.PodHttpChaosSelector) (map[string]interface{}, error)
-	ResponseHeaders(ctx context.Context, obj *v1alpha1.PodHttpChaosSelector) (map[string]interface{}, error)
+	RequestHeaders(ctx context.Context, obj *v1alpha2.PodHttpChaosSelector) (map[string]interface{}, error)
+	ResponseHeaders(ctx context.Context, obj *v1alpha2.PodHttpChaosSelector) (map[string]interface{}, error)
 }
 type PodIOChaosResolver interface {
-	UID(ctx context.Context, obj *v1alpha1.PodIOChaos) (string, error)
+	UID(ctx context.Context, obj *v1alpha2.PodIOChaos) (string, error)
 
-	CreationTimestamp(ctx context.Context, obj *v1alpha1.PodIOChaos) (*time.Time, error)
-	DeletionTimestamp(ctx context.Context, obj *v1alpha1.PodIOChaos) (*time.Time, error)
+	CreationTimestamp(ctx context.Context, obj *v1alpha2.PodIOChaos) (*time.Time, error)
+	DeletionTimestamp(ctx context.Context, obj *v1alpha2.PodIOChaos) (*time.Time, error)
 
-	Labels(ctx context.Context, obj *v1alpha1.PodIOChaos) (map[string]interface{}, error)
-	Annotations(ctx context.Context, obj *v1alpha1.PodIOChaos) (map[string]interface{}, error)
+	Labels(ctx context.Context, obj *v1alpha2.PodIOChaos) (map[string]interface{}, error)
+	Annotations(ctx context.Context, obj *v1alpha2.PodIOChaos) (map[string]interface{}, error)
 
-	Pod(ctx context.Context, obj *v1alpha1.PodIOChaos) (*v1.Pod, error)
-	Ios(ctx context.Context, obj *v1alpha1.PodIOChaos) ([]*v1alpha1.IOChaos, error)
+	Pod(ctx context.Context, obj *v1alpha2.PodIOChaos) (*v1.Pod, error)
+	Ios(ctx context.Context, obj *v1alpha2.PodIOChaos) ([]*v1alpha2.IOChaos, error)
 }
 type PodNetworkChaosResolver interface {
-	UID(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (string, error)
+	UID(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (string, error)
 
-	CreationTimestamp(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (*time.Time, error)
-	DeletionTimestamp(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (*time.Time, error)
+	CreationTimestamp(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (*time.Time, error)
+	DeletionTimestamp(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (*time.Time, error)
 
-	Labels(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (map[string]interface{}, error)
-	Annotations(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (map[string]interface{}, error)
+	Labels(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (map[string]interface{}, error)
+	Annotations(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (map[string]interface{}, error)
 
-	Pod(ctx context.Context, obj *v1alpha1.PodNetworkChaos) (*v1.Pod, error)
+	Pod(ctx context.Context, obj *v1alpha2.PodNetworkChaos) (*v1.Pod, error)
 }
 type PodSelectorSpecResolver interface {
-	Pods(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error)
-	NodeSelectors(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error)
-	FieldSelectors(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error)
-	LabelSelectors(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error)
-	AnnotationSelectors(ctx context.Context, obj *v1alpha1.PodSelectorSpec) (map[string]interface{}, error)
+	Pods(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error)
+	NodeSelectors(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error)
+	FieldSelectors(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error)
+	LabelSelectors(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error)
+	AnnotationSelectors(ctx context.Context, obj *v1alpha2.PodSelectorSpec) (map[string]interface{}, error)
 }
 type PodStatusResolver interface {
 	Phase(ctx context.Context, obj *v1.PodStatus) (string, error)
@@ -946,30 +946,30 @@ type QueryResolver interface {
 	Namespace(ctx context.Context, ns *string) ([]*model.Namespace, error)
 }
 type RawIptablesResolver interface {
-	Direction(ctx context.Context, obj *v1alpha1.RawIptables) (string, error)
+	Direction(ctx context.Context, obj *v1alpha2.RawIptables) (string, error)
 }
 type RawTrafficControlResolver interface {
-	Type(ctx context.Context, obj *v1alpha1.RawTrafficControl) (string, error)
+	Type(ctx context.Context, obj *v1alpha2.RawTrafficControl) (string, error)
 }
 type RecordResolver interface {
-	Phase(ctx context.Context, obj *v1alpha1.Record) (string, error)
+	Phase(ctx context.Context, obj *v1alpha2.Record) (string, error)
 }
 type StressChaosResolver interface {
-	UID(ctx context.Context, obj *v1alpha1.StressChaos) (string, error)
+	UID(ctx context.Context, obj *v1alpha2.StressChaos) (string, error)
 
-	CreationTimestamp(ctx context.Context, obj *v1alpha1.StressChaos) (*time.Time, error)
-	DeletionTimestamp(ctx context.Context, obj *v1alpha1.StressChaos) (*time.Time, error)
+	CreationTimestamp(ctx context.Context, obj *v1alpha2.StressChaos) (*time.Time, error)
+	DeletionTimestamp(ctx context.Context, obj *v1alpha2.StressChaos) (*time.Time, error)
 
-	Labels(ctx context.Context, obj *v1alpha1.StressChaos) (map[string]interface{}, error)
-	Annotations(ctx context.Context, obj *v1alpha1.StressChaos) (map[string]interface{}, error)
+	Labels(ctx context.Context, obj *v1alpha2.StressChaos) (map[string]interface{}, error)
+	Annotations(ctx context.Context, obj *v1alpha2.StressChaos) (map[string]interface{}, error)
 
-	Podstress(ctx context.Context, obj *v1alpha1.StressChaos) ([]*model.PodStressChaos, error)
+	Podstress(ctx context.Context, obj *v1alpha2.StressChaos) ([]*model.PodStressChaos, error)
 }
 type StressChaosSpecResolver interface {
-	Mode(ctx context.Context, obj *v1alpha1.StressChaosSpec) (string, error)
+	Mode(ctx context.Context, obj *v1alpha2.StressChaosSpec) (string, error)
 }
 type StressChaosStatusResolver interface {
-	Instances(ctx context.Context, obj *v1alpha1.StressChaosStatus) (map[string]interface{}, error)
+	Instances(ctx context.Context, obj *v1alpha2.StressChaosStatus) (map[string]interface{}, error)
 }
 
 type executableSchema struct {
@@ -4468,7 +4468,7 @@ type PodSpec @goModel(model: "k8s.io/api/core/v1.PodSpec") {
 
 }
 
-type PodIOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodIOChaos") {
+type PodIOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodIOChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -4495,7 +4495,7 @@ type PodIOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.P
 }
 
 # PodIOChaosSpec defines the desired state of PodIOChaos
-type PodIOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodIOChaosSpec") {
+type PodIOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodIOChaosSpec") {
     # volumeMountPath represents the target mount path
     # It must be a root of mount path now.
     volumeMountPath: String!
@@ -4506,7 +4506,7 @@ type PodIOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alph
     actions: [IOChaosAction!]
 }
 
-type PodIOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodIOChaosStatus") {
+type PodIOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodIOChaosStatus") {
 
     # pid represents a running toda process id
     pid: Int
@@ -4518,7 +4518,7 @@ type PodIOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1al
 }
 
 # IOChaosAction defines an possible action of IOChaos
-type IOChaosAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOChaosAction") {
+type IOChaosAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IOChaosAction") {
     type: String!
 
     # path represents a glob of injecting path
@@ -4565,19 +4565,19 @@ type IOChaosAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha
     source: String!
 }
 
-type IoFault @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IoFault") {
+type IoFault @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IoFault") {
     errno: Int!
     weight: Int!
 }
 
 # Timespec represents a time
-type Timespec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.Timespec") {
+type Timespec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.Timespec") {
     sec: Int!
     nsec: Int!
 }
 
 
-type IOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOChaos") {
+type IOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IOChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -4603,7 +4603,7 @@ type IOChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOCh
 }
 
 # IOChaosSpec defines the desired state of IOChaos
-type IOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOChaosSpec") {
+type IOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IOChaosSpec") {
     # containerNames indicates list of the name of affected container.
     # If not set, the first container will be injected
     containerNames: [String!]
@@ -4667,7 +4667,7 @@ type IOChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.
 }
 
 # AttrOverrideSpec represents an override of attribution
-type AttrOverrideSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.AttrOverrideSpec") {
+type AttrOverrideSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.AttrOverrideSpec") {
     ino: Int
     size: Int
     blocks: Int
@@ -4683,7 +4683,7 @@ type AttrOverrideSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1al
 }
 
 # MistakeSpec represents one type of mistake
-type MistakeSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.MistakeSpec") {
+type MistakeSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.MistakeSpec") {
     # filling determines what is filled in the miskate data.
     filling: String
 
@@ -4694,7 +4694,7 @@ type MistakeSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.
     maxLength: Int
 }
 
-type IOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.IOChaosStatus") {
+type IOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.IOChaosStatus") {
     # conditions represents the current global condition of the chaos
     conditions: [ChaosCondition!]
 
@@ -4705,7 +4705,7 @@ type IOChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha
     instances: Map
 }
 
-type PodHTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaos") {
+type PodHTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -4731,13 +4731,13 @@ type PodHTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1
 }
 
 # PodHttpChaosSpec defines the desired state of PodHttpChaos.
-type PodHttpChaosSpec  @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosSpec") {
+type PodHttpChaosSpec  @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosSpec") {
     # rules are a list of injection rule for http request.
     rules: [PodHttpChaosRule!]!
 }
 
 # PodHttpChaosStatus defines the actual state of PodHttpChaos.
-type PodHttpChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosStatus") {
+type PodHttpChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosStatus") {
     # pid represents a running tproxy process id.
     pid: Int
 
@@ -4749,7 +4749,7 @@ type PodHttpChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1
 }
 
 # PodHttpChaosRule defines the injection rule for http.
-type PodHttpChaosRule @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosRule") {
+type PodHttpChaosRule @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosRule") {
     # target is the object to be selected and injected, <Request|Response>.
     target: String!
 
@@ -4764,7 +4764,7 @@ type PodHttpChaosRule @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1al
     port: Int!
 }
 
-type PodHttpChaosSelector @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosSelector") {
+type PodHttpChaosSelector @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosSelector") {
     # port represents the target port to be proxy of.
     port: Int
 
@@ -4787,7 +4787,7 @@ type PodHttpChaosSelector @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/
 }
 
 # PodHttpChaosAction defines possible actions of HttpChaos.
-type PodHttpChaosActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosActions") {
+type PodHttpChaosActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosActions") {
     # abort is a rule to abort a http session.
     abort: Boolean
 
@@ -4805,7 +4805,7 @@ type PodHttpChaosActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v
     patch: PodHttpChaosPatchActions
 }
 
-type HTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.HTTPChaos") {
+type HTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.HTTPChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -4830,7 +4830,7 @@ type HTTPChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.HT
     podhttp: [PodHTTPChaos!]    @goField(forceResolver: true)
 }
 
-type HTTPChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.HTTPChaosSpec") {
+type HTTPChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.HTTPChaosSpec") {
     # selector is used to select pods that are used to inject chaos action.
     selector: PodSelectorSpec!
 
@@ -4889,7 +4889,7 @@ type HTTPChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha
 
 # PodSelectorSpec defines the some selectors to select objects.
 # If the all selectors are empty, all objects will be used in chaos experiment.
-type PodSelectorSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodSelectorSpec") {
+type PodSelectorSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodSelectorSpec") {
     # namespaces is a set of namespace to which objects belong.
     namespaces: [String!]
 
@@ -4923,7 +4923,7 @@ type PodSelectorSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alp
     podPhaseSelectors: [String!]
 }
 
-type PodHttpChaosReplaceActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosReplaceActions") {
+type PodHttpChaosReplaceActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosReplaceActions") {
     # path is rule to to replace uri path in http request.
     path: String
 
@@ -4946,7 +4946,7 @@ type PodHttpChaosReplaceActions @goModel(model: "github.com/chaos-mesh/chaos-mes
 }
 
 # PodHttpChaosPatchActions defines possible patch-actions of HttpChaos.
-type PodHttpChaosPatchActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosPatchActions") {
+type PodHttpChaosPatchActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosPatchActions") {
     # body is a rule to patch message body of target.
     body: PodHttpChaosPatchBodyAction
 
@@ -4960,7 +4960,7 @@ type PodHttpChaosPatchActions @goModel(model: "github.com/chaos-mesh/chaos-mesh/
 }
 
 # PodHttpChaosPatchBodyAction defines patch body action of HttpChaos.
-type PodHttpChaosPatchBodyAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodHttpChaosPatchBodyAction") {
+type PodHttpChaosPatchBodyAction @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodHttpChaosPatchBodyAction") {
     # type represents the patch type, only support ` + "`" + `JSON` + "`" + ` as [merge patch json](https://tools.ietf.org/html/rfc7396) currently.
     type: String!
 
@@ -4968,7 +4968,7 @@ type PodHttpChaosPatchBodyAction @goModel(model: "github.com/chaos-mesh/chaos-me
     value: String!
 }
 
-type HTTPChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.HTTPChaosStatus") {
+type HTTPChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.HTTPChaosStatus") {
     # conditions represents the current global condition of the chaos
     conditions: [ChaosCondition!]
 
@@ -4979,26 +4979,26 @@ type HTTPChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alp
     instances: Map
 }
 
-type ChaosCondition @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.ChaosCondition") {
+type ChaosCondition @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.ChaosCondition") {
     type: String!
     status: String!
     reason: String
 }
 
-type ExperimentStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.ExperimentStatus") {
+type ExperimentStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.ExperimentStatus") {
     desiredPhase: String!
 
     # Records are used to track the running status
     Records: [Record!]
 }
 
-type Record @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.Record") {
+type Record @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.Record") {
     id: String!
     selectorKey: String!
     phase: String!
 }
 
-type PodNetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodNetworkChaos") {
+type PodNetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodNetworkChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -5024,7 +5024,7 @@ type PodNetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alp
 }
 
 # PodNetworkChaosSpec defines the desired state of PodNetworkChaos
-type PodNetworkChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodNetworkChaosSpec") {
+type PodNetworkChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodNetworkChaosSpec") {
     # The ipset on the pod
     ipSets: [RawIPSet!]
 
@@ -5036,13 +5036,13 @@ type PodNetworkChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v
 }
 
 # PodNetworkChaosStatus defines the observed state of PodNetworkChaos
-type PodNetworkChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.PodNetworkChaosStatus") {
+type PodNetworkChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.PodNetworkChaosStatus") {
     failedMessage: String!
     observedGeneration: Int!
 }
 
 # RawIPSet represents an ipset on specific pod
-type RawIPSet @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.RawIPSet") {
+type RawIPSet @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.RawIPSet") {
     # The name of ipset
     name: String!
 
@@ -5054,7 +5054,7 @@ type RawIPSet @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.Raw
 }
 
 # RawIptables represents the iptables rules on specific pod
-type RawIptables @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.RawIptables") {
+type RawIptables @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.RawIptables") {
     # The name of iptables chain
     name: String!
 
@@ -5072,7 +5072,7 @@ type RawIptables @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.
 }
 
 # RawTrafficControl represents the traffic control chaos on specific pod
-type RawTrafficControl @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.RawTrafficControl") {
+type RawTrafficControl @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.RawTrafficControl") {
     # The type of traffic control
     type: String!
 
@@ -5102,7 +5102,7 @@ type RawTrafficControl @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1a
 }
 
 # DelaySpec defines detail of a delay action
-type DelaySpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.DelaySpec") {
+type DelaySpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.DelaySpec") {
     latency: String!
     correlation: String
     jitter: String
@@ -5110,25 +5110,25 @@ type DelaySpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.De
 }
 
 # LossSpec defines detail of a loss action
-type LossSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.LossSpec") {
+type LossSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.LossSpec") {
     loss: String!
     correlation: String
 }
 
 # DuplicateSpec defines detail of a duplicate action
-type DuplicateSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.DuplicateSpec") {
+type DuplicateSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.DuplicateSpec") {
     duplicate: String!
     correlation: String
 }
 
 # CorruptSpec defines detail of a corrupt action
-type CorruptSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.CorruptSpec") {
+type CorruptSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.CorruptSpec") {
     corrupt: String!
     correlation: String
 }
 
 # BandwidthSpec defines detail of bandwidth limit.
-type BandwidthSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.BandwidthSpec") {
+type BandwidthSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.BandwidthSpec") {
     # rate is the speed knob. Allows bps, kbps, mbps, gbps, tbps unit. bps means bytes per second.
     rate: String!
 
@@ -5152,13 +5152,13 @@ type BandwidthSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha
 }
 
 # ReorderSpec defines details of packet reorder.
-type ReorderSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.ReorderSpec") {
+type ReorderSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.ReorderSpec") {
     reorder: String!
     correlation: String
     gap: Int
 }
 
-type NetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.NetworkChaos") {
+type NetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.NetworkChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -5180,7 +5180,7 @@ type NetworkChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1
     podnetwork: [PodNetworkChaos!]	@goField(forceResolver: true)
 }
 
-type MemoryStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.MemoryStressor") {
+type MemoryStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.MemoryStressor") {
     # Workers specifies N workers to apply the stressor.
 	# Maximum 8192 workers can run by stress-ng
 	workers: Int!
@@ -5194,7 +5194,7 @@ type MemoryStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alph
 	options: [String!]
 }
 
-type CPUStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.CPUStressor") {
+type CPUStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.CPUStressor") {
      # Workers specifies N workers to apply the stressor.
 	# Maximum 8192 workers can run by stress-ng
 	workers: Int!
@@ -5207,13 +5207,13 @@ type CPUStressor @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.
 	options: [String!]
 }
 
-type Stressors @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.Stressors") {
+type Stressors @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.Stressors") {
     memoryStressor: MemoryStressor
     cpuStressor: CPUStressor
 }
 
 # StressChaosSpec defines the desired state of StressChaos
-type StressChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.StressChaosSpec") {
+type StressChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.StressChaosSpec") {
     # containerNames indicates list of the name of affected container.
     # If not set, all containers will be injected
     containerNames: [String!]
@@ -5251,7 +5251,7 @@ type StressChaosSpec @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alp
     duration: String
 }
 
-type StressChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.StressChaosStatus") {
+type StressChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.StressChaosStatus") {
     # conditions represents the current global condition of the chaos
     conditions: [ChaosCondition!]
 
@@ -5262,7 +5262,7 @@ type StressChaosStatus @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1a
     instances: Map
 }
 
-type StressChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha1.StressChaos") {
+type StressChaos @goModel(model: "github.com/chaos-mesh/chaos-mesh/api/v1alpha2.StressChaos") {
     kind: String!
     apiVersion: String!
     name: String!
@@ -5572,7 +5572,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _AttrOverrideSpec_ino(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_ino(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5604,7 +5604,7 @@ func (ec *executionContext) _AttrOverrideSpec_ino(ctx context.Context, field gra
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_size(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_size(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5636,7 +5636,7 @@ func (ec *executionContext) _AttrOverrideSpec_size(ctx context.Context, field gr
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_blocks(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_blocks(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5668,7 +5668,7 @@ func (ec *executionContext) _AttrOverrideSpec_blocks(ctx context.Context, field 
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_atime(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_atime(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5695,12 +5695,12 @@ func (ec *executionContext) _AttrOverrideSpec_atime(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.Timespec)
+	res := resTmp.(*v1alpha2.Timespec)
 	fc.Result = res
-	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐTimespec(ctx, field.Selections, res)
+	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐTimespec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_mtime(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_mtime(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5727,12 +5727,12 @@ func (ec *executionContext) _AttrOverrideSpec_mtime(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.Timespec)
+	res := resTmp.(*v1alpha2.Timespec)
 	fc.Result = res
-	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐTimespec(ctx, field.Selections, res)
+	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐTimespec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_ctime(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_ctime(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5759,12 +5759,12 @@ func (ec *executionContext) _AttrOverrideSpec_ctime(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.Timespec)
+	res := resTmp.(*v1alpha2.Timespec)
 	fc.Result = res
-	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐTimespec(ctx, field.Selections, res)
+	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐTimespec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5796,7 +5796,7 @@ func (ec *executionContext) _AttrOverrideSpec_kind(ctx context.Context, field gr
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_perm(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_perm(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5828,7 +5828,7 @@ func (ec *executionContext) _AttrOverrideSpec_perm(ctx context.Context, field gr
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_nlink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_nlink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5860,7 +5860,7 @@ func (ec *executionContext) _AttrOverrideSpec_nlink(ctx context.Context, field g
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5892,7 +5892,7 @@ func (ec *executionContext) _AttrOverrideSpec_uid(ctx context.Context, field gra
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_gid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_gid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5924,7 +5924,7 @@ func (ec *executionContext) _AttrOverrideSpec_gid(ctx context.Context, field gra
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _AttrOverrideSpec_rdev(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.AttrOverrideSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _AttrOverrideSpec_rdev(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.AttrOverrideSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5956,7 +5956,7 @@ func (ec *executionContext) _AttrOverrideSpec_rdev(ctx context.Context, field gr
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _BandwidthSpec_rate(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.BandwidthSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _BandwidthSpec_rate(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.BandwidthSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -5991,7 +5991,7 @@ func (ec *executionContext) _BandwidthSpec_rate(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _BandwidthSpec_limit(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.BandwidthSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _BandwidthSpec_limit(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.BandwidthSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6026,7 +6026,7 @@ func (ec *executionContext) _BandwidthSpec_limit(ctx context.Context, field grap
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _BandwidthSpec_buffer(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.BandwidthSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _BandwidthSpec_buffer(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.BandwidthSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6061,7 +6061,7 @@ func (ec *executionContext) _BandwidthSpec_buffer(ctx context.Context, field gra
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _BandwidthSpec_peakrate(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.BandwidthSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _BandwidthSpec_peakrate(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.BandwidthSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6093,7 +6093,7 @@ func (ec *executionContext) _BandwidthSpec_peakrate(ctx context.Context, field g
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _BandwidthSpec_minburst(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.BandwidthSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _BandwidthSpec_minburst(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.BandwidthSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6125,7 +6125,7 @@ func (ec *executionContext) _BandwidthSpec_minburst(ctx context.Context, field g
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _CPUStressor_workers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.CPUStressor) (ret graphql.Marshaler) {
+func (ec *executionContext) _CPUStressor_workers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.CPUStressor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6160,7 +6160,7 @@ func (ec *executionContext) _CPUStressor_workers(ctx context.Context, field grap
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _CPUStressor_load(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.CPUStressor) (ret graphql.Marshaler) {
+func (ec *executionContext) _CPUStressor_load(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.CPUStressor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6192,7 +6192,7 @@ func (ec *executionContext) _CPUStressor_load(ctx context.Context, field graphql
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _CPUStressor_options(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.CPUStressor) (ret graphql.Marshaler) {
+func (ec *executionContext) _CPUStressor_options(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.CPUStressor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6428,7 +6428,7 @@ func (ec *executionContext) _CgroupsMemory_limit(ctx context.Context, field grap
 	return ec.marshalNInt642int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ChaosCondition_type(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.ChaosCondition) (ret graphql.Marshaler) {
+func (ec *executionContext) _ChaosCondition_type(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.ChaosCondition) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6463,7 +6463,7 @@ func (ec *executionContext) _ChaosCondition_type(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ChaosCondition_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.ChaosCondition) (ret graphql.Marshaler) {
+func (ec *executionContext) _ChaosCondition_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.ChaosCondition) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -6498,7 +6498,7 @@ func (ec *executionContext) _ChaosCondition_status(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ChaosCondition_reason(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.ChaosCondition) (ret graphql.Marshaler) {
+func (ec *executionContext) _ChaosCondition_reason(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.ChaosCondition) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7255,7 +7255,7 @@ func (ec *executionContext) _ContainerStatus_started(ctx context.Context, field 
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _CorruptSpec_corrupt(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.CorruptSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _CorruptSpec_corrupt(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.CorruptSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7290,7 +7290,7 @@ func (ec *executionContext) _CorruptSpec_corrupt(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _CorruptSpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.CorruptSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _CorruptSpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.CorruptSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7322,7 +7322,7 @@ func (ec *executionContext) _CorruptSpec_correlation(ctx context.Context, field 
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DelaySpec_latency(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.DelaySpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _DelaySpec_latency(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.DelaySpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7357,7 +7357,7 @@ func (ec *executionContext) _DelaySpec_latency(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DelaySpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.DelaySpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _DelaySpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.DelaySpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7389,7 +7389,7 @@ func (ec *executionContext) _DelaySpec_correlation(ctx context.Context, field gr
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DelaySpec_jitter(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.DelaySpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _DelaySpec_jitter(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.DelaySpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7421,7 +7421,7 @@ func (ec *executionContext) _DelaySpec_jitter(ctx context.Context, field graphql
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DelaySpec_reorder(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.DelaySpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _DelaySpec_reorder(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.DelaySpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7448,12 +7448,12 @@ func (ec *executionContext) _DelaySpec_reorder(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.ReorderSpec)
+	res := resTmp.(*v1alpha2.ReorderSpec)
 	fc.Result = res
-	return ec.marshalOReorderSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐReorderSpec(ctx, field.Selections, res)
+	return ec.marshalOReorderSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐReorderSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DuplicateSpec_duplicate(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.DuplicateSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _DuplicateSpec_duplicate(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.DuplicateSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7488,7 +7488,7 @@ func (ec *executionContext) _DuplicateSpec_duplicate(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _DuplicateSpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.DuplicateSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _DuplicateSpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.DuplicateSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7520,7 +7520,7 @@ func (ec *executionContext) _DuplicateSpec_correlation(ctx context.Context, fiel
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ExperimentStatus_desiredPhase(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.ExperimentStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _ExperimentStatus_desiredPhase(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.ExperimentStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7555,7 +7555,7 @@ func (ec *executionContext) _ExperimentStatus_desiredPhase(ctx context.Context, 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ExperimentStatus_Records(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.ExperimentStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _ExperimentStatus_Records(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.ExperimentStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7582,9 +7582,9 @@ func (ec *executionContext) _ExperimentStatus_Records(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.Record)
+	res := resTmp.([]*v1alpha2.Record)
 	fc.Result = res
-	return ec.marshalORecord2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRecordᚄ(ctx, field.Selections, res)
+	return ec.marshalORecord2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRecordᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Fd_fd(ctx context.Context, field graphql.CollectedField, obj *model.Fd) (ret graphql.Marshaler) {
@@ -7657,7 +7657,7 @@ func (ec *executionContext) _Fd_target(ctx context.Context, field graphql.Collec
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7692,7 +7692,7 @@ func (ec *executionContext) _HTTPChaos_kind(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7727,7 +7727,7 @@ func (ec *executionContext) _HTTPChaos_apiVersion(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7762,7 +7762,7 @@ func (ec *executionContext) _HTTPChaos_name(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7797,7 +7797,7 @@ func (ec *executionContext) _HTTPChaos_generateName(ctx context.Context, field g
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7832,7 +7832,7 @@ func (ec *executionContext) _HTTPChaos_namespace(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7867,7 +7867,7 @@ func (ec *executionContext) _HTTPChaos_selfLink(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7902,7 +7902,7 @@ func (ec *executionContext) _HTTPChaos_uid(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7937,7 +7937,7 @@ func (ec *executionContext) _HTTPChaos_resourceVersion(ctx context.Context, fiel
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -7972,7 +7972,7 @@ func (ec *executionContext) _HTTPChaos_generation(ctx context.Context, field gra
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8007,7 +8007,7 @@ func (ec *executionContext) _HTTPChaos_creationTimestamp(ctx context.Context, fi
 	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8039,7 +8039,7 @@ func (ec *executionContext) _HTTPChaos_deletionTimestamp(ctx context.Context, fi
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8071,7 +8071,7 @@ func (ec *executionContext) _HTTPChaos_deletionGracePeriodSeconds(ctx context.Co
 	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8103,7 +8103,7 @@ func (ec *executionContext) _HTTPChaos_labels(ctx context.Context, field graphql
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8135,7 +8135,7 @@ func (ec *executionContext) _HTTPChaos_annotations(ctx context.Context, field gr
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8167,7 +8167,7 @@ func (ec *executionContext) _HTTPChaos_ownerReferences(ctx context.Context, fiel
 	return ec.marshalOOwnerReference2ᚕk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐOwnerReferenceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8199,7 +8199,7 @@ func (ec *executionContext) _HTTPChaos_finalizers(ctx context.Context, field gra
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8234,7 +8234,7 @@ func (ec *executionContext) _HTTPChaos_clusterName(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8264,12 +8264,12 @@ func (ec *executionContext) _HTTPChaos_spec(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.HTTPChaosSpec)
+	res := resTmp.(v1alpha2.HTTPChaosSpec)
 	fc.Result = res
-	return ec.marshalNHTTPChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐHTTPChaosSpec(ctx, field.Selections, res)
+	return ec.marshalNHTTPChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐHTTPChaosSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8299,12 +8299,12 @@ func (ec *executionContext) _HTTPChaos_status(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.HTTPChaosStatus)
+	res := resTmp.(v1alpha2.HTTPChaosStatus)
 	fc.Result = res
-	return ec.marshalNHTTPChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐHTTPChaosStatus(ctx, field.Selections, res)
+	return ec.marshalNHTTPChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐHTTPChaosStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaos_podhttp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaos_podhttp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8331,12 +8331,12 @@ func (ec *executionContext) _HTTPChaos_podhttp(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.PodHttpChaos)
+	res := resTmp.([]*v1alpha2.PodHttpChaos)
 	fc.Result = res
-	return ec.marshalOPodHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOPodHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_selector(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_selector(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8366,12 +8366,12 @@ func (ec *executionContext) _HTTPChaosSpec_selector(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodSelectorSpec)
+	res := resTmp.(v1alpha2.PodSelectorSpec)
 	fc.Result = res
-	return ec.marshalNPodSelectorSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodSelectorSpec(ctx, field.Selections, res)
+	return ec.marshalNPodSelectorSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodSelectorSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_mode(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_mode(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8406,7 +8406,7 @@ func (ec *executionContext) _HTTPChaosSpec_mode(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_value(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_value(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8438,7 +8438,7 @@ func (ec *executionContext) _HTTPChaosSpec_value(ctx context.Context, field grap
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_target(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_target(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8473,7 +8473,7 @@ func (ec *executionContext) _HTTPChaosSpec_target(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_abort(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_abort(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8505,7 +8505,7 @@ func (ec *executionContext) _HTTPChaosSpec_abort(ctx context.Context, field grap
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_delay(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_delay(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8537,7 +8537,7 @@ func (ec *executionContext) _HTTPChaosSpec_delay(ctx context.Context, field grap
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_replace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_replace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8564,12 +8564,12 @@ func (ec *executionContext) _HTTPChaosSpec_replace(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.PodHttpChaosReplaceActions)
+	res := resTmp.(*v1alpha2.PodHttpChaosReplaceActions)
 	fc.Result = res
-	return ec.marshalOPodHttpChaosReplaceActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosReplaceActions(ctx, field.Selections, res)
+	return ec.marshalOPodHttpChaosReplaceActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosReplaceActions(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_patch(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_patch(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8596,12 +8596,12 @@ func (ec *executionContext) _HTTPChaosSpec_patch(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.PodHttpChaosPatchActions)
+	res := resTmp.(*v1alpha2.PodHttpChaosPatchActions)
 	fc.Result = res
-	return ec.marshalOPodHttpChaosPatchActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosPatchActions(ctx, field.Selections, res)
+	return ec.marshalOPodHttpChaosPatchActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosPatchActions(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_port(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_port(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8633,7 +8633,7 @@ func (ec *executionContext) _HTTPChaosSpec_port(ctx context.Context, field graph
 	return ec.marshalOInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8665,7 +8665,7 @@ func (ec *executionContext) _HTTPChaosSpec_path(ctx context.Context, field graph
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_method(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_method(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8697,7 +8697,7 @@ func (ec *executionContext) _HTTPChaosSpec_method(ctx context.Context, field gra
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_code(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_code(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8729,7 +8729,7 @@ func (ec *executionContext) _HTTPChaosSpec_code(ctx context.Context, field graph
 	return ec.marshalOInt2ᚖint32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_requestHeaders(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_requestHeaders(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8761,7 +8761,7 @@ func (ec *executionContext) _HTTPChaosSpec_requestHeaders(ctx context.Context, f
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_responseHeaders(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_responseHeaders(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8793,7 +8793,7 @@ func (ec *executionContext) _HTTPChaosSpec_responseHeaders(ctx context.Context, 
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosSpec_duration(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosSpec_duration(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8825,7 +8825,7 @@ func (ec *executionContext) _HTTPChaosSpec_duration(ctx context.Context, field g
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosStatus_conditions(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosStatus_conditions(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8852,12 +8852,12 @@ func (ec *executionContext) _HTTPChaosStatus_conditions(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.ChaosCondition)
+	res := resTmp.([]v1alpha2.ChaosCondition)
 	fc.Result = res
-	return ec.marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐChaosConditionᚄ(ctx, field.Selections, res)
+	return ec.marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐChaosConditionᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosStatus_experiment(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosStatus_experiment(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8884,12 +8884,12 @@ func (ec *executionContext) _HTTPChaosStatus_experiment(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.ExperimentStatus)
+	res := resTmp.(v1alpha2.ExperimentStatus)
 	fc.Result = res
-	return ec.marshalOExperimentStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐExperimentStatus(ctx, field.Selections, res)
+	return ec.marshalOExperimentStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐExperimentStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _HTTPChaosStatus_instances(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.HTTPChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _HTTPChaosStatus_instances(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.HTTPChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8921,7 +8921,7 @@ func (ec *executionContext) _HTTPChaosStatus_instances(ctx context.Context, fiel
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8956,7 +8956,7 @@ func (ec *executionContext) _IOChaos_kind(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -8991,7 +8991,7 @@ func (ec *executionContext) _IOChaos_apiVersion(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9026,7 +9026,7 @@ func (ec *executionContext) _IOChaos_name(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9061,7 +9061,7 @@ func (ec *executionContext) _IOChaos_generateName(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9096,7 +9096,7 @@ func (ec *executionContext) _IOChaos_namespace(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9131,7 +9131,7 @@ func (ec *executionContext) _IOChaos_selfLink(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9166,7 +9166,7 @@ func (ec *executionContext) _IOChaos_uid(ctx context.Context, field graphql.Coll
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9201,7 +9201,7 @@ func (ec *executionContext) _IOChaos_resourceVersion(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9236,7 +9236,7 @@ func (ec *executionContext) _IOChaos_generation(ctx context.Context, field graph
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9271,7 +9271,7 @@ func (ec *executionContext) _IOChaos_creationTimestamp(ctx context.Context, fiel
 	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9303,7 +9303,7 @@ func (ec *executionContext) _IOChaos_deletionTimestamp(ctx context.Context, fiel
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9335,7 +9335,7 @@ func (ec *executionContext) _IOChaos_deletionGracePeriodSeconds(ctx context.Cont
 	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9367,7 +9367,7 @@ func (ec *executionContext) _IOChaos_labels(ctx context.Context, field graphql.C
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9399,7 +9399,7 @@ func (ec *executionContext) _IOChaos_annotations(ctx context.Context, field grap
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9431,7 +9431,7 @@ func (ec *executionContext) _IOChaos_ownerReferences(ctx context.Context, field 
 	return ec.marshalOOwnerReference2ᚕk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐOwnerReferenceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9463,7 +9463,7 @@ func (ec *executionContext) _IOChaos_finalizers(ctx context.Context, field graph
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9498,7 +9498,7 @@ func (ec *executionContext) _IOChaos_clusterName(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9528,12 +9528,12 @@ func (ec *executionContext) _IOChaos_spec(ctx context.Context, field graphql.Col
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.IOChaosSpec)
+	res := resTmp.(v1alpha2.IOChaosSpec)
 	fc.Result = res
-	return ec.marshalNIOChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosSpec(ctx, field.Selections, res)
+	return ec.marshalNIOChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9563,12 +9563,12 @@ func (ec *executionContext) _IOChaos_status(ctx context.Context, field graphql.C
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.IOChaosStatus)
+	res := resTmp.(v1alpha2.IOChaosStatus)
 	fc.Result = res
-	return ec.marshalNIOChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosStatus(ctx, field.Selections, res)
+	return ec.marshalNIOChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaos_podios(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaos_podios(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9595,12 +9595,12 @@ func (ec *executionContext) _IOChaos_podios(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.PodIOChaos)
+	res := resTmp.([]*v1alpha2.PodIOChaos)
 	fc.Result = res
-	return ec.marshalOPodIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOPodIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaosᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_type(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_type(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9635,7 +9635,7 @@ func (ec *executionContext) _IOChaosAction_type(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9670,7 +9670,7 @@ func (ec *executionContext) _IOChaosAction_path(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_methods(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_methods(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9702,7 +9702,7 @@ func (ec *executionContext) _IOChaosAction_methods(ctx context.Context, field gr
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_percent(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_percent(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9734,7 +9734,7 @@ func (ec *executionContext) _IOChaosAction_percent(ctx context.Context, field gr
 	return ec.marshalOInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_faults(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_faults(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9761,12 +9761,12 @@ func (ec *executionContext) _IOChaosAction_faults(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.IoFault)
+	res := resTmp.([]v1alpha2.IoFault)
 	fc.Result = res
-	return ec.marshalOIoFault2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIoFaultᚄ(ctx, field.Selections, res)
+	return ec.marshalOIoFault2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIoFaultᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_latency(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_latency(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9798,7 +9798,7 @@ func (ec *executionContext) _IOChaosAction_latency(ctx context.Context, field gr
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_ino(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_ino(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9830,7 +9830,7 @@ func (ec *executionContext) _IOChaosAction_ino(ctx context.Context, field graphq
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_size(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_size(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9862,7 +9862,7 @@ func (ec *executionContext) _IOChaosAction_size(ctx context.Context, field graph
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_blocks(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_blocks(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9894,7 +9894,7 @@ func (ec *executionContext) _IOChaosAction_blocks(ctx context.Context, field gra
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_atime(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_atime(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9921,12 +9921,12 @@ func (ec *executionContext) _IOChaosAction_atime(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.Timespec)
+	res := resTmp.(*v1alpha2.Timespec)
 	fc.Result = res
-	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐTimespec(ctx, field.Selections, res)
+	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐTimespec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_mtime(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_mtime(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9953,12 +9953,12 @@ func (ec *executionContext) _IOChaosAction_mtime(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.Timespec)
+	res := resTmp.(*v1alpha2.Timespec)
 	fc.Result = res
-	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐTimespec(ctx, field.Selections, res)
+	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐTimespec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_ctime(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_ctime(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -9985,12 +9985,12 @@ func (ec *executionContext) _IOChaosAction_ctime(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.Timespec)
+	res := resTmp.(*v1alpha2.Timespec)
 	fc.Result = res
-	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐTimespec(ctx, field.Selections, res)
+	return ec.marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐTimespec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10022,7 +10022,7 @@ func (ec *executionContext) _IOChaosAction_kind(ctx context.Context, field graph
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_perm(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_perm(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10054,7 +10054,7 @@ func (ec *executionContext) _IOChaosAction_perm(ctx context.Context, field graph
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_nlink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_nlink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10086,7 +10086,7 @@ func (ec *executionContext) _IOChaosAction_nlink(ctx context.Context, field grap
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10118,7 +10118,7 @@ func (ec *executionContext) _IOChaosAction_uid(ctx context.Context, field graphq
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_gid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_gid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10150,7 +10150,7 @@ func (ec *executionContext) _IOChaosAction_gid(ctx context.Context, field graphq
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_rdev(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_rdev(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10182,7 +10182,7 @@ func (ec *executionContext) _IOChaosAction_rdev(ctx context.Context, field graph
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_filling(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_filling(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10214,7 +10214,7 @@ func (ec *executionContext) _IOChaosAction_filling(ctx context.Context, field gr
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_maxOccurrences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_maxOccurrences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10246,7 +10246,7 @@ func (ec *executionContext) _IOChaosAction_maxOccurrences(ctx context.Context, f
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_maxLength(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_maxLength(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10278,7 +10278,7 @@ func (ec *executionContext) _IOChaosAction_maxLength(ctx context.Context, field 
 	return ec.marshalOInt642ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosAction_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosAction_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10313,7 +10313,7 @@ func (ec *executionContext) _IOChaosAction_source(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_containerNames(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_containerNames(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10345,7 +10345,7 @@ func (ec *executionContext) _IOChaosSpec_containerNames(ctx context.Context, fie
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_selector(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_selector(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10375,12 +10375,12 @@ func (ec *executionContext) _IOChaosSpec_selector(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodSelectorSpec)
+	res := resTmp.(v1alpha2.PodSelectorSpec)
 	fc.Result = res
-	return ec.marshalNPodSelectorSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodSelectorSpec(ctx, field.Selections, res)
+	return ec.marshalNPodSelectorSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodSelectorSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_mode(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_mode(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10415,7 +10415,7 @@ func (ec *executionContext) _IOChaosSpec_mode(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_value(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_value(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10447,7 +10447,7 @@ func (ec *executionContext) _IOChaosSpec_value(ctx context.Context, field graphq
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_action(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_action(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10482,7 +10482,7 @@ func (ec *executionContext) _IOChaosSpec_action(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_delay(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_delay(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10514,7 +10514,7 @@ func (ec *executionContext) _IOChaosSpec_delay(ctx context.Context, field graphq
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_errno(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_errno(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10546,7 +10546,7 @@ func (ec *executionContext) _IOChaosSpec_errno(ctx context.Context, field graphq
 	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_attr(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_attr(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10573,12 +10573,12 @@ func (ec *executionContext) _IOChaosSpec_attr(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.AttrOverrideSpec)
+	res := resTmp.(*v1alpha2.AttrOverrideSpec)
 	fc.Result = res
-	return ec.marshalOAttrOverrideSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐAttrOverrideSpec(ctx, field.Selections, res)
+	return ec.marshalOAttrOverrideSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐAttrOverrideSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_mistake(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_mistake(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10605,12 +10605,12 @@ func (ec *executionContext) _IOChaosSpec_mistake(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.MistakeSpec)
+	res := resTmp.(*v1alpha2.MistakeSpec)
 	fc.Result = res
-	return ec.marshalOMistakeSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐMistakeSpec(ctx, field.Selections, res)
+	return ec.marshalOMistakeSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐMistakeSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10642,7 +10642,7 @@ func (ec *executionContext) _IOChaosSpec_path(ctx context.Context, field graphql
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_methods(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_methods(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10674,7 +10674,7 @@ func (ec *executionContext) _IOChaosSpec_methods(ctx context.Context, field grap
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_percent(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_percent(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10706,7 +10706,7 @@ func (ec *executionContext) _IOChaosSpec_percent(ctx context.Context, field grap
 	return ec.marshalOInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_volumePath(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_volumePath(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10741,7 +10741,7 @@ func (ec *executionContext) _IOChaosSpec_volumePath(ctx context.Context, field g
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosSpec_duration(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosSpec_duration(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10773,7 +10773,7 @@ func (ec *executionContext) _IOChaosSpec_duration(ctx context.Context, field gra
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosStatus_conditions(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosStatus_conditions(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10800,12 +10800,12 @@ func (ec *executionContext) _IOChaosStatus_conditions(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.ChaosCondition)
+	res := resTmp.([]v1alpha2.ChaosCondition)
 	fc.Result = res
-	return ec.marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐChaosConditionᚄ(ctx, field.Selections, res)
+	return ec.marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐChaosConditionᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosStatus_experiment(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosStatus_experiment(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10832,12 +10832,12 @@ func (ec *executionContext) _IOChaosStatus_experiment(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.ExperimentStatus)
+	res := resTmp.(v1alpha2.ExperimentStatus)
 	fc.Result = res
-	return ec.marshalOExperimentStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐExperimentStatus(ctx, field.Selections, res)
+	return ec.marshalOExperimentStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐExperimentStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IOChaosStatus_instances(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IOChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _IOChaosStatus_instances(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IOChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10869,7 +10869,7 @@ func (ec *executionContext) _IOChaosStatus_instances(ctx context.Context, field 
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IoFault_errno(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IoFault) (ret graphql.Marshaler) {
+func (ec *executionContext) _IoFault_errno(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IoFault) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -10904,7 +10904,7 @@ func (ec *executionContext) _IoFault_errno(ctx context.Context, field graphql.Co
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _IoFault_weight(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.IoFault) (ret graphql.Marshaler) {
+func (ec *executionContext) _IoFault_weight(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.IoFault) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11043,7 +11043,7 @@ func (ec *executionContext) _Logger_pod(ctx context.Context, field graphql.Colle
 	}
 }
 
-func (ec *executionContext) _LossSpec_loss(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.LossSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _LossSpec_loss(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.LossSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11078,7 +11078,7 @@ func (ec *executionContext) _LossSpec_loss(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _LossSpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.LossSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _LossSpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.LossSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11110,7 +11110,7 @@ func (ec *executionContext) _LossSpec_correlation(ctx context.Context, field gra
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _MemoryStressor_workers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.MemoryStressor) (ret graphql.Marshaler) {
+func (ec *executionContext) _MemoryStressor_workers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.MemoryStressor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11145,7 +11145,7 @@ func (ec *executionContext) _MemoryStressor_workers(ctx context.Context, field g
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _MemoryStressor_size(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.MemoryStressor) (ret graphql.Marshaler) {
+func (ec *executionContext) _MemoryStressor_size(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.MemoryStressor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11177,7 +11177,7 @@ func (ec *executionContext) _MemoryStressor_size(ctx context.Context, field grap
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _MemoryStressor_options(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.MemoryStressor) (ret graphql.Marshaler) {
+func (ec *executionContext) _MemoryStressor_options(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.MemoryStressor) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11209,7 +11209,7 @@ func (ec *executionContext) _MemoryStressor_options(ctx context.Context, field g
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _MistakeSpec_filling(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.MistakeSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _MistakeSpec_filling(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.MistakeSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11241,7 +11241,7 @@ func (ec *executionContext) _MistakeSpec_filling(ctx context.Context, field grap
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _MistakeSpec_maxOccurrences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.MistakeSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _MistakeSpec_maxOccurrences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.MistakeSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11273,7 +11273,7 @@ func (ec *executionContext) _MistakeSpec_maxOccurrences(ctx context.Context, fie
 	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _MistakeSpec_maxLength(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.MistakeSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _MistakeSpec_maxLength(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.MistakeSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11452,9 +11452,9 @@ func (ec *executionContext) _Namespace_stresschaos(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.StressChaos)
+	res := resTmp.([]*v1alpha2.StressChaos)
 	fc.Result = res
-	return ec.marshalOStressChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOStressChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressChaosᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Namespace_iochaos(ctx context.Context, field graphql.CollectedField, obj *model.Namespace) (ret graphql.Marshaler) {
@@ -11491,9 +11491,9 @@ func (ec *executionContext) _Namespace_iochaos(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.IOChaos)
+	res := resTmp.([]*v1alpha2.IOChaos)
 	fc.Result = res
-	return ec.marshalOIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Namespace_podiochaos(ctx context.Context, field graphql.CollectedField, obj *model.Namespace) (ret graphql.Marshaler) {
@@ -11530,9 +11530,9 @@ func (ec *executionContext) _Namespace_podiochaos(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.PodIOChaos)
+	res := resTmp.([]*v1alpha2.PodIOChaos)
 	fc.Result = res
-	return ec.marshalOPodIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOPodIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaosᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Namespace_httpchaos(ctx context.Context, field graphql.CollectedField, obj *model.Namespace) (ret graphql.Marshaler) {
@@ -11569,9 +11569,9 @@ func (ec *executionContext) _Namespace_httpchaos(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.HTTPChaos)
+	res := resTmp.([]*v1alpha2.HTTPChaos)
 	fc.Result = res
-	return ec.marshalOHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐHTTPChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐHTTPChaosᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Namespace_podhttpchaos(ctx context.Context, field graphql.CollectedField, obj *model.Namespace) (ret graphql.Marshaler) {
@@ -11608,9 +11608,9 @@ func (ec *executionContext) _Namespace_podhttpchaos(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.PodHttpChaos)
+	res := resTmp.([]*v1alpha2.PodHttpChaos)
 	fc.Result = res
-	return ec.marshalOPodHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOPodHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Namespace_networkchaos(ctx context.Context, field graphql.CollectedField, obj *model.Namespace) (ret graphql.Marshaler) {
@@ -11647,9 +11647,9 @@ func (ec *executionContext) _Namespace_networkchaos(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.NetworkChaos)
+	res := resTmp.([]*v1alpha2.NetworkChaos)
 	fc.Result = res
-	return ec.marshalONetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐNetworkChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalONetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐNetworkChaosᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Namespace_podnetworkchaos(ctx context.Context, field graphql.CollectedField, obj *model.Namespace) (ret graphql.Marshaler) {
@@ -11686,12 +11686,12 @@ func (ec *executionContext) _Namespace_podnetworkchaos(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.PodNetworkChaos)
+	res := resTmp.([]*v1alpha2.PodNetworkChaos)
 	fc.Result = res
-	return ec.marshalOPodNetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOPodNetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaosᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11726,7 +11726,7 @@ func (ec *executionContext) _NetworkChaos_kind(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11761,7 +11761,7 @@ func (ec *executionContext) _NetworkChaos_apiVersion(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11796,7 +11796,7 @@ func (ec *executionContext) _NetworkChaos_name(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11831,7 +11831,7 @@ func (ec *executionContext) _NetworkChaos_generateName(ctx context.Context, fiel
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11866,7 +11866,7 @@ func (ec *executionContext) _NetworkChaos_namespace(ctx context.Context, field g
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11901,7 +11901,7 @@ func (ec *executionContext) _NetworkChaos_selfLink(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11936,7 +11936,7 @@ func (ec *executionContext) _NetworkChaos_uid(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -11971,7 +11971,7 @@ func (ec *executionContext) _NetworkChaos_resourceVersion(ctx context.Context, f
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12006,7 +12006,7 @@ func (ec *executionContext) _NetworkChaos_generation(ctx context.Context, field 
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12041,7 +12041,7 @@ func (ec *executionContext) _NetworkChaos_creationTimestamp(ctx context.Context,
 	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12073,7 +12073,7 @@ func (ec *executionContext) _NetworkChaos_deletionTimestamp(ctx context.Context,
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12105,7 +12105,7 @@ func (ec *executionContext) _NetworkChaos_deletionGracePeriodSeconds(ctx context
 	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12137,7 +12137,7 @@ func (ec *executionContext) _NetworkChaos_labels(ctx context.Context, field grap
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12169,7 +12169,7 @@ func (ec *executionContext) _NetworkChaos_annotations(ctx context.Context, field
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12201,7 +12201,7 @@ func (ec *executionContext) _NetworkChaos_ownerReferences(ctx context.Context, f
 	return ec.marshalOOwnerReference2ᚕk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐOwnerReferenceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12233,7 +12233,7 @@ func (ec *executionContext) _NetworkChaos_finalizers(ctx context.Context, field 
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12268,7 +12268,7 @@ func (ec *executionContext) _NetworkChaos_clusterName(ctx context.Context, field
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _NetworkChaos_podnetwork(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.NetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _NetworkChaos_podnetwork(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.NetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -12295,9 +12295,9 @@ func (ec *executionContext) _NetworkChaos_podnetwork(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.PodNetworkChaos)
+	res := resTmp.([]*v1alpha2.PodNetworkChaos)
 	fc.Result = res
-	return ec.marshalOPodNetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOPodNetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaosᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _OwnerReference_kind(ctx context.Context, field graphql.CollectedField, obj *v11.OwnerReference) (ret graphql.Marshaler) {
@@ -13585,7 +13585,7 @@ func (ec *executionContext) _PodCondition_message(ctx context.Context, field gra
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13620,7 +13620,7 @@ func (ec *executionContext) _PodHTTPChaos_kind(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13655,7 +13655,7 @@ func (ec *executionContext) _PodHTTPChaos_apiVersion(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13690,7 +13690,7 @@ func (ec *executionContext) _PodHTTPChaos_name(ctx context.Context, field graphq
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13725,7 +13725,7 @@ func (ec *executionContext) _PodHTTPChaos_generateName(ctx context.Context, fiel
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13760,7 +13760,7 @@ func (ec *executionContext) _PodHTTPChaos_namespace(ctx context.Context, field g
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13795,7 +13795,7 @@ func (ec *executionContext) _PodHTTPChaos_selfLink(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13830,7 +13830,7 @@ func (ec *executionContext) _PodHTTPChaos_uid(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13865,7 +13865,7 @@ func (ec *executionContext) _PodHTTPChaos_resourceVersion(ctx context.Context, f
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13900,7 +13900,7 @@ func (ec *executionContext) _PodHTTPChaos_generation(ctx context.Context, field 
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13935,7 +13935,7 @@ func (ec *executionContext) _PodHTTPChaos_creationTimestamp(ctx context.Context,
 	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13967,7 +13967,7 @@ func (ec *executionContext) _PodHTTPChaos_deletionTimestamp(ctx context.Context,
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -13999,7 +13999,7 @@ func (ec *executionContext) _PodHTTPChaos_deletionGracePeriodSeconds(ctx context
 	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14031,7 +14031,7 @@ func (ec *executionContext) _PodHTTPChaos_labels(ctx context.Context, field grap
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14063,7 +14063,7 @@ func (ec *executionContext) _PodHTTPChaos_annotations(ctx context.Context, field
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14095,7 +14095,7 @@ func (ec *executionContext) _PodHTTPChaos_ownerReferences(ctx context.Context, f
 	return ec.marshalOOwnerReference2ᚕk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐOwnerReferenceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14127,7 +14127,7 @@ func (ec *executionContext) _PodHTTPChaos_finalizers(ctx context.Context, field 
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14162,7 +14162,7 @@ func (ec *executionContext) _PodHTTPChaos_clusterName(ctx context.Context, field
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14192,12 +14192,12 @@ func (ec *executionContext) _PodHTTPChaos_spec(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodHttpChaosSpec)
+	res := resTmp.(v1alpha2.PodHttpChaosSpec)
 	fc.Result = res
-	return ec.marshalNPodHttpChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosSpec(ctx, field.Selections, res)
+	return ec.marshalNPodHttpChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14227,12 +14227,12 @@ func (ec *executionContext) _PodHTTPChaos_status(ctx context.Context, field grap
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodHttpChaosStatus)
+	res := resTmp.(v1alpha2.PodHttpChaosStatus)
 	fc.Result = res
-	return ec.marshalNPodHttpChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosStatus(ctx, field.Selections, res)
+	return ec.marshalNPodHttpChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHTTPChaos_pod(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHTTPChaos_pod(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14267,7 +14267,7 @@ func (ec *executionContext) _PodHTTPChaos_pod(ctx context.Context, field graphql
 	return ec.marshalNPod2ᚖk8sᚗioᚋapiᚋcoreᚋv1ᚐPod(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosActions_abort(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosActions_abort(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14299,7 +14299,7 @@ func (ec *executionContext) _PodHttpChaosActions_abort(ctx context.Context, fiel
 	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosActions_delay(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosActions_delay(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14331,7 +14331,7 @@ func (ec *executionContext) _PodHttpChaosActions_delay(ctx context.Context, fiel
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosActions_replace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosActions_replace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14358,12 +14358,12 @@ func (ec *executionContext) _PodHttpChaosActions_replace(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.PodHttpChaosReplaceActions)
+	res := resTmp.(*v1alpha2.PodHttpChaosReplaceActions)
 	fc.Result = res
-	return ec.marshalOPodHttpChaosReplaceActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosReplaceActions(ctx, field.Selections, res)
+	return ec.marshalOPodHttpChaosReplaceActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosReplaceActions(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosActions_patch(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosActions_patch(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14390,12 +14390,12 @@ func (ec *executionContext) _PodHttpChaosActions_patch(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.PodHttpChaosPatchActions)
+	res := resTmp.(*v1alpha2.PodHttpChaosPatchActions)
 	fc.Result = res
-	return ec.marshalOPodHttpChaosPatchActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosPatchActions(ctx, field.Selections, res)
+	return ec.marshalOPodHttpChaosPatchActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosPatchActions(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosPatchActions_body(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosPatchActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosPatchActions_body(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosPatchActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14422,12 +14422,12 @@ func (ec *executionContext) _PodHttpChaosPatchActions_body(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.PodHttpChaosPatchBodyAction)
+	res := resTmp.(*v1alpha2.PodHttpChaosPatchBodyAction)
 	fc.Result = res
-	return ec.marshalOPodHttpChaosPatchBodyAction2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosPatchBodyAction(ctx, field.Selections, res)
+	return ec.marshalOPodHttpChaosPatchBodyAction2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosPatchBodyAction(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosPatchActions_queries(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosPatchActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosPatchActions_queries(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosPatchActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14459,7 +14459,7 @@ func (ec *executionContext) _PodHttpChaosPatchActions_queries(ctx context.Contex
 	return ec.marshalOString2ᚕᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosPatchActions_headers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosPatchActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosPatchActions_headers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosPatchActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14491,7 +14491,7 @@ func (ec *executionContext) _PodHttpChaosPatchActions_headers(ctx context.Contex
 	return ec.marshalOString2ᚕᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosPatchBodyAction_type(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosPatchBodyAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosPatchBodyAction_type(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosPatchBodyAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14526,7 +14526,7 @@ func (ec *executionContext) _PodHttpChaosPatchBodyAction_type(ctx context.Contex
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosPatchBodyAction_value(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosPatchBodyAction) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosPatchBodyAction_value(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosPatchBodyAction) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14561,7 +14561,7 @@ func (ec *executionContext) _PodHttpChaosPatchBodyAction_value(ctx context.Conte
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosReplaceActions_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosReplaceActions_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14593,7 +14593,7 @@ func (ec *executionContext) _PodHttpChaosReplaceActions_path(ctx context.Context
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosReplaceActions_method(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosReplaceActions_method(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14625,7 +14625,7 @@ func (ec *executionContext) _PodHttpChaosReplaceActions_method(ctx context.Conte
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosReplaceActions_code(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosReplaceActions_code(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14657,7 +14657,7 @@ func (ec *executionContext) _PodHttpChaosReplaceActions_code(ctx context.Context
 	return ec.marshalOInt2ᚖint32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosReplaceActions_body(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosReplaceActions_body(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14689,7 +14689,7 @@ func (ec *executionContext) _PodHttpChaosReplaceActions_body(ctx context.Context
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosReplaceActions_queries(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosReplaceActions_queries(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14721,7 +14721,7 @@ func (ec *executionContext) _PodHttpChaosReplaceActions_queries(ctx context.Cont
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosReplaceActions_headers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosReplaceActions_headers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosReplaceActions) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14753,7 +14753,7 @@ func (ec *executionContext) _PodHttpChaosReplaceActions_headers(ctx context.Cont
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosRule_target(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosRule) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosRule_target(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosRule) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14788,7 +14788,7 @@ func (ec *executionContext) _PodHttpChaosRule_target(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosRule_selector(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosRule) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosRule_selector(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosRule) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14818,12 +14818,12 @@ func (ec *executionContext) _PodHttpChaosRule_selector(ctx context.Context, fiel
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodHttpChaosSelector)
+	res := resTmp.(v1alpha2.PodHttpChaosSelector)
 	fc.Result = res
-	return ec.marshalNPodHttpChaosSelector2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosSelector(ctx, field.Selections, res)
+	return ec.marshalNPodHttpChaosSelector2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosSelector(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosRule_actions(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosRule) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosRule_actions(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosRule) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14853,12 +14853,12 @@ func (ec *executionContext) _PodHttpChaosRule_actions(ctx context.Context, field
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodHttpChaosActions)
+	res := resTmp.(v1alpha2.PodHttpChaosActions)
 	fc.Result = res
-	return ec.marshalNPodHttpChaosActions2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosActions(ctx, field.Selections, res)
+	return ec.marshalNPodHttpChaosActions2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosActions(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosRule_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosRule) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosRule_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosRule) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14893,7 +14893,7 @@ func (ec *executionContext) _PodHttpChaosRule_source(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosRule_port(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosRule) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosRule_port(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosRule) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14928,7 +14928,7 @@ func (ec *executionContext) _PodHttpChaosRule_port(ctx context.Context, field gr
 	return ec.marshalNInt2int32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosSelector_port(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosSelector) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosSelector_port(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosSelector) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14960,7 +14960,7 @@ func (ec *executionContext) _PodHttpChaosSelector_port(ctx context.Context, fiel
 	return ec.marshalOInt2ᚖint32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosSelector_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosSelector) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosSelector_path(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosSelector) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -14992,7 +14992,7 @@ func (ec *executionContext) _PodHttpChaosSelector_path(ctx context.Context, fiel
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosSelector_method(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosSelector) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosSelector_method(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosSelector) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15024,7 +15024,7 @@ func (ec *executionContext) _PodHttpChaosSelector_method(ctx context.Context, fi
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosSelector_code(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosSelector) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosSelector_code(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosSelector) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15056,7 +15056,7 @@ func (ec *executionContext) _PodHttpChaosSelector_code(ctx context.Context, fiel
 	return ec.marshalOInt2ᚖint32(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosSelector_requestHeaders(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosSelector) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosSelector_requestHeaders(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosSelector) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15088,7 +15088,7 @@ func (ec *executionContext) _PodHttpChaosSelector_requestHeaders(ctx context.Con
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosSelector_responseHeaders(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosSelector) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosSelector_responseHeaders(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosSelector) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15120,7 +15120,7 @@ func (ec *executionContext) _PodHttpChaosSelector_responseHeaders(ctx context.Co
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosSpec_rules(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosSpec_rules(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15150,12 +15150,12 @@ func (ec *executionContext) _PodHttpChaosSpec_rules(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.PodHttpChaosRule)
+	res := resTmp.([]v1alpha2.PodHttpChaosRule)
 	fc.Result = res
-	return ec.marshalNPodHttpChaosRule2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosRuleᚄ(ctx, field.Selections, res)
+	return ec.marshalNPodHttpChaosRule2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosRuleᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosStatus_pid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosStatus_pid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15187,7 +15187,7 @@ func (ec *executionContext) _PodHttpChaosStatus_pid(ctx context.Context, field g
 	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosStatus_startTime(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosStatus_startTime(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15219,7 +15219,7 @@ func (ec *executionContext) _PodHttpChaosStatus_startTime(ctx context.Context, f
 	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosStatus_failedMessage(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosStatus_failedMessage(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15251,7 +15251,7 @@ func (ec *executionContext) _PodHttpChaosStatus_failedMessage(ctx context.Contex
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodHttpChaosStatus_observedGeneration(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodHttpChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodHttpChaosStatus_observedGeneration(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodHttpChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15283,7 +15283,7 @@ func (ec *executionContext) _PodHttpChaosStatus_observedGeneration(ctx context.C
 	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15318,7 +15318,7 @@ func (ec *executionContext) _PodIOChaos_kind(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15353,7 +15353,7 @@ func (ec *executionContext) _PodIOChaos_apiVersion(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15388,7 +15388,7 @@ func (ec *executionContext) _PodIOChaos_name(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15423,7 +15423,7 @@ func (ec *executionContext) _PodIOChaos_generateName(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15458,7 +15458,7 @@ func (ec *executionContext) _PodIOChaos_namespace(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15493,7 +15493,7 @@ func (ec *executionContext) _PodIOChaos_selfLink(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15528,7 +15528,7 @@ func (ec *executionContext) _PodIOChaos_uid(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15563,7 +15563,7 @@ func (ec *executionContext) _PodIOChaos_resourceVersion(ctx context.Context, fie
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15598,7 +15598,7 @@ func (ec *executionContext) _PodIOChaos_generation(ctx context.Context, field gr
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15633,7 +15633,7 @@ func (ec *executionContext) _PodIOChaos_creationTimestamp(ctx context.Context, f
 	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15665,7 +15665,7 @@ func (ec *executionContext) _PodIOChaos_deletionTimestamp(ctx context.Context, f
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15697,7 +15697,7 @@ func (ec *executionContext) _PodIOChaos_deletionGracePeriodSeconds(ctx context.C
 	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15729,7 +15729,7 @@ func (ec *executionContext) _PodIOChaos_labels(ctx context.Context, field graphq
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15761,7 +15761,7 @@ func (ec *executionContext) _PodIOChaos_annotations(ctx context.Context, field g
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15793,7 +15793,7 @@ func (ec *executionContext) _PodIOChaos_ownerReferences(ctx context.Context, fie
 	return ec.marshalOOwnerReference2ᚕk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐOwnerReferenceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15825,7 +15825,7 @@ func (ec *executionContext) _PodIOChaos_finalizers(ctx context.Context, field gr
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15860,7 +15860,7 @@ func (ec *executionContext) _PodIOChaos_clusterName(ctx context.Context, field g
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15890,12 +15890,12 @@ func (ec *executionContext) _PodIOChaos_spec(ctx context.Context, field graphql.
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodIOChaosSpec)
+	res := resTmp.(v1alpha2.PodIOChaosSpec)
 	fc.Result = res
-	return ec.marshalNPodIOChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaosSpec(ctx, field.Selections, res)
+	return ec.marshalNPodIOChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaosSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15925,12 +15925,12 @@ func (ec *executionContext) _PodIOChaos_status(ctx context.Context, field graphq
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodIOChaosStatus)
+	res := resTmp.(v1alpha2.PodIOChaosStatus)
 	fc.Result = res
-	return ec.marshalNPodIOChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaosStatus(ctx, field.Selections, res)
+	return ec.marshalNPodIOChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaosStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_pod(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_pod(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15965,7 +15965,7 @@ func (ec *executionContext) _PodIOChaos_pod(ctx context.Context, field graphql.C
 	return ec.marshalNPod2ᚖk8sᚗioᚋapiᚋcoreᚋv1ᚐPod(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaos_ios(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaos_ios(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -15992,12 +15992,12 @@ func (ec *executionContext) _PodIOChaos_ios(ctx context.Context, field graphql.C
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]*v1alpha1.IOChaos)
+	res := resTmp.([]*v1alpha2.IOChaos)
 	fc.Result = res
-	return ec.marshalOIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosᚄ(ctx, field.Selections, res)
+	return ec.marshalOIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaosSpec_volumeMountPath(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaosSpec_volumeMountPath(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16032,7 +16032,7 @@ func (ec *executionContext) _PodIOChaosSpec_volumeMountPath(ctx context.Context,
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaosSpec_container(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaosSpec_container(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16064,7 +16064,7 @@ func (ec *executionContext) _PodIOChaosSpec_container(ctx context.Context, field
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaosSpec_actions(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaosSpec_actions(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16091,12 +16091,12 @@ func (ec *executionContext) _PodIOChaosSpec_actions(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.IOChaosAction)
+	res := resTmp.([]v1alpha2.IOChaosAction)
 	fc.Result = res
-	return ec.marshalOIOChaosAction2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosActionᚄ(ctx, field.Selections, res)
+	return ec.marshalOIOChaosAction2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosActionᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaosStatus_pid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaosStatus_pid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16128,7 +16128,7 @@ func (ec *executionContext) _PodIOChaosStatus_pid(ctx context.Context, field gra
 	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaosStatus_startTime(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaosStatus_startTime(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16160,7 +16160,7 @@ func (ec *executionContext) _PodIOChaosStatus_startTime(ctx context.Context, fie
 	return ec.marshalOInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaosStatus_failedMessage(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaosStatus_failedMessage(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16192,7 +16192,7 @@ func (ec *executionContext) _PodIOChaosStatus_failedMessage(ctx context.Context,
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodIOChaosStatus_observedGeneration(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodIOChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodIOChaosStatus_observedGeneration(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodIOChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16259,7 +16259,7 @@ func (ec *executionContext) _PodIP_ip(ctx context.Context, field graphql.Collect
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16294,7 +16294,7 @@ func (ec *executionContext) _PodNetworkChaos_kind(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16329,7 +16329,7 @@ func (ec *executionContext) _PodNetworkChaos_apiVersion(ctx context.Context, fie
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16364,7 +16364,7 @@ func (ec *executionContext) _PodNetworkChaos_name(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16399,7 +16399,7 @@ func (ec *executionContext) _PodNetworkChaos_generateName(ctx context.Context, f
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16434,7 +16434,7 @@ func (ec *executionContext) _PodNetworkChaos_namespace(ctx context.Context, fiel
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16469,7 +16469,7 @@ func (ec *executionContext) _PodNetworkChaos_selfLink(ctx context.Context, field
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16504,7 +16504,7 @@ func (ec *executionContext) _PodNetworkChaos_uid(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16539,7 +16539,7 @@ func (ec *executionContext) _PodNetworkChaos_resourceVersion(ctx context.Context
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16574,7 +16574,7 @@ func (ec *executionContext) _PodNetworkChaos_generation(ctx context.Context, fie
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16609,7 +16609,7 @@ func (ec *executionContext) _PodNetworkChaos_creationTimestamp(ctx context.Conte
 	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16641,7 +16641,7 @@ func (ec *executionContext) _PodNetworkChaos_deletionTimestamp(ctx context.Conte
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16673,7 +16673,7 @@ func (ec *executionContext) _PodNetworkChaos_deletionGracePeriodSeconds(ctx cont
 	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16705,7 +16705,7 @@ func (ec *executionContext) _PodNetworkChaos_labels(ctx context.Context, field g
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16737,7 +16737,7 @@ func (ec *executionContext) _PodNetworkChaos_annotations(ctx context.Context, fi
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16769,7 +16769,7 @@ func (ec *executionContext) _PodNetworkChaos_ownerReferences(ctx context.Context
 	return ec.marshalOOwnerReference2ᚕk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐOwnerReferenceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16801,7 +16801,7 @@ func (ec *executionContext) _PodNetworkChaos_finalizers(ctx context.Context, fie
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16836,7 +16836,7 @@ func (ec *executionContext) _PodNetworkChaos_clusterName(ctx context.Context, fi
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16866,12 +16866,12 @@ func (ec *executionContext) _PodNetworkChaos_spec(ctx context.Context, field gra
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodNetworkChaosSpec)
+	res := resTmp.(v1alpha2.PodNetworkChaosSpec)
 	fc.Result = res
-	return ec.marshalNPodNetworkChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaosSpec(ctx, field.Selections, res)
+	return ec.marshalNPodNetworkChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaosSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_status(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16901,12 +16901,12 @@ func (ec *executionContext) _PodNetworkChaos_status(ctx context.Context, field g
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodNetworkChaosStatus)
+	res := resTmp.(v1alpha2.PodNetworkChaosStatus)
 	fc.Result = res
-	return ec.marshalNPodNetworkChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaosStatus(ctx, field.Selections, res)
+	return ec.marshalNPodNetworkChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaosStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaos_pod(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaos_pod(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16941,7 +16941,7 @@ func (ec *executionContext) _PodNetworkChaos_pod(ctx context.Context, field grap
 	return ec.marshalNPod2ᚖk8sᚗioᚋapiᚋcoreᚋv1ᚐPod(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaosSpec_ipSets(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaosSpec_ipSets(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -16968,12 +16968,12 @@ func (ec *executionContext) _PodNetworkChaosSpec_ipSets(ctx context.Context, fie
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.RawIPSet)
+	res := resTmp.([]v1alpha2.RawIPSet)
 	fc.Result = res
-	return ec.marshalORawIPSet2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawIPSetᚄ(ctx, field.Selections, res)
+	return ec.marshalORawIPSet2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawIPSetᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaosSpec_iptables(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaosSpec_iptables(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17000,12 +17000,12 @@ func (ec *executionContext) _PodNetworkChaosSpec_iptables(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.RawIptables)
+	res := resTmp.([]v1alpha2.RawIptables)
 	fc.Result = res
-	return ec.marshalORawIptables2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawIptablesᚄ(ctx, field.Selections, res)
+	return ec.marshalORawIptables2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawIptablesᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaosSpec_trafficControls(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaosSpec_trafficControls(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17032,12 +17032,12 @@ func (ec *executionContext) _PodNetworkChaosSpec_trafficControls(ctx context.Con
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.RawTrafficControl)
+	res := resTmp.([]v1alpha2.RawTrafficControl)
 	fc.Result = res
-	return ec.marshalORawTrafficControl2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawTrafficControlᚄ(ctx, field.Selections, res)
+	return ec.marshalORawTrafficControl2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawTrafficControlᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaosStatus_failedMessage(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaosStatus_failedMessage(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17072,7 +17072,7 @@ func (ec *executionContext) _PodNetworkChaosStatus_failedMessage(ctx context.Con
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodNetworkChaosStatus_observedGeneration(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodNetworkChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodNetworkChaosStatus_observedGeneration(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodNetworkChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17107,7 +17107,7 @@ func (ec *executionContext) _PodNetworkChaosStatus_observedGeneration(ctx contex
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodSelectorSpec_namespaces(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodSelectorSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodSelectorSpec_namespaces(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodSelectorSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17139,7 +17139,7 @@ func (ec *executionContext) _PodSelectorSpec_namespaces(ctx context.Context, fie
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodSelectorSpec_nodes(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodSelectorSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodSelectorSpec_nodes(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodSelectorSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17171,7 +17171,7 @@ func (ec *executionContext) _PodSelectorSpec_nodes(ctx context.Context, field gr
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodSelectorSpec_pods(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodSelectorSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodSelectorSpec_pods(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodSelectorSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17203,7 +17203,7 @@ func (ec *executionContext) _PodSelectorSpec_pods(ctx context.Context, field gra
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodSelectorSpec_nodeSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodSelectorSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodSelectorSpec_nodeSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodSelectorSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17235,7 +17235,7 @@ func (ec *executionContext) _PodSelectorSpec_nodeSelectors(ctx context.Context, 
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodSelectorSpec_fieldSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodSelectorSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodSelectorSpec_fieldSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodSelectorSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17267,7 +17267,7 @@ func (ec *executionContext) _PodSelectorSpec_fieldSelectors(ctx context.Context,
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodSelectorSpec_labelSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodSelectorSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodSelectorSpec_labelSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodSelectorSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17299,7 +17299,7 @@ func (ec *executionContext) _PodSelectorSpec_labelSelectors(ctx context.Context,
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodSelectorSpec_annotationSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodSelectorSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodSelectorSpec_annotationSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodSelectorSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17331,7 +17331,7 @@ func (ec *executionContext) _PodSelectorSpec_annotationSelectors(ctx context.Con
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _PodSelectorSpec_podPhaseSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.PodSelectorSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _PodSelectorSpec_podPhaseSelectors(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.PodSelectorSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -17865,9 +17865,9 @@ func (ec *executionContext) _PodStressChaos_stressChaos(ctx context.Context, fie
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.StressChaos)
+	res := resTmp.(*v1alpha2.StressChaos)
 	fc.Result = res
-	return ec.marshalNStressChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressChaos(ctx, field.Selections, res)
+	return ec.marshalNStressChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressChaos(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _PodStressChaos_pod(ctx context.Context, field graphql.CollectedField, obj *model.PodStressChaos) (ret graphql.Marshaler) {
@@ -18289,7 +18289,7 @@ func (ec *executionContext) _Query___schema(ctx context.Context, field graphql.C
 	return ec.marshalO__Schema2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐSchema(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawIPSet_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawIPSet) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawIPSet_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawIPSet) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18324,7 +18324,7 @@ func (ec *executionContext) _RawIPSet_name(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawIPSet_cidrs(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawIPSet) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawIPSet_cidrs(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawIPSet) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18359,7 +18359,7 @@ func (ec *executionContext) _RawIPSet_cidrs(ctx context.Context, field graphql.C
 	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawIPSet_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawIPSet) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawIPSet_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawIPSet) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18394,7 +18394,7 @@ func (ec *executionContext) _RawIPSet_source(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawIptables_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawIptables) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawIptables_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawIptables) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18429,7 +18429,7 @@ func (ec *executionContext) _RawIptables_name(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawIptables_ipSets(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawIptables) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawIptables_ipSets(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawIptables) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18464,7 +18464,7 @@ func (ec *executionContext) _RawIptables_ipSets(ctx context.Context, field graph
 	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawIptables_direction(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawIptables) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawIptables_direction(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawIptables) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18499,7 +18499,7 @@ func (ec *executionContext) _RawIptables_direction(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawIptables_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawIptables) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawIptables_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawIptables) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18534,7 +18534,7 @@ func (ec *executionContext) _RawIptables_source(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawIptables_device(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawIptables) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawIptables_device(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawIptables) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18566,7 +18566,7 @@ func (ec *executionContext) _RawIptables_device(ctx context.Context, field graph
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_type(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_type(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18601,7 +18601,7 @@ func (ec *executionContext) _RawTrafficControl_type(ctx context.Context, field g
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_delay(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_delay(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18628,12 +18628,12 @@ func (ec *executionContext) _RawTrafficControl_delay(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.DelaySpec)
+	res := resTmp.(*v1alpha2.DelaySpec)
 	fc.Result = res
-	return ec.marshalODelaySpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐDelaySpec(ctx, field.Selections, res)
+	return ec.marshalODelaySpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐDelaySpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_loss(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_loss(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18660,12 +18660,12 @@ func (ec *executionContext) _RawTrafficControl_loss(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.LossSpec)
+	res := resTmp.(*v1alpha2.LossSpec)
 	fc.Result = res
-	return ec.marshalOLossSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐLossSpec(ctx, field.Selections, res)
+	return ec.marshalOLossSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐLossSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_duplicate(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_duplicate(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18692,12 +18692,12 @@ func (ec *executionContext) _RawTrafficControl_duplicate(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.DuplicateSpec)
+	res := resTmp.(*v1alpha2.DuplicateSpec)
 	fc.Result = res
-	return ec.marshalODuplicateSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐDuplicateSpec(ctx, field.Selections, res)
+	return ec.marshalODuplicateSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐDuplicateSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_corrupt(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_corrupt(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18724,12 +18724,12 @@ func (ec *executionContext) _RawTrafficControl_corrupt(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.CorruptSpec)
+	res := resTmp.(*v1alpha2.CorruptSpec)
 	fc.Result = res
-	return ec.marshalOCorruptSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐCorruptSpec(ctx, field.Selections, res)
+	return ec.marshalOCorruptSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐCorruptSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_bandwidth(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_bandwidth(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18756,12 +18756,12 @@ func (ec *executionContext) _RawTrafficControl_bandwidth(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.BandwidthSpec)
+	res := resTmp.(*v1alpha2.BandwidthSpec)
 	fc.Result = res
-	return ec.marshalOBandwidthSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐBandwidthSpec(ctx, field.Selections, res)
+	return ec.marshalOBandwidthSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐBandwidthSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_ipSet(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_ipSet(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18793,7 +18793,7 @@ func (ec *executionContext) _RawTrafficControl_ipSet(ctx context.Context, field 
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_source(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18825,7 +18825,7 @@ func (ec *executionContext) _RawTrafficControl_source(ctx context.Context, field
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _RawTrafficControl_device(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.RawTrafficControl) (ret graphql.Marshaler) {
+func (ec *executionContext) _RawTrafficControl_device(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.RawTrafficControl) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18857,7 +18857,7 @@ func (ec *executionContext) _RawTrafficControl_device(ctx context.Context, field
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Record_id(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_id(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.Record) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18892,7 +18892,7 @@ func (ec *executionContext) _Record_id(ctx context.Context, field graphql.Collec
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Record_selectorKey(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_selectorKey(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.Record) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18927,7 +18927,7 @@ func (ec *executionContext) _Record_selectorKey(ctx context.Context, field graph
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Record_phase(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.Record) (ret graphql.Marshaler) {
+func (ec *executionContext) _Record_phase(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.Record) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18962,7 +18962,7 @@ func (ec *executionContext) _Record_phase(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ReorderSpec_reorder(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.ReorderSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _ReorderSpec_reorder(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.ReorderSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -18997,7 +18997,7 @@ func (ec *executionContext) _ReorderSpec_reorder(ctx context.Context, field grap
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ReorderSpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.ReorderSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _ReorderSpec_correlation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.ReorderSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19029,7 +19029,7 @@ func (ec *executionContext) _ReorderSpec_correlation(ctx context.Context, field 
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _ReorderSpec_gap(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.ReorderSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _ReorderSpec_gap(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.ReorderSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19061,7 +19061,7 @@ func (ec *executionContext) _ReorderSpec_gap(ctx context.Context, field graphql.
 	return ec.marshalOInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_kind(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19096,7 +19096,7 @@ func (ec *executionContext) _StressChaos_kind(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_apiVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19131,7 +19131,7 @@ func (ec *executionContext) _StressChaos_apiVersion(ctx context.Context, field g
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_name(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19166,7 +19166,7 @@ func (ec *executionContext) _StressChaos_name(ctx context.Context, field graphql
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_generateName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19201,7 +19201,7 @@ func (ec *executionContext) _StressChaos_generateName(ctx context.Context, field
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_namespace(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19236,7 +19236,7 @@ func (ec *executionContext) _StressChaos_namespace(ctx context.Context, field gr
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_selfLink(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19271,7 +19271,7 @@ func (ec *executionContext) _StressChaos_selfLink(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_uid(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19306,7 +19306,7 @@ func (ec *executionContext) _StressChaos_uid(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_resourceVersion(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19341,7 +19341,7 @@ func (ec *executionContext) _StressChaos_resourceVersion(ctx context.Context, fi
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_generation(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19376,7 +19376,7 @@ func (ec *executionContext) _StressChaos_generation(ctx context.Context, field g
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_creationTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19411,7 +19411,7 @@ func (ec *executionContext) _StressChaos_creationTimestamp(ctx context.Context, 
 	return ec.marshalNTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_deletionTimestamp(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19443,7 +19443,7 @@ func (ec *executionContext) _StressChaos_deletionTimestamp(ctx context.Context, 
 	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_deletionGracePeriodSeconds(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19475,7 +19475,7 @@ func (ec *executionContext) _StressChaos_deletionGracePeriodSeconds(ctx context.
 	return ec.marshalOInt2ᚖint64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_labels(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19507,7 +19507,7 @@ func (ec *executionContext) _StressChaos_labels(ctx context.Context, field graph
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_annotations(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19539,7 +19539,7 @@ func (ec *executionContext) _StressChaos_annotations(ctx context.Context, field 
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_ownerReferences(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19571,7 +19571,7 @@ func (ec *executionContext) _StressChaos_ownerReferences(ctx context.Context, fi
 	return ec.marshalOOwnerReference2ᚕk8sᚗioᚋapimachineryᚋpkgᚋapisᚋmetaᚋv1ᚐOwnerReferenceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_finalizers(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19603,7 +19603,7 @@ func (ec *executionContext) _StressChaos_finalizers(ctx context.Context, field g
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_clusterName(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19638,7 +19638,7 @@ func (ec *executionContext) _StressChaos_clusterName(ctx context.Context, field 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_spec(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19668,12 +19668,12 @@ func (ec *executionContext) _StressChaos_spec(ctx context.Context, field graphql
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.StressChaosSpec)
+	res := resTmp.(v1alpha2.StressChaosSpec)
 	fc.Result = res
-	return ec.marshalNStressChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressChaosSpec(ctx, field.Selections, res)
+	return ec.marshalNStressChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressChaosSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaos_podstress(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaos) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaos_podstress(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaos) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19705,7 +19705,7 @@ func (ec *executionContext) _StressChaos_podstress(ctx context.Context, field gr
 	return ec.marshalOPodStressChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋpkgᚋctrlᚋserverᚋmodelᚐPodStressChaosᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosSpec_containerNames(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosSpec_containerNames(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19737,7 +19737,7 @@ func (ec *executionContext) _StressChaosSpec_containerNames(ctx context.Context,
 	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosSpec_selector(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosSpec_selector(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19767,12 +19767,12 @@ func (ec *executionContext) _StressChaosSpec_selector(ctx context.Context, field
 		}
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.PodSelectorSpec)
+	res := resTmp.(v1alpha2.PodSelectorSpec)
 	fc.Result = res
-	return ec.marshalNPodSelectorSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodSelectorSpec(ctx, field.Selections, res)
+	return ec.marshalNPodSelectorSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodSelectorSpec(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosSpec_mode(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosSpec_mode(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19807,7 +19807,7 @@ func (ec *executionContext) _StressChaosSpec_mode(ctx context.Context, field gra
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosSpec_value(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosSpec_value(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19839,7 +19839,7 @@ func (ec *executionContext) _StressChaosSpec_value(ctx context.Context, field gr
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosSpec_stressors(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosSpec_stressors(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19866,12 +19866,12 @@ func (ec *executionContext) _StressChaosSpec_stressors(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.Stressors)
+	res := resTmp.(*v1alpha2.Stressors)
 	fc.Result = res
-	return ec.marshalOStressors2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressors(ctx, field.Selections, res)
+	return ec.marshalOStressors2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressors(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosSpec_stressngStressors(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosSpec_stressngStressors(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19903,7 +19903,7 @@ func (ec *executionContext) _StressChaosSpec_stressngStressors(ctx context.Conte
 	return ec.marshalOString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosSpec_duration(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosSpec) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosSpec_duration(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosSpec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19935,7 +19935,7 @@ func (ec *executionContext) _StressChaosSpec_duration(ctx context.Context, field
 	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosStatus_conditions(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosStatus_conditions(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19962,12 +19962,12 @@ func (ec *executionContext) _StressChaosStatus_conditions(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]v1alpha1.ChaosCondition)
+	res := resTmp.([]v1alpha2.ChaosCondition)
 	fc.Result = res
-	return ec.marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐChaosConditionᚄ(ctx, field.Selections, res)
+	return ec.marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐChaosConditionᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosStatus_experiment(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosStatus_experiment(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -19994,12 +19994,12 @@ func (ec *executionContext) _StressChaosStatus_experiment(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(v1alpha1.ExperimentStatus)
+	res := resTmp.(v1alpha2.ExperimentStatus)
 	fc.Result = res
-	return ec.marshalOExperimentStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐExperimentStatus(ctx, field.Selections, res)
+	return ec.marshalOExperimentStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐExperimentStatus(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _StressChaosStatus_instances(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.StressChaosStatus) (ret graphql.Marshaler) {
+func (ec *executionContext) _StressChaosStatus_instances(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.StressChaosStatus) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20031,7 +20031,7 @@ func (ec *executionContext) _StressChaosStatus_instances(ctx context.Context, fi
 	return ec.marshalOMap2map(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Stressors_memoryStressor(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.Stressors) (ret graphql.Marshaler) {
+func (ec *executionContext) _Stressors_memoryStressor(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.Stressors) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20058,12 +20058,12 @@ func (ec *executionContext) _Stressors_memoryStressor(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.MemoryStressor)
+	res := resTmp.(*v1alpha2.MemoryStressor)
 	fc.Result = res
-	return ec.marshalOMemoryStressor2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐMemoryStressor(ctx, field.Selections, res)
+	return ec.marshalOMemoryStressor2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐMemoryStressor(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Stressors_cpuStressor(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.Stressors) (ret graphql.Marshaler) {
+func (ec *executionContext) _Stressors_cpuStressor(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.Stressors) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20090,12 +20090,12 @@ func (ec *executionContext) _Stressors_cpuStressor(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*v1alpha1.CPUStressor)
+	res := resTmp.(*v1alpha2.CPUStressor)
 	fc.Result = res
-	return ec.marshalOCPUStressor2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐCPUStressor(ctx, field.Selections, res)
+	return ec.marshalOCPUStressor2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐCPUStressor(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Timespec_sec(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.Timespec) (ret graphql.Marshaler) {
+func (ec *executionContext) _Timespec_sec(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.Timespec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -20130,7 +20130,7 @@ func (ec *executionContext) _Timespec_sec(ctx context.Context, field graphql.Col
 	return ec.marshalNInt2int64(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Timespec_nsec(ctx context.Context, field graphql.CollectedField, obj *v1alpha1.Timespec) (ret graphql.Marshaler) {
+func (ec *executionContext) _Timespec_nsec(ctx context.Context, field graphql.CollectedField, obj *v1alpha2.Timespec) (ret graphql.Marshaler) {
 	defer func() {
 		if r := recover(); r != nil {
 			ec.Error(ctx, ec.Recover(ctx, r))
@@ -21262,7 +21262,7 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 var attrOverrideSpecImplementors = []string{"AttrOverrideSpec"}
 
-func (ec *executionContext) _AttrOverrideSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.AttrOverrideSpec) graphql.Marshaler {
+func (ec *executionContext) _AttrOverrideSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.AttrOverrideSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, attrOverrideSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -21389,7 +21389,7 @@ func (ec *executionContext) _AttrOverrideSpec(ctx context.Context, sel ast.Selec
 
 var bandwidthSpecImplementors = []string{"BandwidthSpec"}
 
-func (ec *executionContext) _BandwidthSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.BandwidthSpec) graphql.Marshaler {
+func (ec *executionContext) _BandwidthSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.BandwidthSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, bandwidthSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -21466,7 +21466,7 @@ func (ec *executionContext) _BandwidthSpec(ctx context.Context, sel ast.Selectio
 
 var cPUStressorImplementors = []string{"CPUStressor"}
 
-func (ec *executionContext) _CPUStressor(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.CPUStressor) graphql.Marshaler {
+func (ec *executionContext) _CPUStressor(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.CPUStressor) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, cPUStressorImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -21587,7 +21587,7 @@ func (ec *executionContext) _CgroupsMemory(ctx context.Context, sel ast.Selectio
 
 var chaosConditionImplementors = []string{"ChaosCondition"}
 
-func (ec *executionContext) _ChaosCondition(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.ChaosCondition) graphql.Marshaler {
+func (ec *executionContext) _ChaosCondition(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.ChaosCondition) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, chaosConditionImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -21841,7 +21841,7 @@ func (ec *executionContext) _ContainerStatus(ctx context.Context, sel ast.Select
 
 var corruptSpecImplementors = []string{"CorruptSpec"}
 
-func (ec *executionContext) _CorruptSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.CorruptSpec) graphql.Marshaler {
+func (ec *executionContext) _CorruptSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.CorruptSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, corruptSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -21870,7 +21870,7 @@ func (ec *executionContext) _CorruptSpec(ctx context.Context, sel ast.SelectionS
 
 var delaySpecImplementors = []string{"DelaySpec"}
 
-func (ec *executionContext) _DelaySpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.DelaySpec) graphql.Marshaler {
+func (ec *executionContext) _DelaySpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.DelaySpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, delaySpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -21903,7 +21903,7 @@ func (ec *executionContext) _DelaySpec(ctx context.Context, sel ast.SelectionSet
 
 var duplicateSpecImplementors = []string{"DuplicateSpec"}
 
-func (ec *executionContext) _DuplicateSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.DuplicateSpec) graphql.Marshaler {
+func (ec *executionContext) _DuplicateSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.DuplicateSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, duplicateSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -21932,7 +21932,7 @@ func (ec *executionContext) _DuplicateSpec(ctx context.Context, sel ast.Selectio
 
 var experimentStatusImplementors = []string{"ExperimentStatus"}
 
-func (ec *executionContext) _ExperimentStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.ExperimentStatus) graphql.Marshaler {
+func (ec *executionContext) _ExperimentStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.ExperimentStatus) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, experimentStatusImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22002,7 +22002,7 @@ func (ec *executionContext) _Fd(ctx context.Context, sel ast.SelectionSet, obj *
 
 var hTTPChaosImplementors = []string{"HTTPChaos"}
 
-func (ec *executionContext) _HTTPChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.HTTPChaos) graphql.Marshaler {
+func (ec *executionContext) _HTTPChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.HTTPChaos) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, hTTPChaosImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22157,7 +22157,7 @@ func (ec *executionContext) _HTTPChaos(ctx context.Context, sel ast.SelectionSet
 
 var hTTPChaosSpecImplementors = []string{"HTTPChaosSpec"}
 
-func (ec *executionContext) _HTTPChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.HTTPChaosSpec) graphql.Marshaler {
+func (ec *executionContext) _HTTPChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.HTTPChaosSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, hTTPChaosSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22254,7 +22254,7 @@ func (ec *executionContext) _HTTPChaosSpec(ctx context.Context, sel ast.Selectio
 
 var hTTPChaosStatusImplementors = []string{"HTTPChaosStatus"}
 
-func (ec *executionContext) _HTTPChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.HTTPChaosStatus) graphql.Marshaler {
+func (ec *executionContext) _HTTPChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.HTTPChaosStatus) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, hTTPChaosStatusImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22291,7 +22291,7 @@ func (ec *executionContext) _HTTPChaosStatus(ctx context.Context, sel ast.Select
 
 var iOChaosImplementors = []string{"IOChaos"}
 
-func (ec *executionContext) _IOChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.IOChaos) graphql.Marshaler {
+func (ec *executionContext) _IOChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.IOChaos) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, iOChaosImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22446,7 +22446,7 @@ func (ec *executionContext) _IOChaos(ctx context.Context, sel ast.SelectionSet, 
 
 var iOChaosActionImplementors = []string{"IOChaosAction"}
 
-func (ec *executionContext) _IOChaosAction(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.IOChaosAction) graphql.Marshaler {
+func (ec *executionContext) _IOChaosAction(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.IOChaosAction) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, iOChaosActionImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22674,7 +22674,7 @@ func (ec *executionContext) _IOChaosAction(ctx context.Context, sel ast.Selectio
 
 var iOChaosSpecImplementors = []string{"IOChaosSpec"}
 
-func (ec *executionContext) _IOChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.IOChaosSpec) graphql.Marshaler {
+func (ec *executionContext) _IOChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.IOChaosSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, iOChaosSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22772,7 +22772,7 @@ func (ec *executionContext) _IOChaosSpec(ctx context.Context, sel ast.SelectionS
 
 var iOChaosStatusImplementors = []string{"IOChaosStatus"}
 
-func (ec *executionContext) _IOChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.IOChaosStatus) graphql.Marshaler {
+func (ec *executionContext) _IOChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.IOChaosStatus) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, iOChaosStatusImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22809,7 +22809,7 @@ func (ec *executionContext) _IOChaosStatus(ctx context.Context, sel ast.Selectio
 
 var ioFaultImplementors = []string{"IoFault"}
 
-func (ec *executionContext) _IoFault(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.IoFault) graphql.Marshaler {
+func (ec *executionContext) _IoFault(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.IoFault) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, ioFaultImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22872,7 +22872,7 @@ func (ec *executionContext) _Logger(ctx context.Context, sel ast.SelectionSet) f
 
 var lossSpecImplementors = []string{"LossSpec"}
 
-func (ec *executionContext) _LossSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.LossSpec) graphql.Marshaler {
+func (ec *executionContext) _LossSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.LossSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, lossSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22901,7 +22901,7 @@ func (ec *executionContext) _LossSpec(ctx context.Context, sel ast.SelectionSet,
 
 var memoryStressorImplementors = []string{"MemoryStressor"}
 
-func (ec *executionContext) _MemoryStressor(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.MemoryStressor) graphql.Marshaler {
+func (ec *executionContext) _MemoryStressor(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.MemoryStressor) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, memoryStressorImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -22932,7 +22932,7 @@ func (ec *executionContext) _MemoryStressor(ctx context.Context, sel ast.Selecti
 
 var mistakeSpecImplementors = []string{"MistakeSpec"}
 
-func (ec *executionContext) _MistakeSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.MistakeSpec) graphql.Marshaler {
+func (ec *executionContext) _MistakeSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.MistakeSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, mistakeSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -23095,7 +23095,7 @@ func (ec *executionContext) _Namespace(ctx context.Context, sel ast.SelectionSet
 
 var networkChaosImplementors = []string{"NetworkChaos"}
 
-func (ec *executionContext) _NetworkChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.NetworkChaos) graphql.Marshaler {
+func (ec *executionContext) _NetworkChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.NetworkChaos) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, networkChaosImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -23604,7 +23604,7 @@ func (ec *executionContext) _PodCondition(ctx context.Context, sel ast.Selection
 
 var podHTTPChaosImplementors = []string{"PodHTTPChaos"}
 
-func (ec *executionContext) _PodHTTPChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaos) graphql.Marshaler {
+func (ec *executionContext) _PodHTTPChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaos) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHTTPChaosImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -23762,7 +23762,7 @@ func (ec *executionContext) _PodHTTPChaos(ctx context.Context, sel ast.Selection
 
 var podHttpChaosActionsImplementors = []string{"PodHttpChaosActions"}
 
-func (ec *executionContext) _PodHttpChaosActions(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaosActions) graphql.Marshaler {
+func (ec *executionContext) _PodHttpChaosActions(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaosActions) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHttpChaosActionsImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -23792,7 +23792,7 @@ func (ec *executionContext) _PodHttpChaosActions(ctx context.Context, sel ast.Se
 
 var podHttpChaosPatchActionsImplementors = []string{"PodHttpChaosPatchActions"}
 
-func (ec *executionContext) _PodHttpChaosPatchActions(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaosPatchActions) graphql.Marshaler {
+func (ec *executionContext) _PodHttpChaosPatchActions(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaosPatchActions) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHttpChaosPatchActionsImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -23820,7 +23820,7 @@ func (ec *executionContext) _PodHttpChaosPatchActions(ctx context.Context, sel a
 
 var podHttpChaosPatchBodyActionImplementors = []string{"PodHttpChaosPatchBodyAction"}
 
-func (ec *executionContext) _PodHttpChaosPatchBodyAction(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaosPatchBodyAction) graphql.Marshaler {
+func (ec *executionContext) _PodHttpChaosPatchBodyAction(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaosPatchBodyAction) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHttpChaosPatchBodyActionImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -23852,7 +23852,7 @@ func (ec *executionContext) _PodHttpChaosPatchBodyAction(ctx context.Context, se
 
 var podHttpChaosReplaceActionsImplementors = []string{"PodHttpChaosReplaceActions"}
 
-func (ec *executionContext) _PodHttpChaosReplaceActions(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaosReplaceActions) graphql.Marshaler {
+func (ec *executionContext) _PodHttpChaosReplaceActions(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaosReplaceActions) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHttpChaosReplaceActionsImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -23913,7 +23913,7 @@ func (ec *executionContext) _PodHttpChaosReplaceActions(ctx context.Context, sel
 
 var podHttpChaosRuleImplementors = []string{"PodHttpChaosRule"}
 
-func (ec *executionContext) _PodHttpChaosRule(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaosRule) graphql.Marshaler {
+func (ec *executionContext) _PodHttpChaosRule(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaosRule) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHttpChaosRuleImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -23969,7 +23969,7 @@ func (ec *executionContext) _PodHttpChaosRule(ctx context.Context, sel ast.Selec
 
 var podHttpChaosSelectorImplementors = []string{"PodHttpChaosSelector"}
 
-func (ec *executionContext) _PodHttpChaosSelector(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaosSelector) graphql.Marshaler {
+func (ec *executionContext) _PodHttpChaosSelector(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaosSelector) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHttpChaosSelectorImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24021,7 +24021,7 @@ func (ec *executionContext) _PodHttpChaosSelector(ctx context.Context, sel ast.S
 
 var podHttpChaosSpecImplementors = []string{"PodHttpChaosSpec"}
 
-func (ec *executionContext) _PodHttpChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaosSpec) graphql.Marshaler {
+func (ec *executionContext) _PodHttpChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaosSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHttpChaosSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24048,7 +24048,7 @@ func (ec *executionContext) _PodHttpChaosSpec(ctx context.Context, sel ast.Selec
 
 var podHttpChaosStatusImplementors = []string{"PodHttpChaosStatus"}
 
-func (ec *executionContext) _PodHttpChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodHttpChaosStatus) graphql.Marshaler {
+func (ec *executionContext) _PodHttpChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodHttpChaosStatus) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podHttpChaosStatusImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24078,7 +24078,7 @@ func (ec *executionContext) _PodHttpChaosStatus(ctx context.Context, sel ast.Sel
 
 var podIOChaosImplementors = []string{"PodIOChaos"}
 
-func (ec *executionContext) _PodIOChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodIOChaos) graphql.Marshaler {
+func (ec *executionContext) _PodIOChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodIOChaos) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podIOChaosImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24247,7 +24247,7 @@ func (ec *executionContext) _PodIOChaos(ctx context.Context, sel ast.SelectionSe
 
 var podIOChaosSpecImplementors = []string{"PodIOChaosSpec"}
 
-func (ec *executionContext) _PodIOChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodIOChaosSpec) graphql.Marshaler {
+func (ec *executionContext) _PodIOChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodIOChaosSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podIOChaosSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24278,7 +24278,7 @@ func (ec *executionContext) _PodIOChaosSpec(ctx context.Context, sel ast.Selecti
 
 var podIOChaosStatusImplementors = []string{"PodIOChaosStatus"}
 
-func (ec *executionContext) _PodIOChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodIOChaosStatus) graphql.Marshaler {
+func (ec *executionContext) _PodIOChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodIOChaosStatus) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podIOChaosStatusImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24335,7 +24335,7 @@ func (ec *executionContext) _PodIP(ctx context.Context, sel ast.SelectionSet, ob
 
 var podNetworkChaosImplementors = []string{"PodNetworkChaos"}
 
-func (ec *executionContext) _PodNetworkChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodNetworkChaos) graphql.Marshaler {
+func (ec *executionContext) _PodNetworkChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodNetworkChaos) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podNetworkChaosImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24493,7 +24493,7 @@ func (ec *executionContext) _PodNetworkChaos(ctx context.Context, sel ast.Select
 
 var podNetworkChaosSpecImplementors = []string{"PodNetworkChaosSpec"}
 
-func (ec *executionContext) _PodNetworkChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodNetworkChaosSpec) graphql.Marshaler {
+func (ec *executionContext) _PodNetworkChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodNetworkChaosSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podNetworkChaosSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24521,7 +24521,7 @@ func (ec *executionContext) _PodNetworkChaosSpec(ctx context.Context, sel ast.Se
 
 var podNetworkChaosStatusImplementors = []string{"PodNetworkChaosStatus"}
 
-func (ec *executionContext) _PodNetworkChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodNetworkChaosStatus) graphql.Marshaler {
+func (ec *executionContext) _PodNetworkChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodNetworkChaosStatus) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podNetworkChaosStatusImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24553,7 +24553,7 @@ func (ec *executionContext) _PodNetworkChaosStatus(ctx context.Context, sel ast.
 
 var podSelectorSpecImplementors = []string{"PodSelectorSpec"}
 
-func (ec *executionContext) _PodSelectorSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.PodSelectorSpec) graphql.Marshaler {
+func (ec *executionContext) _PodSelectorSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.PodSelectorSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, podSelectorSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24937,7 +24937,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 
 var rawIPSetImplementors = []string{"RawIPSet"}
 
-func (ec *executionContext) _RawIPSet(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.RawIPSet) graphql.Marshaler {
+func (ec *executionContext) _RawIPSet(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.RawIPSet) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, rawIPSetImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -24974,7 +24974,7 @@ func (ec *executionContext) _RawIPSet(ctx context.Context, sel ast.SelectionSet,
 
 var rawIptablesImplementors = []string{"RawIptables"}
 
-func (ec *executionContext) _RawIptables(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.RawIptables) graphql.Marshaler {
+func (ec *executionContext) _RawIptables(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.RawIptables) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, rawIptablesImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25027,7 +25027,7 @@ func (ec *executionContext) _RawIptables(ctx context.Context, sel ast.SelectionS
 
 var rawTrafficControlImplementors = []string{"RawTrafficControl"}
 
-func (ec *executionContext) _RawTrafficControl(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.RawTrafficControl) graphql.Marshaler {
+func (ec *executionContext) _RawTrafficControl(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.RawTrafficControl) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, rawTrafficControlImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25079,7 +25079,7 @@ func (ec *executionContext) _RawTrafficControl(ctx context.Context, sel ast.Sele
 
 var recordImplementors = []string{"Record"}
 
-func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.Record) graphql.Marshaler {
+func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.Record) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, recordImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25125,7 +25125,7 @@ func (ec *executionContext) _Record(ctx context.Context, sel ast.SelectionSet, o
 
 var reorderSpecImplementors = []string{"ReorderSpec"}
 
-func (ec *executionContext) _ReorderSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.ReorderSpec) graphql.Marshaler {
+func (ec *executionContext) _ReorderSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.ReorderSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, reorderSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25156,7 +25156,7 @@ func (ec *executionContext) _ReorderSpec(ctx context.Context, sel ast.SelectionS
 
 var stressChaosImplementors = []string{"StressChaos"}
 
-func (ec *executionContext) _StressChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.StressChaos) graphql.Marshaler {
+func (ec *executionContext) _StressChaos(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.StressChaos) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, stressChaosImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25306,7 +25306,7 @@ func (ec *executionContext) _StressChaos(ctx context.Context, sel ast.SelectionS
 
 var stressChaosSpecImplementors = []string{"StressChaosSpec"}
 
-func (ec *executionContext) _StressChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.StressChaosSpec) graphql.Marshaler {
+func (ec *executionContext) _StressChaosSpec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.StressChaosSpec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, stressChaosSpecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25357,7 +25357,7 @@ func (ec *executionContext) _StressChaosSpec(ctx context.Context, sel ast.Select
 
 var stressChaosStatusImplementors = []string{"StressChaosStatus"}
 
-func (ec *executionContext) _StressChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.StressChaosStatus) graphql.Marshaler {
+func (ec *executionContext) _StressChaosStatus(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.StressChaosStatus) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, stressChaosStatusImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25394,7 +25394,7 @@ func (ec *executionContext) _StressChaosStatus(ctx context.Context, sel ast.Sele
 
 var stressorsImplementors = []string{"Stressors"}
 
-func (ec *executionContext) _Stressors(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.Stressors) graphql.Marshaler {
+func (ec *executionContext) _Stressors(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.Stressors) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, stressorsImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25420,7 +25420,7 @@ func (ec *executionContext) _Stressors(ctx context.Context, sel ast.SelectionSet
 
 var timespecImplementors = []string{"Timespec"}
 
-func (ec *executionContext) _Timespec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha1.Timespec) graphql.Marshaler {
+func (ec *executionContext) _Timespec(ctx context.Context, sel ast.SelectionSet, obj *v1alpha2.Timespec) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.OperationContext, sel, timespecImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -25724,7 +25724,7 @@ func (ec *executionContext) marshalNCgroups2ᚖgithubᚗcomᚋchaosᚑmeshᚋcha
 	return ec._Cgroups(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNChaosCondition2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐChaosCondition(ctx context.Context, sel ast.SelectionSet, v v1alpha1.ChaosCondition) graphql.Marshaler {
+func (ec *executionContext) marshalNChaosCondition2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐChaosCondition(ctx context.Context, sel ast.SelectionSet, v v1alpha2.ChaosCondition) graphql.Marshaler {
 	return ec._ChaosCondition(ctx, sel, &v)
 }
 
@@ -25752,7 +25752,7 @@ func (ec *executionContext) marshalNFd2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑ
 	return ec._Fd(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐHTTPChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.HTTPChaos) graphql.Marshaler {
+func (ec *executionContext) marshalNHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐHTTPChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.HTTPChaos) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -25762,15 +25762,15 @@ func (ec *executionContext) marshalNHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋc
 	return ec._HTTPChaos(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNHTTPChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐHTTPChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha1.HTTPChaosSpec) graphql.Marshaler {
+func (ec *executionContext) marshalNHTTPChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐHTTPChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha2.HTTPChaosSpec) graphql.Marshaler {
 	return ec._HTTPChaosSpec(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNHTTPChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐHTTPChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha1.HTTPChaosStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNHTTPChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐHTTPChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha2.HTTPChaosStatus) graphql.Marshaler {
 	return ec._HTTPChaosStatus(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.IOChaos) graphql.Marshaler {
+func (ec *executionContext) marshalNIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.IOChaos) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -25780,15 +25780,15 @@ func (ec *executionContext) marshalNIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋcha
 	return ec._IOChaos(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNIOChaosAction2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosAction(ctx context.Context, sel ast.SelectionSet, v v1alpha1.IOChaosAction) graphql.Marshaler {
+func (ec *executionContext) marshalNIOChaosAction2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosAction(ctx context.Context, sel ast.SelectionSet, v v1alpha2.IOChaosAction) graphql.Marshaler {
 	return ec._IOChaosAction(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNIOChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha1.IOChaosSpec) graphql.Marshaler {
+func (ec *executionContext) marshalNIOChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha2.IOChaosSpec) graphql.Marshaler {
 	return ec._IOChaosSpec(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNIOChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha1.IOChaosStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNIOChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha2.IOChaosStatus) graphql.Marshaler {
 	return ec._IOChaosStatus(ctx, sel, &v)
 }
 
@@ -25852,7 +25852,7 @@ func (ec *executionContext) marshalNInt642int64(ctx context.Context, sel ast.Sel
 	return res
 }
 
-func (ec *executionContext) marshalNIoFault2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIoFault(ctx context.Context, sel ast.SelectionSet, v v1alpha1.IoFault) graphql.Marshaler {
+func (ec *executionContext) marshalNIoFault2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIoFault(ctx context.Context, sel ast.SelectionSet, v v1alpha2.IoFault) graphql.Marshaler {
 	return ec._IoFault(ctx, sel, &v)
 }
 
@@ -25866,7 +25866,7 @@ func (ec *executionContext) marshalNNamespace2ᚖgithubᚗcomᚋchaosᚑmeshᚋc
 	return ec._Namespace(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNNetworkChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐNetworkChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.NetworkChaos) graphql.Marshaler {
+func (ec *executionContext) marshalNNetworkChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐNetworkChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.NetworkChaos) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -25898,7 +25898,7 @@ func (ec *executionContext) marshalNPodCondition2k8sᚗioᚋapiᚋcoreᚋv1ᚐPo
 	return ec._PodCondition(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.PodHttpChaos) graphql.Marshaler {
+func (ec *executionContext) marshalNPodHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.PodHttpChaos) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -25908,15 +25908,15 @@ func (ec *executionContext) marshalNPodHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmesh�
 	return ec._PodHTTPChaos(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPodHttpChaosActions2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosActions(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodHttpChaosActions) graphql.Marshaler {
+func (ec *executionContext) marshalNPodHttpChaosActions2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosActions(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodHttpChaosActions) graphql.Marshaler {
 	return ec._PodHttpChaosActions(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodHttpChaosRule2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosRule(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodHttpChaosRule) graphql.Marshaler {
+func (ec *executionContext) marshalNPodHttpChaosRule2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosRule(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodHttpChaosRule) graphql.Marshaler {
 	return ec._PodHttpChaosRule(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodHttpChaosRule2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.PodHttpChaosRule) graphql.Marshaler {
+func (ec *executionContext) marshalNPodHttpChaosRule2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosRuleᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha2.PodHttpChaosRule) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -25940,7 +25940,7 @@ func (ec *executionContext) marshalNPodHttpChaosRule2ᚕgithubᚗcomᚋchaosᚑm
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPodHttpChaosRule2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosRule(ctx, sel, v[i])
+			ret[i] = ec.marshalNPodHttpChaosRule2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosRule(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -25953,19 +25953,19 @@ func (ec *executionContext) marshalNPodHttpChaosRule2ᚕgithubᚗcomᚋchaosᚑm
 	return ret
 }
 
-func (ec *executionContext) marshalNPodHttpChaosSelector2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosSelector(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodHttpChaosSelector) graphql.Marshaler {
+func (ec *executionContext) marshalNPodHttpChaosSelector2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosSelector(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodHttpChaosSelector) graphql.Marshaler {
 	return ec._PodHttpChaosSelector(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodHttpChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodHttpChaosSpec) graphql.Marshaler {
+func (ec *executionContext) marshalNPodHttpChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodHttpChaosSpec) graphql.Marshaler {
 	return ec._PodHttpChaosSpec(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodHttpChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodHttpChaosStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNPodHttpChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodHttpChaosStatus) graphql.Marshaler {
 	return ec._PodHttpChaosStatus(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.PodIOChaos) graphql.Marshaler {
+func (ec *executionContext) marshalNPodIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.PodIOChaos) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -25975,11 +25975,11 @@ func (ec *executionContext) marshalNPodIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋ
 	return ec._PodIOChaos(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPodIOChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodIOChaosSpec) graphql.Marshaler {
+func (ec *executionContext) marshalNPodIOChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodIOChaosSpec) graphql.Marshaler {
 	return ec._PodIOChaosSpec(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodIOChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodIOChaosStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNPodIOChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodIOChaosStatus) graphql.Marshaler {
 	return ec._PodIOChaosStatus(ctx, sel, &v)
 }
 
@@ -25987,7 +25987,7 @@ func (ec *executionContext) marshalNPodIP2k8sᚗioᚋapiᚋcoreᚋv1ᚐPodIP(ctx
 	return ec._PodIP(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodNetworkChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.PodNetworkChaos) graphql.Marshaler {
+func (ec *executionContext) marshalNPodNetworkChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.PodNetworkChaos) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -25997,15 +25997,15 @@ func (ec *executionContext) marshalNPodNetworkChaos2ᚖgithubᚗcomᚋchaosᚑme
 	return ec._PodNetworkChaos(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNPodNetworkChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodNetworkChaosSpec) graphql.Marshaler {
+func (ec *executionContext) marshalNPodNetworkChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodNetworkChaosSpec) graphql.Marshaler {
 	return ec._PodNetworkChaosSpec(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodNetworkChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodNetworkChaosStatus) graphql.Marshaler {
+func (ec *executionContext) marshalNPodNetworkChaosStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaosStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodNetworkChaosStatus) graphql.Marshaler {
 	return ec._PodNetworkChaosStatus(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNPodSelectorSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodSelectorSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha1.PodSelectorSpec) graphql.Marshaler {
+func (ec *executionContext) marshalNPodSelectorSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodSelectorSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha2.PodSelectorSpec) graphql.Marshaler {
 	return ec._PodSelectorSpec(ctx, sel, &v)
 }
 
@@ -26047,19 +26047,19 @@ func (ec *executionContext) marshalNProcessStress2ᚖgithubᚗcomᚋchaosᚑmesh
 	return ec._ProcessStress(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNRawIPSet2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawIPSet(ctx context.Context, sel ast.SelectionSet, v v1alpha1.RawIPSet) graphql.Marshaler {
+func (ec *executionContext) marshalNRawIPSet2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawIPSet(ctx context.Context, sel ast.SelectionSet, v v1alpha2.RawIPSet) graphql.Marshaler {
 	return ec._RawIPSet(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNRawIptables2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawIptables(ctx context.Context, sel ast.SelectionSet, v v1alpha1.RawIptables) graphql.Marshaler {
+func (ec *executionContext) marshalNRawIptables2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawIptables(ctx context.Context, sel ast.SelectionSet, v v1alpha2.RawIptables) graphql.Marshaler {
 	return ec._RawIptables(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNRawTrafficControl2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawTrafficControl(ctx context.Context, sel ast.SelectionSet, v v1alpha1.RawTrafficControl) graphql.Marshaler {
+func (ec *executionContext) marshalNRawTrafficControl2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawTrafficControl(ctx context.Context, sel ast.SelectionSet, v v1alpha2.RawTrafficControl) graphql.Marshaler {
 	return ec._RawTrafficControl(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNRecord2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRecord(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.Record) graphql.Marshaler {
+func (ec *executionContext) marshalNRecord2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRecord(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.Record) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -26069,7 +26069,7 @@ func (ec *executionContext) marshalNRecord2ᚖgithubᚗcomᚋchaosᚑmeshᚋchao
 	return ec._Record(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNStressChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.StressChaos) graphql.Marshaler {
+func (ec *executionContext) marshalNStressChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressChaos(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.StressChaos) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -26079,7 +26079,7 @@ func (ec *executionContext) marshalNStressChaos2ᚖgithubᚗcomᚋchaosᚑmesh�
 	return ec._StressChaos(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNStressChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha1.StressChaosSpec) graphql.Marshaler {
+func (ec *executionContext) marshalNStressChaosSpec2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressChaosSpec(ctx context.Context, sel ast.SelectionSet, v v1alpha2.StressChaosSpec) graphql.Marshaler {
 	return ec._StressChaosSpec(ctx, sel, &v)
 }
 
@@ -26393,14 +26393,14 @@ func (ec *executionContext) marshalN__TypeKind2string(ctx context.Context, sel a
 	return res
 }
 
-func (ec *executionContext) marshalOAttrOverrideSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐAttrOverrideSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.AttrOverrideSpec) graphql.Marshaler {
+func (ec *executionContext) marshalOAttrOverrideSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐAttrOverrideSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.AttrOverrideSpec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._AttrOverrideSpec(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOBandwidthSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐBandwidthSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.BandwidthSpec) graphql.Marshaler {
+func (ec *executionContext) marshalOBandwidthSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐBandwidthSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.BandwidthSpec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26431,7 +26431,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) marshalOCPUStressor2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐCPUStressor(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.CPUStressor) graphql.Marshaler {
+func (ec *executionContext) marshalOCPUStressor2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐCPUStressor(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.CPUStressor) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26452,7 +26452,7 @@ func (ec *executionContext) marshalOCgroupsMemory2ᚖgithubᚗcomᚋchaosᚑmesh
 	return ec._CgroupsMemory(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐChaosConditionᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.ChaosCondition) graphql.Marshaler {
+func (ec *executionContext) marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐChaosConditionᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha2.ChaosCondition) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26479,7 +26479,7 @@ func (ec *executionContext) marshalOChaosCondition2ᚕgithubᚗcomᚋchaosᚑmes
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNChaosCondition2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐChaosCondition(ctx, sel, v[i])
+			ret[i] = ec.marshalNChaosCondition2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐChaosCondition(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -26557,28 +26557,28 @@ func (ec *executionContext) marshalOContainerStatus2ᚕk8sᚗioᚋapiᚋcoreᚋv
 	return ret
 }
 
-func (ec *executionContext) marshalOCorruptSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐCorruptSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.CorruptSpec) graphql.Marshaler {
+func (ec *executionContext) marshalOCorruptSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐCorruptSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.CorruptSpec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._CorruptSpec(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalODelaySpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐDelaySpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.DelaySpec) graphql.Marshaler {
+func (ec *executionContext) marshalODelaySpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐDelaySpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.DelaySpec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._DelaySpec(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalODuplicateSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐDuplicateSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.DuplicateSpec) graphql.Marshaler {
+func (ec *executionContext) marshalODuplicateSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐDuplicateSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.DuplicateSpec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._DuplicateSpec(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOExperimentStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐExperimentStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha1.ExperimentStatus) graphql.Marshaler {
+func (ec *executionContext) marshalOExperimentStatus2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐExperimentStatus(ctx context.Context, sel ast.SelectionSet, v v1alpha2.ExperimentStatus) graphql.Marshaler {
 	return ec._ExperimentStatus(ctx, sel, &v)
 }
 
@@ -26622,7 +26622,7 @@ func (ec *executionContext) marshalOFd2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaos
 	return ret
 }
 
-func (ec *executionContext) marshalOHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐHTTPChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha1.HTTPChaos) graphql.Marshaler {
+func (ec *executionContext) marshalOHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐHTTPChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha2.HTTPChaos) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26649,7 +26649,7 @@ func (ec *executionContext) marshalOHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmesh�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐHTTPChaos(ctx, sel, v[i])
+			ret[i] = ec.marshalNHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐHTTPChaos(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -26662,7 +26662,7 @@ func (ec *executionContext) marshalOHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmesh�
 	return ret
 }
 
-func (ec *executionContext) marshalOIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha1.IOChaos) graphql.Marshaler {
+func (ec *executionContext) marshalOIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha2.IOChaos) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26689,7 +26689,7 @@ func (ec *executionContext) marshalOIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaos(ctx, sel, v[i])
+			ret[i] = ec.marshalNIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaos(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -26702,7 +26702,7 @@ func (ec *executionContext) marshalOIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋ
 	return ret
 }
 
-func (ec *executionContext) marshalOIOChaosAction2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosActionᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.IOChaosAction) graphql.Marshaler {
+func (ec *executionContext) marshalOIOChaosAction2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosActionᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha2.IOChaosAction) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26729,7 +26729,7 @@ func (ec *executionContext) marshalOIOChaosAction2ᚕgithubᚗcomᚋchaosᚑmesh
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNIOChaosAction2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIOChaosAction(ctx, sel, v[i])
+			ret[i] = ec.marshalNIOChaosAction2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIOChaosAction(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -26829,7 +26829,7 @@ func (ec *executionContext) marshalOInt642ᚖint64(ctx context.Context, sel ast.
 	return graphql.MarshalInt64(*v)
 }
 
-func (ec *executionContext) marshalOIoFault2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIoFaultᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.IoFault) graphql.Marshaler {
+func (ec *executionContext) marshalOIoFault2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIoFaultᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha2.IoFault) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26856,7 +26856,7 @@ func (ec *executionContext) marshalOIoFault2ᚕgithubᚗcomᚋchaosᚑmeshᚋcha
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNIoFault2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐIoFault(ctx, sel, v[i])
+			ret[i] = ec.marshalNIoFault2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐIoFault(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -26869,7 +26869,7 @@ func (ec *executionContext) marshalOIoFault2ᚕgithubᚗcomᚋchaosᚑmeshᚋcha
 	return ret
 }
 
-func (ec *executionContext) marshalOLossSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐLossSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.LossSpec) graphql.Marshaler {
+func (ec *executionContext) marshalOLossSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐLossSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.LossSpec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26891,14 +26891,14 @@ func (ec *executionContext) marshalOMap2map(ctx context.Context, sel ast.Selecti
 	return graphql.MarshalMap(v)
 }
 
-func (ec *executionContext) marshalOMemoryStressor2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐMemoryStressor(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.MemoryStressor) graphql.Marshaler {
+func (ec *executionContext) marshalOMemoryStressor2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐMemoryStressor(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.MemoryStressor) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._MemoryStressor(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOMistakeSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐMistakeSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.MistakeSpec) graphql.Marshaler {
+func (ec *executionContext) marshalOMistakeSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐMistakeSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.MistakeSpec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26945,7 +26945,7 @@ func (ec *executionContext) marshalONamespace2ᚕᚖgithubᚗcomᚋchaosᚑmesh�
 	return ret
 }
 
-func (ec *executionContext) marshalONetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐNetworkChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha1.NetworkChaos) graphql.Marshaler {
+func (ec *executionContext) marshalONetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐNetworkChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha2.NetworkChaos) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -26972,7 +26972,7 @@ func (ec *executionContext) marshalONetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑme
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNNetworkChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐNetworkChaos(ctx, sel, v[i])
+			ret[i] = ec.marshalNNetworkChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐNetworkChaos(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27112,7 +27112,7 @@ func (ec *executionContext) marshalOPodCondition2ᚕk8sᚗioᚋapiᚋcoreᚋv1�
 	return ret
 }
 
-func (ec *executionContext) marshalOPodHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha1.PodHttpChaos) graphql.Marshaler {
+func (ec *executionContext) marshalOPodHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha2.PodHttpChaos) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27139,7 +27139,7 @@ func (ec *executionContext) marshalOPodHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑme
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPodHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaos(ctx, sel, v[i])
+			ret[i] = ec.marshalNPodHTTPChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaos(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27152,28 +27152,28 @@ func (ec *executionContext) marshalOPodHTTPChaos2ᚕᚖgithubᚗcomᚋchaosᚑme
 	return ret
 }
 
-func (ec *executionContext) marshalOPodHttpChaosPatchActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosPatchActions(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.PodHttpChaosPatchActions) graphql.Marshaler {
+func (ec *executionContext) marshalOPodHttpChaosPatchActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosPatchActions(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.PodHttpChaosPatchActions) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._PodHttpChaosPatchActions(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPodHttpChaosPatchBodyAction2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosPatchBodyAction(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.PodHttpChaosPatchBodyAction) graphql.Marshaler {
+func (ec *executionContext) marshalOPodHttpChaosPatchBodyAction2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosPatchBodyAction(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.PodHttpChaosPatchBodyAction) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._PodHttpChaosPatchBodyAction(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPodHttpChaosReplaceActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodHttpChaosReplaceActions(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.PodHttpChaosReplaceActions) graphql.Marshaler {
+func (ec *executionContext) marshalOPodHttpChaosReplaceActions2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodHttpChaosReplaceActions(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.PodHttpChaosReplaceActions) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._PodHttpChaosReplaceActions(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOPodIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha1.PodIOChaos) graphql.Marshaler {
+func (ec *executionContext) marshalOPodIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha2.PodIOChaos) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27200,7 +27200,7 @@ func (ec *executionContext) marshalOPodIOChaos2ᚕᚖgithubᚗcomᚋchaosᚑmesh
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPodIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodIOChaos(ctx, sel, v[i])
+			ret[i] = ec.marshalNPodIOChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodIOChaos(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27253,7 +27253,7 @@ func (ec *executionContext) marshalOPodIP2ᚕk8sᚗioᚋapiᚋcoreᚋv1ᚐPodIP�
 	return ret
 }
 
-func (ec *executionContext) marshalOPodNetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha1.PodNetworkChaos) graphql.Marshaler {
+func (ec *executionContext) marshalOPodNetworkChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha2.PodNetworkChaos) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27280,7 +27280,7 @@ func (ec *executionContext) marshalOPodNetworkChaos2ᚕᚖgithubᚗcomᚋchaos�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPodNetworkChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐPodNetworkChaos(ctx, sel, v[i])
+			ret[i] = ec.marshalNPodNetworkChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐPodNetworkChaos(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27413,7 +27413,7 @@ func (ec *executionContext) marshalOProcessStress2ᚕᚖgithubᚗcomᚋchaosᚑm
 	return ret
 }
 
-func (ec *executionContext) marshalORawIPSet2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawIPSetᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.RawIPSet) graphql.Marshaler {
+func (ec *executionContext) marshalORawIPSet2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawIPSetᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha2.RawIPSet) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27440,7 +27440,7 @@ func (ec *executionContext) marshalORawIPSet2ᚕgithubᚗcomᚋchaosᚑmeshᚋch
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNRawIPSet2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawIPSet(ctx, sel, v[i])
+			ret[i] = ec.marshalNRawIPSet2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawIPSet(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27453,7 +27453,7 @@ func (ec *executionContext) marshalORawIPSet2ᚕgithubᚗcomᚋchaosᚑmeshᚋch
 	return ret
 }
 
-func (ec *executionContext) marshalORawIptables2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawIptablesᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.RawIptables) graphql.Marshaler {
+func (ec *executionContext) marshalORawIptables2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawIptablesᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha2.RawIptables) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27480,7 +27480,7 @@ func (ec *executionContext) marshalORawIptables2ᚕgithubᚗcomᚋchaosᚑmesh�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNRawIptables2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawIptables(ctx, sel, v[i])
+			ret[i] = ec.marshalNRawIptables2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawIptables(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27493,7 +27493,7 @@ func (ec *executionContext) marshalORawIptables2ᚕgithubᚗcomᚋchaosᚑmesh�
 	return ret
 }
 
-func (ec *executionContext) marshalORawTrafficControl2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawTrafficControlᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha1.RawTrafficControl) graphql.Marshaler {
+func (ec *executionContext) marshalORawTrafficControl2ᚕgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawTrafficControlᚄ(ctx context.Context, sel ast.SelectionSet, v []v1alpha2.RawTrafficControl) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27520,7 +27520,7 @@ func (ec *executionContext) marshalORawTrafficControl2ᚕgithubᚗcomᚋchaosᚑ
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNRawTrafficControl2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRawTrafficControl(ctx, sel, v[i])
+			ret[i] = ec.marshalNRawTrafficControl2githubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRawTrafficControl(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27533,7 +27533,7 @@ func (ec *executionContext) marshalORawTrafficControl2ᚕgithubᚗcomᚋchaosᚑ
 	return ret
 }
 
-func (ec *executionContext) marshalORecord2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRecordᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha1.Record) graphql.Marshaler {
+func (ec *executionContext) marshalORecord2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRecordᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha2.Record) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27560,7 +27560,7 @@ func (ec *executionContext) marshalORecord2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋc
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNRecord2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐRecord(ctx, sel, v[i])
+			ret[i] = ec.marshalNRecord2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐRecord(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27573,14 +27573,14 @@ func (ec *executionContext) marshalORecord2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋc
 	return ret
 }
 
-func (ec *executionContext) marshalOReorderSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐReorderSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.ReorderSpec) graphql.Marshaler {
+func (ec *executionContext) marshalOReorderSpec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐReorderSpec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.ReorderSpec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
 	return ec._ReorderSpec(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalOStressChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha1.StressChaos) graphql.Marshaler {
+func (ec *executionContext) marshalOStressChaos2ᚕᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressChaosᚄ(ctx context.Context, sel ast.SelectionSet, v []*v1alpha2.StressChaos) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27607,7 +27607,7 @@ func (ec *executionContext) marshalOStressChaos2ᚕᚖgithubᚗcomᚋchaosᚑmes
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNStressChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressChaos(ctx, sel, v[i])
+			ret[i] = ec.marshalNStressChaos2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressChaos(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -27620,7 +27620,7 @@ func (ec *executionContext) marshalOStressChaos2ᚕᚖgithubᚗcomᚋchaosᚑmes
 	return ret
 }
 
-func (ec *executionContext) marshalOStressors2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐStressors(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.Stressors) graphql.Marshaler {
+func (ec *executionContext) marshalOStressors2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐStressors(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.Stressors) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -27738,7 +27738,7 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	return graphql.MarshalTime(*v)
 }
 
-func (ec *executionContext) marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha1ᚐTimespec(ctx context.Context, sel ast.SelectionSet, v *v1alpha1.Timespec) graphql.Marshaler {
+func (ec *executionContext) marshalOTimespec2ᚖgithubᚗcomᚋchaosᚑmeshᚋchaosᚑmeshᚋapiᚋv1alpha2ᚐTimespec(ctx context.Context, sel ast.SelectionSet, v *v1alpha2.Timespec) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

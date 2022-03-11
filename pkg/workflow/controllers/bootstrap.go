@@ -22,7 +22,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 )
@@ -40,8 +40,8 @@ func BootstrapWorkflowControllers(mgr manager.Manager, logger logr.Logger, recor
 		return err
 	}
 	err = ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.Workflow{}).
-		Owns(&v1alpha1.WorkflowNode{}).
+		For(&v1alpha2.Workflow{}).
+		Owns(&v1alpha2.WorkflowNode{}).
 		Named("workflow-entry-reconciler").
 		Complete(
 			NewWorkflowEntryReconciler(
@@ -57,8 +57,8 @@ func BootstrapWorkflowControllers(mgr manager.Manager, logger logr.Logger, recor
 	// TODO: serial node reconciler restore some state in the workflow node status(the active children), it requires keep syncing in time, so we could not use the default controller-runtime client with cache
 	// TODO: maybe we could use select with labelSelector as instead
 	err = ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.WorkflowNode{}).
-		Owns(&v1alpha1.WorkflowNode{}).
+		For(&v1alpha2.WorkflowNode{}).
+		Owns(&v1alpha2.WorkflowNode{}).
 		Named("workflow-serial-node-reconciler").
 		Complete(
 			NewSerialNodeReconciler(
@@ -72,8 +72,8 @@ func BootstrapWorkflowControllers(mgr manager.Manager, logger logr.Logger, recor
 	}
 
 	err = ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.WorkflowNode{}).
-		Owns(&v1alpha1.WorkflowNode{}).
+		For(&v1alpha2.WorkflowNode{}).
+		Owns(&v1alpha2.WorkflowNode{}).
 		Named("workflow-parallel-node-reconciler").
 		Complete(
 			NewParallelNodeReconciler(
@@ -87,7 +87,7 @@ func BootstrapWorkflowControllers(mgr manager.Manager, logger logr.Logger, recor
 	}
 
 	err = ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.WorkflowNode{}).
+		For(&v1alpha2.WorkflowNode{}).
 		Named("workflow-deadline-reconciler").
 		Complete(
 			NewDeadlineReconciler(
@@ -101,7 +101,7 @@ func BootstrapWorkflowControllers(mgr manager.Manager, logger logr.Logger, recor
 	}
 
 	err = ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.WorkflowNode{}).
+		For(&v1alpha2.WorkflowNode{}).
 		Named("workflow-chaos-node-reconciler").
 		Complete(
 			NewChaosNodeReconciler(
@@ -114,8 +114,8 @@ func BootstrapWorkflowControllers(mgr manager.Manager, logger logr.Logger, recor
 		return err
 	}
 	err = ctrl.NewControllerManagedBy(mgr).
-		For(&v1alpha1.WorkflowNode{}).
-		Owns(&v1alpha1.WorkflowNode{}).
+		For(&v1alpha2.WorkflowNode{}).
+		Owns(&v1alpha2.WorkflowNode{}).
 		Owns(&corev1.Pod{}).
 		Named("workflow-task-reconciler").
 		Complete(NewTaskReconciler(

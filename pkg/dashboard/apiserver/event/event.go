@@ -27,7 +27,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/clientpool"
 	config "github.com/chaos-mesh/chaos-mesh/pkg/config/dashboard"
 	u "github.com/chaos-mesh/chaos-mesh/pkg/dashboard/apiserver/utils"
@@ -172,9 +172,9 @@ func (s *Service) cascadeFetchEventsForWorkflow(c *gin.Context) {
 	}
 
 	// fetch all related WorkflowNodes
-	workflowNodeList := v1alpha1.WorkflowNodeList{}
+	workflowNodeList := v1alpha2.WorkflowNodeList{}
 	controlledByThisWorkflow, err := metav1.LabelSelectorAsSelector(&metav1.LabelSelector{MatchLabels: map[string]string{
-		v1alpha1.LabelWorkflow: workflowEntity.Name,
+		v1alpha2.LabelWorkflow: workflowEntity.Name,
 	}})
 	if err != nil {
 		u.SetAPIError(c, u.ErrBadRequest.WrapWithNoMessage(err))

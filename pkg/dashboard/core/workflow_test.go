@@ -22,12 +22,12 @@ import (
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 func Test_convertWorkflow(t *testing.T) {
 	type args struct {
-		kubeWorkflow v1alpha1.Workflow
+		kubeWorkflow v1alpha2.Workflow
 	}
 	tests := []struct {
 		name string
@@ -37,16 +37,16 @@ func Test_convertWorkflow(t *testing.T) {
 		{
 			name: "simple workflow",
 			args: args{
-				v1alpha1.Workflow{
+				v1alpha2.Workflow{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "fake-workflow-0",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "an-entry",
 					},
-					Status: v1alpha1.WorkflowStatus{},
+					Status: v1alpha2.WorkflowStatus{},
 				},
 			},
 			want: WorkflowMeta{
@@ -58,19 +58,19 @@ func Test_convertWorkflow(t *testing.T) {
 		}, {
 			name: "running workflow",
 			args: args{
-				v1alpha1.Workflow{
+				v1alpha2.Workflow{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "fake-workflow-0",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "an-entry",
 					},
-					Status: v1alpha1.WorkflowStatus{
-						Conditions: []v1alpha1.WorkflowCondition{
+					Status: v1alpha2.WorkflowStatus{
+						Conditions: []v1alpha2.WorkflowCondition{
 							{
-								Type:   v1alpha1.WorkflowConditionScheduled,
+								Type:   v1alpha2.WorkflowConditionScheduled,
 								Status: corev1.ConditionTrue,
 								Reason: "",
 							},
@@ -87,24 +87,24 @@ func Test_convertWorkflow(t *testing.T) {
 		}, {
 			name: "running workflow",
 			args: args{
-				v1alpha1.Workflow{
+				v1alpha2.Workflow{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "fake-workflow-0",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "an-entry",
 					},
-					Status: v1alpha1.WorkflowStatus{
-						Conditions: []v1alpha1.WorkflowCondition{
+					Status: v1alpha2.WorkflowStatus{
+						Conditions: []v1alpha2.WorkflowCondition{
 							{
-								Type:   v1alpha1.WorkflowConditionAccomplished,
+								Type:   v1alpha2.WorkflowConditionAccomplished,
 								Status: corev1.ConditionUnknown,
 								Reason: "",
 							},
 							{
-								Type:   v1alpha1.WorkflowConditionScheduled,
+								Type:   v1alpha2.WorkflowConditionScheduled,
 								Status: corev1.ConditionTrue,
 								Reason: "",
 							},
@@ -121,24 +121,24 @@ func Test_convertWorkflow(t *testing.T) {
 		}, {
 			name: "running workflow",
 			args: args{
-				v1alpha1.Workflow{
+				v1alpha2.Workflow{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "fake-workflow-0",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "an-entry",
 					},
-					Status: v1alpha1.WorkflowStatus{
-						Conditions: []v1alpha1.WorkflowCondition{
+					Status: v1alpha2.WorkflowStatus{
+						Conditions: []v1alpha2.WorkflowCondition{
 							{
-								Type:   v1alpha1.WorkflowConditionAccomplished,
+								Type:   v1alpha2.WorkflowConditionAccomplished,
 								Status: corev1.ConditionFalse,
 								Reason: "",
 							},
 							{
-								Type:   v1alpha1.WorkflowConditionScheduled,
+								Type:   v1alpha2.WorkflowConditionScheduled,
 								Status: corev1.ConditionTrue,
 								Reason: "",
 							},
@@ -155,24 +155,24 @@ func Test_convertWorkflow(t *testing.T) {
 		}, {
 			name: "succeed workflow",
 			args: args{
-				v1alpha1.Workflow{
+				v1alpha2.Workflow{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "fake-workflow-0",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "an-entry",
 					},
-					Status: v1alpha1.WorkflowStatus{
-						Conditions: []v1alpha1.WorkflowCondition{
+					Status: v1alpha2.WorkflowStatus{
+						Conditions: []v1alpha2.WorkflowCondition{
 							{
-								Type:   v1alpha1.WorkflowConditionAccomplished,
+								Type:   v1alpha2.WorkflowConditionAccomplished,
 								Status: corev1.ConditionTrue,
 								Reason: "",
 							},
 							{
-								Type:   v1alpha1.WorkflowConditionScheduled,
+								Type:   v1alpha2.WorkflowConditionScheduled,
 								Status: corev1.ConditionTrue,
 								Reason: "",
 							},
@@ -189,25 +189,25 @@ func Test_convertWorkflow(t *testing.T) {
 		}, {
 			name: "converting UID",
 			args: args{
-				v1alpha1.Workflow{
+				v1alpha2.Workflow{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "fake-workflow-0",
 						UID:       "uid-of-workflow",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "an-entry",
 					},
-					Status: v1alpha1.WorkflowStatus{
-						Conditions: []v1alpha1.WorkflowCondition{
+					Status: v1alpha2.WorkflowStatus{
+						Conditions: []v1alpha2.WorkflowCondition{
 							{
-								Type:   v1alpha1.WorkflowConditionAccomplished,
+								Type:   v1alpha2.WorkflowConditionAccomplished,
 								Status: corev1.ConditionTrue,
 								Reason: "",
 							},
 							{
-								Type:   v1alpha1.WorkflowConditionScheduled,
+								Type:   v1alpha2.WorkflowConditionScheduled,
 								Status: corev1.ConditionTrue,
 								Reason: "",
 							},
@@ -235,8 +235,8 @@ func Test_convertWorkflow(t *testing.T) {
 
 func Test_convertWorkflowDetail(t *testing.T) {
 	type args struct {
-		kubeWorkflow v1alpha1.Workflow
-		kubeNodes    []v1alpha1.WorkflowNode
+		kubeWorkflow v1alpha2.Workflow
+		kubeNodes    []v1alpha2.WorkflowNode
 	}
 	tests := []struct {
 		name    string
@@ -247,17 +247,17 @@ func Test_convertWorkflowDetail(t *testing.T) {
 		{
 			name: "simple workflow detail with no nodes",
 			args: args{
-				kubeWorkflow: v1alpha1.Workflow{
+				kubeWorkflow: v1alpha2.Workflow{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "another-namespace",
 						Name:      "another-fake-workflow",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry:     "another-entry",
 						Templates: nil,
 					},
-					Status: v1alpha1.WorkflowStatus{},
+					Status: v1alpha2.WorkflowStatus{},
 				},
 				kubeNodes: nil,
 			},
@@ -276,7 +276,7 @@ func Test_convertWorkflowDetail(t *testing.T) {
 						Name:      "another-fake-workflow",
 						Namespace: "another-namespace",
 					},
-					Spec: v1alpha1.WorkflowSpec{
+					Spec: v1alpha2.WorkflowSpec{
 						Entry: "another-entry",
 					},
 				},
@@ -300,7 +300,7 @@ func Test_convertWorkflowDetail(t *testing.T) {
 
 func Test_convertWorkflowNode(t *testing.T) {
 	type args struct {
-		kubeWorkflowNode v1alpha1.WorkflowNode
+		kubeWorkflowNode v1alpha2.WorkflowNode
 	}
 	tests := []struct {
 		name    string
@@ -310,18 +310,18 @@ func Test_convertWorkflowNode(t *testing.T) {
 	}{
 		{
 			name: "simple node",
-			args: args{kubeWorkflowNode: v1alpha1.WorkflowNode{
+			args: args{kubeWorkflowNode: v1alpha2.WorkflowNode{
 				TypeMeta: metav1.TypeMeta{},
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace: "fake-namespace",
 					Name:      "fake-node-0",
 				},
-				Spec: v1alpha1.WorkflowNodeSpec{
+				Spec: v1alpha2.WorkflowNodeSpec{
 					WorkflowName: "fake-workflow-0",
 					TemplateName: "fake-template-0",
-					Type:         v1alpha1.TypeJVMChaos,
+					Type:         v1alpha2.TypeJVMChaos,
 				},
-				Status: v1alpha1.WorkflowNodeStatus{},
+				Status: v1alpha2.WorkflowNodeStatus{},
 			}},
 			want: Node{
 				Name:     "fake-node-0",
@@ -334,19 +334,19 @@ func Test_convertWorkflowNode(t *testing.T) {
 		}, {
 			name: "serial node",
 			args: args{
-				kubeWorkflowNode: v1alpha1.WorkflowNode{
+				kubeWorkflowNode: v1alpha2.WorkflowNode{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "fake-serial-node-0",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						TemplateName: "fake-serial-node",
 						WorkflowName: "fake-workflow-0",
-						Type:         v1alpha1.TypeSerial,
+						Type:         v1alpha2.TypeSerial,
 						Children:     []string{"child-0", "child-1"},
 					},
-					Status: v1alpha1.WorkflowNodeStatus{},
+					Status: v1alpha2.WorkflowNodeStatus{},
 				},
 			},
 			want: Node{
@@ -364,19 +364,19 @@ func Test_convertWorkflowNode(t *testing.T) {
 		{
 			name: "parallel node",
 			args: args{
-				kubeWorkflowNode: v1alpha1.WorkflowNode{
+				kubeWorkflowNode: v1alpha2.WorkflowNode{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "parallel-node-0",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						TemplateName: "parallel-node",
 						WorkflowName: "another-fake-workflow",
-						Type:         v1alpha1.TypeParallel,
+						Type:         v1alpha2.TypeParallel,
 						Children:     []string{"child-1", "child-0"},
 					},
-					Status: v1alpha1.WorkflowNodeStatus{},
+					Status: v1alpha2.WorkflowNodeStatus{},
 				},
 			},
 			want: Node{
@@ -394,21 +394,21 @@ func Test_convertWorkflowNode(t *testing.T) {
 		{
 			name: "some chaos",
 			args: args{
-				kubeWorkflowNode: v1alpha1.WorkflowNode{
+				kubeWorkflowNode: v1alpha2.WorkflowNode{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "io-chaos-0",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						TemplateName: "io-chaos",
 						WorkflowName: "another-workflow-0",
-						Type:         v1alpha1.TypeIOChaos,
-						EmbedChaos: &v1alpha1.EmbedChaos{
-							IOChaos: &v1alpha1.IOChaosSpec{
-								ContainerSelector: v1alpha1.ContainerSelector{
-									PodSelector: v1alpha1.PodSelector{
-										Mode: v1alpha1.OneMode,
+						Type:         v1alpha2.TypeIOChaos,
+						EmbedChaos: &v1alpha2.EmbedChaos{
+							IOChaos: &v1alpha2.IOChaosSpec{
+								ContainerSelector: v1alpha2.ContainerSelector{
+									PodSelector: v1alpha2.PodSelector{
+										Mode: v1alpha2.OneMode,
 									},
 								},
 								Action:     "delay",
@@ -419,7 +419,7 @@ func Test_convertWorkflowNode(t *testing.T) {
 							},
 						},
 					},
-					Status: v1alpha1.WorkflowNodeStatus{},
+					Status: v1alpha2.WorkflowNodeStatus{},
 				},
 			},
 			want: Node{
@@ -434,22 +434,22 @@ func Test_convertWorkflowNode(t *testing.T) {
 		{
 			name: "accomplished node",
 			args: args{
-				kubeWorkflowNode: v1alpha1.WorkflowNode{
+				kubeWorkflowNode: v1alpha2.WorkflowNode{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "the-entry-0",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						TemplateName: "the-entry",
 						WorkflowName: "fake-workflow-0",
-						Type:         v1alpha1.TypeSerial,
+						Type:         v1alpha2.TypeSerial,
 						Children:     []string{"unimportant-task-0"},
 					},
-					Status: v1alpha1.WorkflowNodeStatus{
-						Conditions: []v1alpha1.WorkflowNodeCondition{
+					Status: v1alpha2.WorkflowNodeStatus{
+						Conditions: []v1alpha2.WorkflowNodeCondition{
 							{
-								Type:   v1alpha1.ConditionAccomplished,
+								Type:   v1alpha2.ConditionAccomplished,
 								Status: corev1.ConditionTrue,
 								Reason: "unit test mocked true",
 							},
@@ -470,21 +470,21 @@ func Test_convertWorkflowNode(t *testing.T) {
 		},
 		{
 			name: "deadline exceed node",
-			args: args{kubeWorkflowNode: v1alpha1.WorkflowNode{
+			args: args{kubeWorkflowNode: v1alpha2.WorkflowNode{
 				TypeMeta: metav1.TypeMeta{},
 				ObjectMeta: metav1.ObjectMeta{
 					Namespace: "fake-namespace",
 					Name:      "deadline-exceed-node-0",
 				},
-				Spec: v1alpha1.WorkflowNodeSpec{
+				Spec: v1alpha2.WorkflowNodeSpec{
 					TemplateName: "deadline-exceed-node",
 					WorkflowName: "some-workflow",
-					Type:         v1alpha1.TypePodChaos,
+					Type:         v1alpha2.TypePodChaos,
 				},
-				Status: v1alpha1.WorkflowNodeStatus{
-					Conditions: []v1alpha1.WorkflowNodeCondition{
+				Status: v1alpha2.WorkflowNodeStatus{
+					Conditions: []v1alpha2.WorkflowNodeCondition{
 						{
-							Type:   v1alpha1.ConditionDeadlineExceed,
+							Type:   v1alpha2.ConditionDeadlineExceed,
 							Status: corev1.ConditionTrue,
 							Reason: "unit test mocked true",
 						},
@@ -503,23 +503,23 @@ func Test_convertWorkflowNode(t *testing.T) {
 		{
 			name: "appending uid",
 			args: args{
-				kubeWorkflowNode: v1alpha1.WorkflowNode{
+				kubeWorkflowNode: v1alpha2.WorkflowNode{
 					TypeMeta: metav1.TypeMeta{},
 					ObjectMeta: metav1.ObjectMeta{
 						Namespace: "fake-namespace",
 						Name:      "the-entry-0",
 						UID:       "uid-of-workflow-node",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						TemplateName: "the-entry",
 						WorkflowName: "fake-workflow-0",
-						Type:         v1alpha1.TypeSerial,
+						Type:         v1alpha2.TypeSerial,
 						Children:     []string{"unimportant-task-0"},
 					},
-					Status: v1alpha1.WorkflowNodeStatus{
-						Conditions: []v1alpha1.WorkflowNodeCondition{
+					Status: v1alpha2.WorkflowNodeStatus{
+						Conditions: []v1alpha2.WorkflowNodeCondition{
 							{
-								Type:   v1alpha1.ConditionAccomplished,
+								Type:   v1alpha2.ConditionAccomplished,
 								Status: corev1.ConditionTrue,
 								Reason: "unit test mocked true",
 							},
@@ -542,16 +542,16 @@ func Test_convertWorkflowNode(t *testing.T) {
 		{
 			name: "task node",
 			args: args{
-				kubeWorkflowNode: v1alpha1.WorkflowNode{
+				kubeWorkflowNode: v1alpha2.WorkflowNode{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      "mocking-task-node-0",
 						Namespace: "mocked-namespace",
 					},
-					Spec: v1alpha1.WorkflowNodeSpec{
+					Spec: v1alpha2.WorkflowNodeSpec{
 						TemplateName: "mocking-task-node",
 						WorkflowName: "fake-workflow-0",
-						Type:         v1alpha1.TypeTask,
-						ConditionalBranches: []v1alpha1.ConditionalBranch{
+						Type:         v1alpha2.TypeTask,
+						ConditionalBranches: []v1alpha2.ConditionalBranch{
 							{
 								Target:     "one-node",
 								Expression: "exitCode == 0",
@@ -562,9 +562,9 @@ func Test_convertWorkflowNode(t *testing.T) {
 							},
 						},
 					},
-					Status: v1alpha1.WorkflowNodeStatus{
-						ConditionalBranchesStatus: &v1alpha1.ConditionalBranchesStatus{
-							Branches: []v1alpha1.ConditionalBranchStatus{
+					Status: v1alpha2.WorkflowNodeStatus{
+						ConditionalBranchesStatus: &v1alpha2.ConditionalBranchesStatus{
+							Branches: []v1alpha2.ConditionalBranchStatus{
 								{
 									Target:           "one-node",
 									EvaluationResult: corev1.ConditionFalse,
@@ -715,7 +715,7 @@ func Test_composeParallelTaskAndNodes(t *testing.T) {
 
 func Test_composeTaskConditionalBranches(t *testing.T) {
 	type args struct {
-		conditionalBranches []v1alpha1.ConditionalBranch
+		conditionalBranches []v1alpha2.ConditionalBranch
 		nodes               []string
 	}
 	tests := []struct {
@@ -726,7 +726,7 @@ func Test_composeTaskConditionalBranches(t *testing.T) {
 		{
 			name: "task node all of the branch is selected",
 			args: args{
-				conditionalBranches: []v1alpha1.ConditionalBranch{
+				conditionalBranches: []v1alpha2.ConditionalBranch{
 					{
 						Target:     "template-a",
 						Expression: "a: whatever valid or not",
@@ -773,7 +773,7 @@ func Test_composeTaskConditionalBranches(t *testing.T) {
 		{
 			name: "none of the branch is selected",
 			args: args{
-				conditionalBranches: []v1alpha1.ConditionalBranch{
+				conditionalBranches: []v1alpha2.ConditionalBranch{
 					{
 						Target:     "template-a",
 						Expression: "a: whatever valid or not",
@@ -816,7 +816,7 @@ func Test_composeTaskConditionalBranches(t *testing.T) {
 		{
 			name: "part of the branch is selected",
 			args: args{
-				conditionalBranches: []v1alpha1.ConditionalBranch{
+				conditionalBranches: []v1alpha2.ConditionalBranch{
 					{
 						Target:     "template-a",
 						Expression: "a: whatever valid or not",

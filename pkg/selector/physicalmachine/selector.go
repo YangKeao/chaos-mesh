@@ -25,7 +25,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
 	genericannotation "github.com/chaos-mesh/chaos-mesh/pkg/selector/generic/annotation"
@@ -52,7 +52,7 @@ type Params struct {
 }
 
 type PhysicalMachine struct {
-	v1alpha1.PhysicalMachine
+	v1alpha2.PhysicalMachine
 	Address string
 }
 
@@ -66,7 +66,7 @@ func (pm *PhysicalMachine) Id() string {
 	}).String()
 }
 
-func (impl *SelectImpl) Select(ctx context.Context, physicalMachineSelector *v1alpha1.PhysicalMachineSelector) ([]*PhysicalMachine, error) {
+func (impl *SelectImpl) Select(ctx context.Context, physicalMachineSelector *v1alpha2.PhysicalMachineSelector) ([]*PhysicalMachine, error) {
 	if physicalMachineSelector == nil {
 		return []*PhysicalMachine{}, nil
 	}
@@ -96,7 +96,7 @@ func New(params Params) *SelectImpl {
 }
 
 // SelectAndFilterPhysicalMachines returns the list of physical machines that filtered by selector and SelectorMode
-func SelectAndFilterPhysicalMachines(ctx context.Context, c client.Client, r client.Reader, spec *v1alpha1.PhysicalMachineSelector, clusterScoped bool, targetNamespace string, enableFilterNamespace bool) ([]*PhysicalMachine, error) {
+func SelectAndFilterPhysicalMachines(ctx context.Context, c client.Client, r client.Reader, spec *v1alpha2.PhysicalMachineSelector, clusterScoped bool, targetNamespace string, enableFilterNamespace bool) ([]*PhysicalMachine, error) {
 	if len(spec.Address) > 0 {
 		var result []*PhysicalMachine
 		for _, address := range spec.Address {
@@ -127,8 +127,8 @@ func SelectAndFilterPhysicalMachines(ctx context.Context, c client.Client, r cli
 }
 
 func SelectPhysicalMachines(ctx context.Context, c client.Client, r client.Reader,
-	selector v1alpha1.PhysicalMachineSelectorSpec,
-	clusterScoped bool, targetNamespace string, enableFilterNamespace bool) ([]v1alpha1.PhysicalMachine, error) {
+	selector v1alpha2.PhysicalMachineSelectorSpec,
+	clusterScoped bool, targetNamespace string, enableFilterNamespace bool) ([]v1alpha2.PhysicalMachine, error) {
 	if len(selector.PhysicalMachines) > 0 {
 		return selectSpecifiedPhysicalMachines(ctx, c, selector, clusterScoped, targetNamespace, enableFilterNamespace)
 	}
@@ -146,14 +146,14 @@ func SelectPhysicalMachines(ctx context.Context, c client.Client, r client.Reade
 	return listPhysicalMachines(ctx, c, r, selector, selectorChain, enableFilterNamespace)
 }
 
-func listPhysicalMachines(ctx context.Context, c client.Client, r client.Reader, spec v1alpha1.PhysicalMachineSelectorSpec,
-	selectorChain generic.SelectorChain, enableFilterNamespace bool) ([]v1alpha1.PhysicalMachine, error) {
-	var physicalMachines []v1alpha1.PhysicalMachine
+func listPhysicalMachines(ctx context.Context, c client.Client, r client.Reader, spec v1alpha2.PhysicalMachineSelectorSpec,
+	selectorChain generic.SelectorChain, enableFilterNamespace bool) ([]v1alpha2.PhysicalMachine, error) {
+	var physicalMachines []v1alpha2.PhysicalMachine
 	namespaceCheck := make(map[string]bool)
 
 	if err := selectorChain.ListObjects(c, r,
 		func(listFunc generic.ListFunc, opts client.ListOptions) error {
-			var pmList v1alpha1.PhysicalMachineList
+			var pmList v1alpha2.PhysicalMachineList
 			if len(spec.Namespaces) > 0 {
 				for _, namespace := range spec.Namespaces {
 					if enableFilterNamespace {
@@ -185,7 +185,7 @@ func listPhysicalMachines(ctx context.Context, c client.Client, r client.Reader,
 		return nil, err
 	}
 
-	filterList := make([]v1alpha1.PhysicalMachine, 0, len(physicalMachines))
+	filterList := make([]v1alpha2.PhysicalMachine, 0, len(physicalMachines))
 	for _, physicalMachine := range physicalMachines {
 		physicalMachine := physicalMachine
 		if selectorChain.Match(&physicalMachine) {
@@ -204,9 +204,9 @@ func newSelectorRegistry() registry.Registry {
 	}
 }
 
-func selectSpecifiedPhysicalMachines(ctx context.Context, c client.Client, spec v1alpha1.PhysicalMachineSelectorSpec,
-	clusterScoped bool, targetNamespace string, enableFilterNamespace bool) ([]v1alpha1.PhysicalMachine, error) {
-	var physicalMachines []v1alpha1.PhysicalMachine
+func selectSpecifiedPhysicalMachines(ctx context.Context, c client.Client, spec v1alpha2.PhysicalMachineSelectorSpec,
+	clusterScoped bool, targetNamespace string, enableFilterNamespace bool) ([]v1alpha2.PhysicalMachine, error) {
+	var physicalMachines []v1alpha2.PhysicalMachine
 	namespaceCheck := make(map[string]bool)
 
 	for ns, names := range spec.PhysicalMachines {
@@ -227,7 +227,7 @@ func selectSpecifiedPhysicalMachines(ctx context.Context, c client.Client, spec 
 			}
 		}
 		for _, name := range names {
-			var physicalMachine v1alpha1.PhysicalMachine
+			var physicalMachine v1alpha2.PhysicalMachine
 			err := c.Get(ctx, types.NamespacedName{
 				Namespace: ns,
 				Name:      name,
@@ -249,7 +249,7 @@ func selectSpecifiedPhysicalMachines(ctx context.Context, c client.Client, spec 
 }
 
 // filterPhysicalMachinesByMode filters physical machines by mode from physical machine list
-func filterPhysicalMachinesByMode(physicalMachines []*PhysicalMachine, mode v1alpha1.SelectorMode, value string) ([]*PhysicalMachine, error) {
+func filterPhysicalMachinesByMode(physicalMachines []*PhysicalMachine, mode v1alpha2.SelectorMode, value string) ([]*PhysicalMachine, error) {
 	indexes, err := generic.FilterObjectsByMode(mode, value, len(physicalMachines))
 	if err != nil {
 		return nil, err

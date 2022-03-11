@@ -18,13 +18,13 @@ package aws
 import (
 	"context"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type SelectImpl struct{}
 
-func (impl *SelectImpl) Select(ctx context.Context, awsSelector *v1alpha1.AWSSelector) ([]*v1alpha1.AWSSelector, error) {
-	return []*v1alpha1.AWSSelector{awsSelector}, nil
+func (impl *SelectImpl) Select(ctx context.Context, awsSelector *v1alpha2.AWSSelector) ([]*v1alpha2.AWSSelector, error) {
+	return []*v1alpha2.AWSSelector{awsSelector}, nil
 }
 
 func New() *SelectImpl {

@@ -28,7 +28,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/controllers/schedule/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/builder"
@@ -49,7 +49,7 @@ var t = true
 
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 
-	schedule := &v1alpha1.Schedule{}
+	schedule := &v1alpha2.Schedule{}
 	err := r.Get(ctx, req.NamespacedName, schedule)
 	if err != nil {
 		r.Log.Error(err, "unable to get chaos")
@@ -101,8 +101,8 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 		items := reflect.ValueOf(list).Elem().FieldByName("Items")
 		for i := 0; i < items.Len(); i++ {
-			if schedule.Spec.Type != v1alpha1.ScheduleTypeWorkflow {
-				item := items.Index(i).Addr().Interface().(v1alpha1.InnerObject)
+			if schedule.Spec.Type != v1alpha2.ScheduleTypeWorkflow {
+				item := items.Index(i).Addr().Interface().(v1alpha2.InnerObject)
 				if !controller.IsChaosFinished(item, now) {
 					shouldSpawn = false
 					r.Recorder.Event(schedule, recorder.ScheduleForbid{
@@ -112,8 +112,8 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 					break
 				}
 			} else {
-				workflow := items.Index(i).Addr().Interface().(*v1alpha1.Workflow)
-				if !controllers.WorkflowConditionEqualsTo(workflow.Status, v1alpha1.WorkflowConditionAccomplished, corev1.ConditionTrue) {
+				workflow := items.Index(i).Addr().Interface().(*v1alpha2.Workflow)
+				if !controllers.WorkflowConditionEqualsTo(workflow.Status, v1alpha2.WorkflowConditionAccomplished, corev1.ConditionTrue) {
 					shouldSpawn = false
 					r.Recorder.Event(schedule, recorder.ScheduleForbid{
 						RunningName: workflow.GetObjectMeta().Name,
@@ -146,7 +146,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 			},
 		})
 		newObj.SetLabels(map[string]string{
-			v1alpha1.LabelManagedBy: schedule.Name,
+			v1alpha2.LabelManagedBy: schedule.Name,
 		})
 		newObj.SetNamespace(schedule.Namespace)
 		newObj.SetName(names.SimpleNameGenerator.GenerateName(schedule.Name + "-"))
@@ -168,7 +168,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 		lastScheduleTime := now
 		updateError := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
 			r.Log.Info("updating lastScheduleTime", "time", lastScheduleTime)
-			schedule = schedule.DeepCopyObject().(*v1alpha1.Schedule)
+			schedule = schedule.DeepCopyObject().(*v1alpha2.Schedule)
 
 			if err := r.Client.Get(ctx, req.NamespacedName, schedule); err != nil {
 				r.Log.Error(err, "unable to get schedule")
@@ -203,7 +203,7 @@ func Bootstrap(mgr ctrl.Manager, client client.Client, log logr.Logger, lister *
 	}
 
 	return builder.Default(mgr).
-		For(&v1alpha1.Schedule{}).
+		For(&v1alpha2.Schedule{}).
 		Named(controllerName).
 		Complete(&Reconciler{
 			client,

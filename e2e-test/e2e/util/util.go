@@ -34,7 +34,7 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 // WaitForAPIServicesAvailable waits for apiservices to be available
@@ -132,7 +132,7 @@ func PauseChaos(ctx context.Context, cli client.Client, chaos client.Object) err
 	var mergePatch []byte
 	mergePatch, _ = json.Marshal(map[string]interface{}{
 		"metadata": map[string]interface{}{
-			"annotations": map[string]string{v1alpha1.PauseAnnotationKey: "true"},
+			"annotations": map[string]string{v1alpha2.PauseAnnotationKey: "true"},
 		},
 	})
 	return cli.Patch(ctx, chaos, client.RawPatch(types.MergePatchType, mergePatch))
@@ -142,7 +142,7 @@ func UnPauseChaos(ctx context.Context, cli client.Client, chaos client.Object) e
 	var mergePatch []byte
 	mergePatch, _ = json.Marshal(map[string]interface{}{
 		"metadata": map[string]interface{}{
-			"annotations": map[string]string{v1alpha1.PauseAnnotationKey: "false"},
+			"annotations": map[string]string{v1alpha2.PauseAnnotationKey: "false"},
 		},
 	})
 	return cli.Patch(ctx, chaos, client.RawPatch(types.MergePatchType, mergePatch))

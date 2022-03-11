@@ -25,7 +25,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/recorder"
 )
 
@@ -41,7 +41,7 @@ const (
 // Reconciler for common chaos
 type Reconciler struct {
 	// Object is used to mark the target type of this Reconciler
-	Object v1alpha1.InnerObject
+	Object v1alpha2.InnerObject
 
 	// Client is used to operate on the Kubernetes cluster
 	client.Client
@@ -53,7 +53,7 @@ type Reconciler struct {
 
 // Reconcile the common chaos
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	obj := r.Object.DeepCopyObject().(v1alpha1.InnerObject)
+	obj := r.Object.DeepCopyObject().(v1alpha2.InnerObject)
 
 	if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 		if apierrors.IsNotFound(err) {
@@ -71,7 +71,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	if obj.IsDeleted() {
 		resumed := true
 		for _, record := range records {
-			if record.Phase != v1alpha1.NotInjected {
+			if record.Phase != v1alpha2.NotInjected {
 				resumed = false
 			}
 		}
@@ -91,7 +91,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 	if shouldUpdate {
 		updateError := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
-			obj := r.Object.DeepCopyObject().(v1alpha1.InnerObject)
+			obj := r.Object.DeepCopyObject().(v1alpha2.InnerObject)
 
 			if err := r.Client.Get(context.TODO(), req.NamespacedName, obj); err != nil {
 				r.Log.Error(err, "unable to get chaos")

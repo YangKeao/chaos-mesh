@@ -18,7 +18,7 @@ package podchaos
 import (
 	"go.uber.org/fx"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/action"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/podchaos/containerkill"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/podchaos/podfailure"
@@ -38,7 +38,7 @@ func NewImpl(impl Impl) *impltypes.ChaosImplPair {
 	delegate := action.NewMultiplexer(&impl)
 	return &impltypes.ChaosImplPair{
 		Name:   "podchaos",
-		Object: &v1alpha1.PodChaos{},
+		Object: &v1alpha2.PodChaos{},
 		Impl:   &delegate,
 	}
 }

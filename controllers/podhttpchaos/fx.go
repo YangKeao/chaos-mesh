@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/builder"
 	"github.com/chaos-mesh/chaos-mesh/controllers/utils/chaosdaemon"
@@ -36,12 +36,12 @@ func Bootstrap(mgr ctrl.Manager, client client.Client, logger logr.Logger, b *ch
 	}
 
 	return builder.Default(mgr).
-		For(&v1alpha1.PodHttpChaos{}).
+		For(&v1alpha2.PodHttpChaos{}).
 		Named("podhttpchaos").
 		WithEventFilter(predicate.Funcs{
 			UpdateFunc: func(e event.UpdateEvent) bool {
-				oldObj := e.ObjectOld.(*v1alpha1.PodHttpChaos)
-				newObj := e.ObjectNew.(*v1alpha1.PodHttpChaos)
+				oldObj := e.ObjectOld.(*v1alpha2.PodHttpChaos)
+				newObj := e.ObjectNew.(*v1alpha2.PodHttpChaos)
 
 				return !reflect.DeepEqual(oldObj.Spec, newObj.Spec)
 			},

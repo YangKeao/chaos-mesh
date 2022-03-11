@@ -27,7 +27,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/clientpool"
 	config "github.com/chaos-mesh/chaos-mesh/pkg/config/dashboard"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/core"
@@ -41,7 +41,7 @@ var (
 func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 
-	_ = v1alpha1.AddToScheme(scheme)
+	_ = v1alpha2.AddToScheme(scheme)
 }
 
 // Server defines a server to manage collectors.
@@ -97,7 +97,7 @@ func NewServer(
 		}
 	}
 
-	for kind, chaosKind := range v1alpha1.AllKinds() {
+	for kind, chaosKind := range v1alpha2.AllKinds() {
 		if err = (&ChaosCollector{
 			Client:  s.Manager.GetClient(),
 			Log:     ctrl.Log.WithName("collector").WithName(kind),
@@ -111,10 +111,10 @@ func NewServer(
 
 	if err = (&ScheduleCollector{
 		Client:  s.Manager.GetClient(),
-		Log:     ctrl.Log.WithName("schedule-collector").WithName(v1alpha1.KindSchedule),
+		Log:     ctrl.Log.WithName("schedule-collector").WithName(v1alpha2.KindSchedule),
 		archive: scheduleArchive,
-	}).Setup(s.Manager, &v1alpha1.Schedule{}); err != nil {
-		log.Error(err, "unable to create collector", "collector", v1alpha1.KindSchedule)
+	}).Setup(s.Manager, &v1alpha2.Schedule{}); err != nil {
+		log.Error(err, "unable to create collector", "collector", v1alpha2.KindSchedule)
 		os.Exit(1)
 	}
 
@@ -123,16 +123,16 @@ func NewServer(
 		Log:    ctrl.Log.WithName("event-collector").WithName("Event"),
 		event:  event,
 	}).Setup(s.Manager, &v1.Event{}); err != nil {
-		log.Error(err, "unable to create collector", "collector", v1alpha1.KindSchedule)
+		log.Error(err, "unable to create collector", "collector", v1alpha2.KindSchedule)
 		os.Exit(1)
 	}
 
 	if err = (&WorkflowCollector{
 		kubeClient: s.Manager.GetClient(),
-		Log:        ctrl.Log.WithName("workflow-collector").WithName(v1alpha1.KindWorkflow),
+		Log:        ctrl.Log.WithName("workflow-collector").WithName(v1alpha2.KindWorkflow),
 		store:      workflowStore,
-	}).Setup(s.Manager, &v1alpha1.Workflow{}); err != nil {
-		log.Error(err, "unable to create collector", "collector", v1alpha1.KindWorkflow)
+	}).Setup(s.Manager, &v1alpha2.Workflow{}); err != nil {
+		log.Error(err, "unable to create collector", "collector", v1alpha2.KindWorkflow)
 		os.Exit(1)
 	}
 

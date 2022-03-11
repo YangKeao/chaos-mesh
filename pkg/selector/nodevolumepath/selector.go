@@ -24,7 +24,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/container"
 	"github.com/chaos-mesh/chaos-mesh/pkg/selector/generic"
@@ -53,7 +53,7 @@ func (n *NodeVolumePath) Id() string {
 	return n.nodeName + "/" + n.volumePath
 }
 
-func (impl *SelectImpl) Select(ctx context.Context, selector *v1alpha1.ContainerNodeVolumePathSelector) ([]*NodeVolumePath, error) {
+func (impl *SelectImpl) Select(ctx context.Context, selector *v1alpha2.ContainerNodeVolumePathSelector) ([]*NodeVolumePath, error) {
 	containers, err := impl.containerSelector.Select(ctx, &selector.ContainerSelector)
 	if err != nil {
 		return nil, err

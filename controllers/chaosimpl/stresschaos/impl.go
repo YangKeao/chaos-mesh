@@ -25,7 +25,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	pb "github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/pb"
@@ -41,7 +41,7 @@ type Impl struct {
 	decoder *utils.ContainerRecordDecoder
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	pbClient := decodedContainer.PbClient
 	containerId := decodedContainer.ContainerId
@@ -49,17 +49,17 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		defer pbClient.Close()
 	}
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	stresschaos := obj.(*v1alpha1.StressChaos)
+	stresschaos := obj.(*v1alpha2.StressChaos)
 	if stresschaos.Status.Instances == nil {
-		stresschaos.Status.Instances = make(map[string]v1alpha1.StressInstance)
+		stresschaos.Status.Instances = make(map[string]v1alpha2.StressInstance)
 	}
 	_, ok := stresschaos.Status.Instances[records[index].Id]
 	if ok {
 		impl.Log.Info("an stress-ng instance is running for this pod")
-		return v1alpha1.Injected, nil
+		return v1alpha2.Injected, nil
 	}
 
 	stressors := stresschaos.Spec.StressngStressors
@@ -70,7 +70,7 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		if err != nil {
 			impl.Log.Info("fail to ")
 			// TODO: add an event here
-			return v1alpha1.NotInjected, err
+			return v1alpha2.NotInjected, err
 		}
 	}
 
@@ -83,10 +83,10 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	})
 
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	// TODO: support custom status
-	stresschaos.Status.Instances[records[index].Id] = v1alpha1.StressInstance{
+	stresschaos.Status.Instances[records[index].Id] = v1alpha2.StressInstance{
 		UID: res.CpuInstance,
 		StartTime: &metav1.Time{
 			Time: time.Unix(res.CpuStartTime/1000, (res.CpuStartTime%1000)*int64(time.Millisecond)),
@@ -97,10 +97,10 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		},
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	pbClient := decodedContainer.PbClient
 	if pbClient != nil {
@@ -109,19 +109,19 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	if err != nil {
 		if errors.Is(err, utils.ErrContainerNotFound) {
 			// pretend the disappeared container has been recovered
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
-	stresschaos := obj.(*v1alpha1.StressChaos)
+	stresschaos := obj.(*v1alpha2.StressChaos)
 	if stresschaos.Status.Instances == nil {
-		return v1alpha1.NotInjected, nil
+		return v1alpha2.NotInjected, nil
 	}
 	instance, ok := stresschaos.Status.Instances[records[index].Id]
 	if !ok {
 		impl.Log.Info("Pod seems already recovered", "pod", decodedContainer.Pod.UID)
-		return v1alpha1.NotInjected, nil
+		return v1alpha2.NotInjected, nil
 	}
 	if _, err = pbClient.CancelStressors(ctx, &pb.CancelStressRequest{
 		CpuInstance:     instance.UID,
@@ -130,16 +130,16 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		MemoryStartTime: instance.MemoryStartTime.UnixNano() / int64(time.Millisecond),
 	}); err != nil {
 		impl.Log.Error(err, "cancel stressors")
-		return v1alpha1.Injected, nil
+		return v1alpha2.Injected, nil
 	}
 	delete(stresschaos.Status.Instances, records[index].Id)
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
 func NewImpl(c client.Client, log logr.Logger, decoder *utils.ContainerRecordDecoder) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "stresschaos",
-		Object: &v1alpha1.StressChaos{},
+		Object: &v1alpha2.StressChaos{},
 		Impl: &Impl{
 			Client:  c,
 			Log:     log.WithName("stresschaos"),

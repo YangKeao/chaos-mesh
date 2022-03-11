@@ -18,7 +18,7 @@ package task
 import (
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 const (
@@ -27,7 +27,7 @@ const (
 	PodMetadataMountPath             = "/var/run/chaos-mesh/"
 )
 
-func SpawnPodForTask(task v1alpha1.Task) (corev1.PodSpec, error) {
+func SpawnPodForTask(task v1alpha2.Task) (corev1.PodSpec, error) {
 	deepCopiedContainer := task.Container.DeepCopy()
 	if len(deepCopiedContainer.Resources.Limits) == 0 {
 		deepCopiedContainer.Resources.Limits.Cpu().SetMilli(1000)
@@ -43,7 +43,7 @@ func SpawnPodForTask(task v1alpha1.Task) (corev1.PodSpec, error) {
 	return result, nil
 }
 
-func attachVolumes(task v1alpha1.Task) []corev1.Volume {
+func attachVolumes(task v1alpha2.Task) []corev1.Volume {
 	var result []corev1.Volume
 
 	// TODO: downwards API and configmaps

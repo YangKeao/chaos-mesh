@@ -21,7 +21,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type InvalidEntry struct {
@@ -33,7 +33,7 @@ func (it InvalidEntry) Type() string {
 }
 
 func (it InvalidEntry) Reason() string {
-	return v1alpha1.InvalidEntry
+	return v1alpha2.InvalidEntry
 }
 
 func (it InvalidEntry) Message() string {
@@ -49,7 +49,7 @@ func (it EntryCreated) Type() string {
 }
 
 func (it EntryCreated) Reason() string {
-	return v1alpha1.EntryCreated
+	return v1alpha2.EntryCreated
 }
 
 func (it EntryCreated) Message() string {
@@ -65,7 +65,7 @@ func (it NodesCreated) Type() string {
 }
 
 func (it NodesCreated) Reason() string {
-	return v1alpha1.NodesCreated
+	return v1alpha2.NodesCreated
 }
 
 func (it NodesCreated) Message() string {
@@ -82,7 +82,7 @@ func (it ChaosCustomResourceCreated) Type() string {
 }
 
 func (it ChaosCustomResourceCreated) Reason() string {
-	return v1alpha1.ChaosCRCreated
+	return v1alpha2.ChaosCRCreated
 }
 
 func (it ChaosCustomResourceCreated) Message() string {
@@ -97,7 +97,7 @@ func (it ChaosCustomResourceCreateFailed) Type() string {
 }
 
 func (it ChaosCustomResourceCreateFailed) Reason() string {
-	return v1alpha1.ChaosCRCreateFailed
+	return v1alpha2.ChaosCRCreateFailed
 }
 
 func (it ChaosCustomResourceCreateFailed) Message() string {
@@ -114,7 +114,7 @@ func (it ChaosCustomResourceDeleted) Type() string {
 }
 
 func (it ChaosCustomResourceDeleted) Reason() string {
-	return v1alpha1.ChaosCRDeleted
+	return v1alpha2.ChaosCRDeleted
 }
 
 func (it ChaosCustomResourceDeleted) Message() string {
@@ -131,7 +131,7 @@ func (it ChaosCustomResourceDeleteFailed) Type() string {
 }
 
 func (it ChaosCustomResourceDeleteFailed) Reason() string {
-	return v1alpha1.ChaosCRDeleteFailed
+	return v1alpha2.ChaosCRDeleteFailed
 }
 
 func (it ChaosCustomResourceDeleteFailed) Message() string {
@@ -146,7 +146,7 @@ func (it DeadlineExceed) Type() string {
 }
 
 func (it DeadlineExceed) Reason() string {
-	return v1alpha1.NodeDeadlineExceed
+	return v1alpha2.NodeDeadlineExceed
 }
 
 func (it DeadlineExceed) Message() string {
@@ -162,7 +162,7 @@ func (it ParentNodeDeadlineExceed) Type() string {
 }
 
 func (it ParentNodeDeadlineExceed) Reason() string {
-	return v1alpha1.ParentNodeDeadlineExceed
+	return v1alpha2.ParentNodeDeadlineExceed
 }
 
 func (it ParentNodeDeadlineExceed) Message() string {
@@ -177,7 +177,7 @@ func (it WorkflowAccomplished) Type() string {
 }
 
 func (it WorkflowAccomplished) Reason() string {
-	return v1alpha1.WorkflowAccomplished
+	return v1alpha2.WorkflowAccomplished
 }
 
 func (it WorkflowAccomplished) Message() string {
@@ -192,7 +192,7 @@ func (it NodeAccomplished) Type() string {
 }
 
 func (it NodeAccomplished) Reason() string {
-	return v1alpha1.NodeAccomplished
+	return v1alpha2.NodeAccomplished
 }
 
 func (it NodeAccomplished) Message() string {
@@ -208,7 +208,7 @@ func (it TaskPodSpawned) Type() string {
 }
 
 func (it TaskPodSpawned) Reason() string {
-	return v1alpha1.TaskPodSpawned
+	return v1alpha2.TaskPodSpawned
 }
 
 func (it TaskPodSpawned) Message() string {
@@ -223,7 +223,7 @@ func (it TaskPodSpawnFailed) Type() string {
 }
 
 func (it TaskPodSpawnFailed) Reason() string {
-	return v1alpha1.TaskPodSpawnFailed
+	return v1alpha2.TaskPodSpawnFailed
 }
 
 func (it TaskPodSpawnFailed) Message() string {
@@ -239,7 +239,7 @@ func (it TaskPodPodCompleted) Type() string {
 }
 
 func (it TaskPodPodCompleted) Reason() string {
-	return v1alpha1.TaskPodPodCompleted
+	return v1alpha2.TaskPodPodCompleted
 }
 
 func (it TaskPodPodCompleted) Message() string {
@@ -255,7 +255,7 @@ func (it ConditionalBranchesSelected) Type() string {
 }
 
 func (it ConditionalBranchesSelected) Reason() string {
-	return v1alpha1.ConditionalBranchesSelected
+	return v1alpha2.ConditionalBranchesSelected
 }
 
 func (it ConditionalBranchesSelected) Message() string {
@@ -271,7 +271,7 @@ func (it RerunBySpecChanged) Type() string {
 }
 
 func (it RerunBySpecChanged) Reason() string {
-	return v1alpha1.RerunBySpecChanged
+	return v1alpha2.RerunBySpecChanged
 }
 
 func (it RerunBySpecChanged) Message() string {

@@ -28,7 +28,7 @@ import (
 	"github.com/pkg/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	config "github.com/chaos-mesh/chaos-mesh/pkg/config/dashboard"
 	u "github.com/chaos-mesh/chaos-mesh/pkg/dashboard/apiserver/utils"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/core"
@@ -154,7 +154,7 @@ func (s *Service) get(c *gin.Context) {
 		return
 	}
 
-	chaos := v1alpha1.AllKinds()[exp.Kind].SpawnObject()
+	chaos := v1alpha2.AllKinds()[exp.Kind].SpawnObject()
 	_ = json.Unmarshal([]byte(exp.Experiment), chaos)
 
 	c.JSON(http.StatusOK, &Detail{
@@ -325,7 +325,7 @@ func (s *Service) detailSchedule(c *gin.Context) {
 		return
 	}
 
-	sch := &v1alpha1.Schedule{}
+	sch := &v1alpha2.Schedule{}
 	if err := json.Unmarshal([]byte(exp.Schedule), &sch); err != nil {
 		c.Status(http.StatusInternalServerError)
 		_ = c.Error(u.ErrInternalServer.WrapWithNoMessage(err))
@@ -459,7 +459,7 @@ func (s *Service) listWorkflow(c *gin.Context) {
 	for _, meta := range metas {
 		archives = append(archives, Archive{
 			UID:       meta.UID,
-			Kind:      v1alpha1.KindWorkflow,
+			Kind:      v1alpha2.KindWorkflow,
 			Namespace: meta.Namespace,
 			Name:      meta.Name,
 			Created:   meta.CreatedAt.Format(time.RFC3339),
@@ -502,7 +502,7 @@ func (s *Service) detailWorkflow(c *gin.Context) {
 		return
 	}
 
-	workflow := &v1alpha1.Workflow{}
+	workflow := &v1alpha2.Workflow{}
 	if err := json.Unmarshal([]byte(meta.Workflow), &workflow); err != nil {
 		c.Status(http.StatusInternalServerError)
 		_ = c.Error(u.ErrInternalServer.WrapWithNoMessage(err))
@@ -512,7 +512,7 @@ func (s *Service) detailWorkflow(c *gin.Context) {
 	detail = Detail{
 		Archive: Archive{
 			UID:       meta.UID,
-			Kind:      v1alpha1.KindWorkflow,
+			Kind:      v1alpha2.KindWorkflow,
 			Name:      meta.Name,
 			Namespace: meta.Namespace,
 			Created:   meta.CreatedAt.Format(time.RFC3339),

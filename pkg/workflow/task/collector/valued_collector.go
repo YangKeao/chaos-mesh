@@ -18,14 +18,14 @@ package collector
 import (
 	"encoding/json"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type ValuedCollector struct {
-	status v1alpha1.ConditionalBranchesStatus
+	status v1alpha2.ConditionalBranchesStatus
 }
 
-func NewValuedCollector(status v1alpha1.ConditionalBranchesStatus) *ValuedCollector {
+func NewValuedCollector(status v1alpha2.ConditionalBranchesStatus) *ValuedCollector {
 	return &ValuedCollector{status: status}
 }
 

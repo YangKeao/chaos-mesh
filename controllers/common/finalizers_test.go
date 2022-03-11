@@ -25,7 +25,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/wait"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/common/finalizers"
 )
 
@@ -49,18 +49,18 @@ var _ = Describe("Finalizer", func() {
 				Namespace: "default",
 			}
 			duration := "1000s"
-			chaos := &v1alpha1.TimeChaos{
+			chaos := &v1alpha2.TimeChaos{
 				ObjectMeta: metav1.ObjectMeta{
 					Name:      "final1",
 					Namespace: "default",
 				},
-				Spec: v1alpha1.TimeChaosSpec{
+				Spec: v1alpha2.TimeChaosSpec{
 					TimeOffset: "100ms",
 					ClockIds:   []string{"CLOCK_REALTIME"},
 					Duration:   &duration,
-					ContainerSelector: v1alpha1.ContainerSelector{
-						PodSelector: v1alpha1.PodSelector{
-							Mode: v1alpha1.OneMode,
+					ContainerSelector: v1alpha2.ContainerSelector{
+						PodSelector: v1alpha2.PodSelector{
+							Mode: v1alpha2.OneMode,
 						},
 					},
 				},

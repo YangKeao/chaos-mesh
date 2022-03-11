@@ -32,7 +32,7 @@ import (
 	"k8s.io/utils/pointer"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/pkg/fixture"
 )
@@ -60,9 +60,9 @@ func TestcaseForbidHostNetwork(
 		ns, "network-chaos-1",
 		map[string]string{"app": "network-peer-4"},
 		map[string]string{"app": "network-peer-1"},
-		v1alpha1.OneMode,
-		v1alpha1.OneMode,
-		v1alpha1.To,
+		v1alpha2.OneMode,
+		v1alpha2.OneMode,
+		v1alpha2.To,
 		pointer.StringPtr("9m"),
 	)
 
@@ -82,7 +82,7 @@ func TestcaseForbidHostNetwork(
 		failed := true
 		for _, record := range networkPartition.Status.ChaosStatus.Experiment.Records {
 			klog.Infof("current chaos record %s phase: %s", record.Id, record.Phase)
-			if strings.Contains(record.Id, "network-peer-4") && record.Phase == v1alpha1.Injected {
+			if strings.Contains(record.Id, "network-peer-4") && record.Phase == v1alpha2.Injected {
 				failed = false
 			}
 		}
@@ -90,7 +90,7 @@ func TestcaseForbidHostNetwork(
 	})
 
 	framework.ExpectNoError(err, "failed to waiting on not injected state with chaos")
-	framework.ExpectEqual(networkPartition.Status.ChaosStatus.Experiment.DesiredPhase, v1alpha1.RunningPhase)
+	framework.ExpectEqual(networkPartition.Status.ChaosStatus.Experiment.DesiredPhase, v1alpha2.RunningPhase)
 	// TODO: add failed event check
 	//framework.ExpectEqual(strings.Contains(networkPartition.Status.ChaosStatus.FailedMessage, "it's dangerous to inject network chaos on a pod"), true)
 }
@@ -130,9 +130,9 @@ func TestcaseNetworkPartition(
 		ns, "network-chaos-1",
 		map[string]string{"app": "network-peer-0"},
 		map[string]string{"app": "network-peer-1"},
-		v1alpha1.OneMode,
-		v1alpha1.OneMode,
-		v1alpha1.To,
+		v1alpha2.OneMode,
+		v1alpha2.OneMode,
+		v1alpha2.To,
 		testDelayDuration,
 	)
 
@@ -169,9 +169,9 @@ func TestcaseNetworkPartition(
 		ns, "network-chaos-1",
 		map[string]string{"app": "network-peer-0"},
 		map[string]string{"app": "network-peer-1"},
-		v1alpha1.OneMode,
-		v1alpha1.OneMode,
-		v1alpha1.Both,
+		v1alpha2.OneMode,
+		v1alpha2.OneMode,
+		v1alpha2.Both,
 		testDelayDuration,
 	)
 	err = cli.Create(ctx, bothDirectionNetworkPartition.DeepCopy())
@@ -206,9 +206,9 @@ func TestcaseNetworkPartition(
 		ns, "network-chaos-1",
 		map[string]string{"app": "network-peer-0"},
 		map[string]string{"app": "network-peer-1"},
-		v1alpha1.OneMode,
-		v1alpha1.OneMode,
-		v1alpha1.From,
+		v1alpha2.OneMode,
+		v1alpha2.OneMode,
+		v1alpha2.From,
 		testDelayDuration,
 	)
 
@@ -245,9 +245,9 @@ func TestcaseNetworkPartition(
 		ns, "network-chaos-1",
 		map[string]string{"app": "network-peer-0"},
 		map[string]string{"partition": "1"},
-		v1alpha1.OneMode,
-		v1alpha1.AllMode,
-		v1alpha1.Both,
+		v1alpha2.OneMode,
+		v1alpha2.AllMode,
+		v1alpha2.Both,
 		testDelayDuration,
 	)
 	err = cli.Create(ctx, bothDirectionWithPartitionNetworkPartition.DeepCopy())
@@ -282,9 +282,9 @@ func TestcaseNetworkPartition(
 		ns, "network-chaos-2",
 		map[string]string{"app": "network-peer-0"},
 		map[string]string{"partition": "0"},
-		v1alpha1.OneMode,
-		v1alpha1.AllMode,
-		v1alpha1.To,
+		v1alpha2.OneMode,
+		v1alpha2.AllMode,
+		v1alpha2.To,
 		testDelayDuration,
 	)
 	err = cli.Create(ctx, bothDirectionWithPartitionNetworkPartition.DeepCopy())
@@ -324,9 +324,9 @@ func TestcaseNetworkPartition(
 		ns, "network-chaos-without-target",
 		map[string]string{"app": "network-peer-0"},
 		nil,
-		v1alpha1.OneMode,
-		v1alpha1.AllMode,
-		v1alpha1.To,
+		v1alpha2.OneMode,
+		v1alpha2.AllMode,
+		v1alpha2.To,
 		testDelayDuration,
 	)
 	err = cli.Create(ctx, networkPartitionWithoutTarget.DeepCopy())
@@ -363,9 +363,9 @@ func TestcaseNetworkPartition(
 		ns, "network-chaos-without-target",
 		map[string]string{"app": "network-peer-0"},
 		nil,
-		v1alpha1.OneMode,
-		v1alpha1.AllMode,
-		v1alpha1.From,
+		v1alpha2.OneMode,
+		v1alpha2.AllMode,
+		v1alpha2.From,
 		testDelayDuration,
 	)
 	err = cli.Create(ctx, networkPartitionWithoutTarget.DeepCopy())

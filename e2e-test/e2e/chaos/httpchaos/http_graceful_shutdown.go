@@ -25,7 +25,7 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	test "github.com/chaos-mesh/chaos-mesh/e2e-test"
 	e2econfig "github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/config"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
@@ -47,24 +47,24 @@ func TestcaseHttpGracefulAbortShutdown(
 
 	abort := true
 
-	httpChaos := &v1alpha1.HTTPChaos{
+	httpChaos := &v1alpha2.HTTPChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "http-chaos",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.HTTPChaosSpec{
-			PodSelector: v1alpha1.PodSelector{
-				Selector: v1alpha1.PodSelectorSpec{
-					GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.HTTPChaosSpec{
+			PodSelector: v1alpha2.PodSelector{
+				Selector: v1alpha2.PodSelectorSpec{
+					GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 						Namespaces:     []string{ns},
 						LabelSelectors: map[string]string{"app": "http"},
 					},
 				},
-				Mode: v1alpha1.OneMode,
+				Mode: v1alpha2.OneMode,
 			},
 			Port:   8080,
 			Target: "Request",
-			PodHttpChaosActions: v1alpha1.PodHttpChaosActions{
+			PodHttpChaosActions: v1alpha2.PodHttpChaosActions{
 				Abort: &abort,
 			},
 		},

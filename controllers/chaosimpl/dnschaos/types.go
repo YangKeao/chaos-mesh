@@ -29,7 +29,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
@@ -46,26 +46,26 @@ type Impl struct {
 	decoder *utils.ContainerRecordDecoder
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	if decodedContainer.PbClient != nil {
 		defer decodedContainer.PbClient.Close()
 	}
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	service, err := pod.GetService(ctx, impl.Client, "", config.ControllerCfg.Namespace, config.ControllerCfg.DNSServiceName)
 	if err != nil {
 		impl.Log.Error(err, "fail to get service")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	dnschaos := obj.(*v1alpha1.DNSChaos)
+	dnschaos := obj.(*v1alpha2.DNSChaos)
 	err = impl.setDNSServerRules(service.Spec.ClusterIP, config.ControllerCfg.DNSServicePort, dnschaos.Name, decodedContainer.Pod, dnschaos.Spec.Action, dnschaos.Spec.DomainNamePatterns)
 	if err != nil {
 		impl.Log.Error(err, "fail to set DNS server rules")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	_, err = decodedContainer.PbClient.SetDNSServer(ctx, &pb.SetDNSServerRequest{
@@ -76,13 +76,13 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	})
 	if err != nil {
 		impl.Log.Error(err, "set dns server")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) setDNSServerRules(dnsServerIP string, port int, name string, pod *v1.Pod, action v1alpha1.DNSChaosAction, patterns []string) error {
+func (impl *Impl) setDNSServerRules(dnsServerIP string, port int, name string, pod *v1.Pod, action v1alpha2.DNSChaosAction, patterns []string) error {
 	impl.Log.Info("setDNSServerRules", "name", name)
 
 	pbPods := make([]*dnspb.Pod, 1)
@@ -119,7 +119,7 @@ func (impl *Impl) setDNSServerRules(dnsServerIP string, port int, name string, p
 	return nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
 	decodedContainer, err := impl.decoder.DecodeContainerRecord(ctx, records[index], obj)
 	if decodedContainer.PbClient != nil {
 		defer decodedContainer.PbClient.Close()
@@ -127,25 +127,25 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	if err != nil {
 		if errors.Is(err, utils.ErrContainerNotFound) {
 			// pretend the disappeared container has been recovered
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
-	dnschaos := obj.(*v1alpha1.DNSChaos)
+	dnschaos := obj.(*v1alpha2.DNSChaos)
 
 	// get dns server's ip used for chaos
 	service, err := pod.GetService(ctx, impl.Client, "", config.ControllerCfg.Namespace, config.ControllerCfg.DNSServiceName)
 	if err != nil {
 		impl.Log.Error(err, "fail to get service")
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 	impl.Log.Info("Cancel DNS chaos to DNS service", "ip", service.Spec.ClusterIP)
 
 	err = impl.cancelDNSServerRules(service.Spec.ClusterIP, config.ControllerCfg.DNSServicePort, dnschaos.Name)
 	if err != nil {
 		impl.Log.Error(err, "fail to cancelDNSServerRules")
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	_, err = decodedContainer.PbClient.SetDNSServer(ctx, &pb.SetDNSServerRequest{
@@ -155,10 +155,10 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 	})
 	if err != nil {
 		impl.Log.Error(err, "recover pod for DNS chaos")
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
-	return v1alpha1.NotInjected, err
+	return v1alpha2.NotInjected, err
 }
 
 func (impl *Impl) cancelDNSServerRules(dnsServerIP string, port int, name string) error {
@@ -190,7 +190,7 @@ func (impl *Impl) cancelDNSServerRules(dnsServerIP string, port int, name string
 func NewImpl(c client.Client, log logr.Logger, decoder *utils.ContainerRecordDecoder) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "dnschaos",
-		Object: &v1alpha1.DNSChaos{},
+		Object: &v1alpha2.DNSChaos{},
 		Impl: &Impl{
 			Client:  c,
 			Log:     log.WithName("dnschaos"),

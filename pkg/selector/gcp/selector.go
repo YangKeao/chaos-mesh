@@ -18,13 +18,13 @@ package gcp
 import (
 	"context"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type SelectImpl struct{}
 
-func (impl *SelectImpl) Select(ctx context.Context, gcpSelector *v1alpha1.GCPSelector) ([]*v1alpha1.GCPSelector, error) {
-	return []*v1alpha1.GCPSelector{gcpSelector}, nil
+func (impl *SelectImpl) Select(ctx context.Context, gcpSelector *v1alpha2.GCPSelector) ([]*v1alpha2.GCPSelector, error) {
+	return []*v1alpha2.GCPSelector{gcpSelector}, nil
 }
 
 func New() *SelectImpl {

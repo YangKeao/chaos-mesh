@@ -20,21 +20,21 @@ import (
 
 	"github.com/onsi/gomega"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 func TestAffectedNamespaces(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 
-	_, namespaces := affectedNamespaces(&v1alpha1.Schedule{
-		Spec: v1alpha1.ScheduleSpec{
-			ScheduleItem: v1alpha1.ScheduleItem{
-				EmbedChaos: v1alpha1.EmbedChaos{
-					PodChaos: &v1alpha1.PodChaosSpec{
-						ContainerSelector: v1alpha1.ContainerSelector{
-							PodSelector: v1alpha1.PodSelector{
-								Selector: v1alpha1.PodSelectorSpec{
-									GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+	_, namespaces := affectedNamespaces(&v1alpha2.Schedule{
+		Spec: v1alpha2.ScheduleSpec{
+			ScheduleItem: v1alpha2.ScheduleItem{
+				EmbedChaos: v1alpha2.EmbedChaos{
+					PodChaos: &v1alpha2.PodChaosSpec{
+						ContainerSelector: v1alpha2.ContainerSelector{
+							PodSelector: v1alpha2.PodSelector{
+								Selector: v1alpha2.PodSelectorSpec{
+									GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 										Namespaces: []string{"ns1", "ns2"},
 									},
 								},
@@ -50,15 +50,15 @@ func TestAffectedNamespaces(t *testing.T) {
 		"ns2": {},
 	}))
 
-	_, namespaces = affectedNamespaces(&v1alpha1.Workflow{
-		Spec: v1alpha1.WorkflowSpec{
-			Templates: []v1alpha1.Template{
+	_, namespaces = affectedNamespaces(&v1alpha2.Workflow{
+		Spec: v1alpha2.WorkflowSpec{
+			Templates: []v1alpha2.Template{
 				{
-					EmbedChaos: &v1alpha1.EmbedChaos{
-						NetworkChaos: &v1alpha1.NetworkChaosSpec{
-							Target: &v1alpha1.PodSelector{
-								Selector: v1alpha1.PodSelectorSpec{
-									GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+					EmbedChaos: &v1alpha2.EmbedChaos{
+						NetworkChaos: &v1alpha2.NetworkChaosSpec{
+							Target: &v1alpha2.PodSelector{
+								Selector: v1alpha2.PodSelectorSpec{
+									GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 										Namespaces: []string{"ns1", "ns2"},
 									},
 								},
@@ -74,25 +74,25 @@ func TestAffectedNamespaces(t *testing.T) {
 		"ns2": {},
 	}))
 
-	clusterScoped, _ := affectedNamespaces(&v1alpha1.NetworkChaos{
-		Spec: v1alpha1.NetworkChaosSpec{
-			Target: &v1alpha1.PodSelector{},
+	clusterScoped, _ := affectedNamespaces(&v1alpha2.NetworkChaos{
+		Spec: v1alpha2.NetworkChaosSpec{
+			Target: &v1alpha2.PodSelector{},
 		},
 	})
 	g.Expect(clusterScoped).To(gomega.BeTrue())
 
-	clusterScoped, _ = affectedNamespaces(&v1alpha1.NetworkChaos{})
+	clusterScoped, _ = affectedNamespaces(&v1alpha2.NetworkChaos{})
 	g.Expect(clusterScoped).To(gomega.BeTrue())
 
-	_, namespaces = affectedNamespaces(&v1alpha1.Workflow{
-		Spec: v1alpha1.WorkflowSpec{
-			Templates: []v1alpha1.Template{
+	_, namespaces = affectedNamespaces(&v1alpha2.Workflow{
+		Spec: v1alpha2.WorkflowSpec{
+			Templates: []v1alpha2.Template{
 				{
-					EmbedChaos: &v1alpha1.EmbedChaos{
-						NetworkChaos: &v1alpha1.NetworkChaosSpec{
-							Target: &v1alpha1.PodSelector{
-								Selector: v1alpha1.PodSelectorSpec{
-									GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+					EmbedChaos: &v1alpha2.EmbedChaos{
+						NetworkChaos: &v1alpha2.NetworkChaosSpec{
+							Target: &v1alpha2.PodSelector{
+								Selector: v1alpha2.PodSelectorSpec{
+									GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 										Namespaces: []string{"ns1", "ns2"},
 									},
 								},
@@ -101,11 +101,11 @@ func TestAffectedNamespaces(t *testing.T) {
 					},
 				},
 				{
-					EmbedChaos: &v1alpha1.EmbedChaos{
-						NetworkChaos: &v1alpha1.NetworkChaosSpec{
-							Target: &v1alpha1.PodSelector{
-								Selector: v1alpha1.PodSelectorSpec{
-									GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+					EmbedChaos: &v1alpha2.EmbedChaos{
+						NetworkChaos: &v1alpha2.NetworkChaosSpec{
+							Target: &v1alpha2.PodSelector{
+								Selector: v1alpha2.PodSelectorSpec{
+									GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 										Namespaces: []string{"ns3", "ns4"},
 									},
 								},
@@ -123,10 +123,10 @@ func TestAffectedNamespaces(t *testing.T) {
 		"ns4": {},
 	}))
 
-	_, namespaces = affectedNamespaces(&v1alpha1.NetworkChaos{
-		Spec: v1alpha1.NetworkChaosSpec{
-			Target: &v1alpha1.PodSelector{
-				Selector: v1alpha1.PodSelectorSpec{
+	_, namespaces = affectedNamespaces(&v1alpha2.NetworkChaos{
+		Spec: v1alpha2.NetworkChaosSpec{
+			Target: &v1alpha2.PodSelector{
+				Selector: v1alpha2.PodSelectorSpec{
 					Pods: map[string][]string{
 						"ns1": {"pod1", "pod2"},
 						"ns2": {"pod3", "pod4"},

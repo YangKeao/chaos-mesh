@@ -18,7 +18,7 @@ package podhttpchaosmanager
 import (
 	"github.com/pkg/errors"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 )
 
@@ -30,7 +30,7 @@ type PodHttpTransaction struct {
 // Step represents a step of PodHttpTransaction
 type Step interface {
 	// Apply will apply an action on podnetworkchaos
-	Apply(chaos *v1alpha1.PodHttpChaos) error
+	Apply(chaos *v1alpha2.PodHttpChaos) error
 }
 
 // Clear removes all resources with the same source
@@ -39,8 +39,8 @@ type Clear struct {
 }
 
 // Apply runs this action
-func (s *Clear) Apply(chaos *v1alpha1.PodHttpChaos) error {
-	rules := []v1alpha1.PodHttpChaosRule{}
+func (s *Clear) Apply(chaos *v1alpha2.PodHttpChaos) error {
+	rules := []v1alpha2.PodHttpChaosRule{}
 	for _, rule := range chaos.Spec.Rules {
 		if rule.Source != s.Source {
 			rules = append(rules, rule)
@@ -56,9 +56,9 @@ type Append struct {
 }
 
 // Apply runs this action
-func (a *Append) Apply(chaos *v1alpha1.PodHttpChaos) error {
+func (a *Append) Apply(chaos *v1alpha2.PodHttpChaos) error {
 	switch item := a.Item.(type) {
-	case v1alpha1.PodHttpChaosRule:
+	case v1alpha2.PodHttpChaosRule:
 		chaos.Spec.Rules = append(chaos.Spec.Rules, item)
 	default:
 		return errors.Wrapf(utils.ErrUnknownType, "type: %T", item)
@@ -77,7 +77,7 @@ func (t *PodHttpTransaction) Clear(source string) {
 // Append adds an item to corresponding list in podnetworkchaos
 func (t *PodHttpTransaction) Append(item interface{}) error {
 	switch item.(type) {
-	case v1alpha1.PodHttpChaosRule:
+	case v1alpha2.PodHttpChaosRule:
 		t.Steps = append(t.Steps, &Append{
 			Item: item,
 		})
@@ -88,7 +88,7 @@ func (t *PodHttpTransaction) Append(item interface{}) error {
 }
 
 // Apply runs every step on the chaos
-func (t *PodHttpTransaction) Apply(chaos *v1alpha1.PodHttpChaos) error {
+func (t *PodHttpTransaction) Apply(chaos *v1alpha2.PodHttpChaos) error {
 	for _, s := range t.Steps {
 		err := s.Apply(chaos)
 		if err != nil {

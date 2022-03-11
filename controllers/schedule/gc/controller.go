@@ -30,7 +30,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/controllers/schedule/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/types"
@@ -51,7 +51,7 @@ type Reconciler struct {
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	// In this controller, schedule could be out of date, as the reconcilation may be not caused by
 	// an update on Schedule, but by a *Chaos.
-	schedule := &v1alpha1.Schedule{}
+	schedule := &v1alpha2.Schedule{}
 	err := r.Get(ctx, req.NamespacedName, schedule)
 	if err != nil {
 		if !k8sError.IsNotFound(err) {
@@ -84,7 +84,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 	requeuAfter := time.Duration(0)
 	if exceededHistory > 0 {
 		for _, obj := range metaItems[0:exceededHistory] {
-			innerObj, ok := obj.(v1alpha1.InnerObject)
+			innerObj, ok := obj.(v1alpha2.InnerObject)
 			if ok { // This is a chaos
 				finished, untilStop := controller.IsChaosFinishedWithUntilStop(innerObj, time.Now())
 
@@ -104,10 +104,10 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 					r.Log.Info("untilStop is 0 when the chaos has not finished")
 				}
 			} else { // A workflow
-				if schedule.Spec.Type == v1alpha1.ScheduleTypeWorkflow {
-					workflow, ok := obj.(*v1alpha1.Workflow)
+				if schedule.Spec.Type == v1alpha2.ScheduleTypeWorkflow {
+					workflow, ok := obj.(*v1alpha2.Workflow)
 					if ok {
-						finished := controllers.WorkflowConditionEqualsTo(workflow.Status, v1alpha1.WorkflowConditionAccomplished, corev1.ConditionTrue)
+						finished := controllers.WorkflowConditionEqualsTo(workflow.Status, v1alpha2.WorkflowConditionAccomplished, corev1.ConditionTrue)
 
 						if !finished {
 							r.Recorder.Event(schedule, recorder.ScheduleSkipRemoveHistory{
@@ -147,7 +147,7 @@ func Bootstrap(mgr ctrl.Manager, client client.Client, log logr.Logger, objs Obj
 		return nil
 	}
 	builder := builder.Default(mgr).
-		For(&v1alpha1.Schedule{}).
+		For(&v1alpha2.Schedule{}).
 		Named(controllerName)
 
 	for _, obj := range objs.Objs {
@@ -155,7 +155,7 @@ func Bootstrap(mgr ctrl.Manager, client client.Client, log logr.Logger, objs Obj
 		builder.Owns(obj.Object)
 	}
 
-	builder = builder.Owns(&v1alpha1.Workflow{})
+	builder = builder.Owns(&v1alpha2.Workflow{})
 
 	return builder.Complete(&Reconciler{
 		client,

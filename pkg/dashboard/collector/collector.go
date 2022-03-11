@@ -28,7 +28,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/core"
 )
 
@@ -48,7 +48,7 @@ func (r *ChaosCollector) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		return ctrl.Result{}, nil
 	}
 
-	obj, ok := r.apiType.DeepCopyObject().(v1alpha1.InnerObject)
+	obj, ok := r.apiType.DeepCopyObject().(v1alpha2.InnerObject)
 	if !ok {
 		r.Log.Error(nil, "it's not a stateful object")
 		return ctrl.Result{}, nil
@@ -91,7 +91,7 @@ func (r *ChaosCollector) Setup(mgr ctrl.Manager, apiType client.Object) error {
 		Complete(r)
 }
 
-func (r *ChaosCollector) setUnarchivedExperiment(req ctrl.Request, obj v1alpha1.InnerObject) error {
+func (r *ChaosCollector) setUnarchivedExperiment(req ctrl.Request, obj v1alpha2.InnerObject) error {
 	archive, err := convertInnerObjectToExperiment(obj)
 	if err != nil {
 		r.Log.Error(err, "failed to covert InnerObject")
@@ -150,7 +150,7 @@ func (r *ChaosCollector) deleteManagedExperiments(ns, name string) error {
 	return nil
 }
 
-func convertInnerObjectToExperiment(obj v1alpha1.InnerObject) (*core.Experiment, error) {
+func convertInnerObjectToExperiment(obj v1alpha2.InnerObject) (*core.Experiment, error) {
 	chaosMeta, ok := obj.(metav1.Object)
 	if !ok {
 		return nil, errors.New("chaos meta information not found")
@@ -168,25 +168,25 @@ func convertInnerObjectToExperiment(obj v1alpha1.InnerObject) (*core.Experiment,
 	}
 
 	switch chaos := obj.(type) {
-	case *v1alpha1.PodChaos:
+	case *v1alpha2.PodChaos:
 		archive.Action = string(chaos.Spec.Action)
-	case *v1alpha1.NetworkChaos:
+	case *v1alpha2.NetworkChaos:
 		archive.Action = string(chaos.Spec.Action)
-	case *v1alpha1.IOChaos:
+	case *v1alpha2.IOChaos:
 		archive.Action = string(chaos.Spec.Action)
-	case *v1alpha1.TimeChaos, *v1alpha1.KernelChaos, *v1alpha1.StressChaos, *v1alpha1.HTTPChaos:
+	case *v1alpha2.TimeChaos, *v1alpha2.KernelChaos, *v1alpha2.StressChaos, *v1alpha2.HTTPChaos:
 		archive.Action = ""
-	case *v1alpha1.DNSChaos:
+	case *v1alpha2.DNSChaos:
 		archive.Action = string(chaos.Spec.Action)
-	case *v1alpha1.PhysicalMachineChaos:
+	case *v1alpha2.PhysicalMachineChaos:
 		archive.Action = string(chaos.Spec.Action)
-	case *v1alpha1.AWSChaos:
+	case *v1alpha2.AWSChaos:
 		archive.Action = string(chaos.Spec.Action)
-	case *v1alpha1.GCPChaos:
+	case *v1alpha2.GCPChaos:
 		archive.Action = string(chaos.Spec.Action)
-	case *v1alpha1.JVMChaos:
+	case *v1alpha2.JVMChaos:
 		archive.Action = string(chaos.Spec.Action)
-	case *v1alpha1.BlockChaos:
+	case *v1alpha2.BlockChaos:
 		archive.Action = string(chaos.Spec.Action)
 	default:
 		return nil, errors.New("unsupported chaos type " + archive.Kind)

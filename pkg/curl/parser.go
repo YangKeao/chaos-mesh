@@ -21,7 +21,7 @@ import (
 	"github.com/pkg/errors"
 	flag "github.com/spf13/pflag"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 func parseCommands(command Commands) (*CommandFlags, error) {
@@ -72,7 +72,7 @@ func parseCommands(command Commands) (*CommandFlags, error) {
 	}, nil
 }
 
-func ParseWorkflowTaskTemplate(template *v1alpha1.Template) (*RequestForm, error) {
+func ParseWorkflowTaskTemplate(template *v1alpha2.Template) (*RequestForm, error) {
 	if !IsValidRenderedTask(template) {
 		return nil, errors.New("invalid request, this task is not rendered by curl-render")
 	}
@@ -86,8 +86,8 @@ func ParseWorkflowTaskTemplate(template *v1alpha1.Template) (*RequestForm, error
 	}, nil
 }
 
-func IsValidRenderedTask(template *v1alpha1.Template) bool {
-	return template.Type == v1alpha1.TypeTask && strings.HasSuffix(template.Task.Container.Name, nameSuffix)
+func IsValidRenderedTask(template *v1alpha2.Template) bool {
+	return template.Type == v1alpha2.TypeTask && strings.HasSuffix(template.Task.Container.Name, nameSuffix)
 }
 
 func parseHeader(headerKV string) (string, string) {

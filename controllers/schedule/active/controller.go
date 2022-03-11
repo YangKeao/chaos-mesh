@@ -30,7 +30,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
 	"github.com/chaos-mesh/chaos-mesh/controllers/schedule/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/types"
@@ -50,7 +50,7 @@ type Reconciler struct {
 }
 
 func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	schedule := &v1alpha1.Schedule{}
+	schedule := &v1alpha2.Schedule{}
 	err := r.Get(ctx, req.NamespacedName, schedule)
 	if err != nil {
 		if !k8sError.IsNotFound(err) {
@@ -95,7 +95,7 @@ func (r *Reconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Resu
 
 	updateError := retry.RetryOnConflict(retry.DefaultBackoff, func() error {
 		r.Log.Info("updating active", "active", active)
-		schedule = schedule.DeepCopyObject().(*v1alpha1.Schedule)
+		schedule = schedule.DeepCopyObject().(*v1alpha2.Schedule)
 
 		if err := r.Client.Get(ctx, req.NamespacedName, schedule); err != nil {
 			r.Log.Error(err, "unable to get schedule")
@@ -130,14 +130,14 @@ func Bootstrap(mgr ctrl.Manager, client client.Client, log logr.Logger, objs Obj
 		return nil
 	}
 	builder := builder.Default(mgr).
-		For(&v1alpha1.Schedule{}).
+		For(&v1alpha2.Schedule{}).
 		Named(controllerName)
 
 	for _, obj := range objs.Objs {
 		// TODO: support workflow
 		builder = builder.Owns(obj.Object)
 	}
-	builder = builder.Owns(&v1alpha1.Workflow{})
+	builder = builder.Owns(&v1alpha2.Workflow{})
 
 	return builder.Complete(&Reconciler{
 		scheme,

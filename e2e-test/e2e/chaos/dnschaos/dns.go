@@ -30,7 +30,7 @@ import (
 	"k8s.io/kubernetes/test/e2e/framework"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/e2e-test/e2e/util"
 )
 
@@ -54,19 +54,19 @@ func TestcaseDNSRandom(
 		framework.ExpectError(err, "test DNS server failed")
 	}
 
-	dnsChaos := &v1alpha1.DNSChaos{
+	dnsChaos := &v1alpha2.DNSChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "dns-chaos-random",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.DNSChaosSpec{
-			Action:             v1alpha1.RandomAction,
+		Spec: v1alpha2.DNSChaosSpec{
+			Action:             v1alpha2.RandomAction,
 			DomainNamePatterns: []string{"not-exist-?ost.*", "not_exist?host.abc", "not-exist-host.def"},
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Mode: v1alpha1.AllMode,
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Mode: v1alpha2.AllMode,
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "network-peer"},
 						},
@@ -118,19 +118,19 @@ func TestcaseDNSError(
 		framework.ExpectNoError(err, "test DNS server failed")
 	}
 
-	dnsChaos := &v1alpha1.DNSChaos{
+	dnsChaos := &v1alpha2.DNSChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      "dns-chaos-error",
 			Namespace: ns,
 		},
-		Spec: v1alpha1.DNSChaosSpec{
-			Action:             v1alpha1.ErrorAction,
+		Spec: v1alpha2.DNSChaosSpec{
+			Action:             v1alpha2.ErrorAction,
 			DomainNamePatterns: []string{"chaos-mes?.org", "github.com", "16?.co*"},
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Mode: v1alpha1.AllMode,
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Mode: v1alpha2.AllMode,
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces:     []string{ns},
 							LabelSelectors: map[string]string{"app": "network-peer"},
 						},

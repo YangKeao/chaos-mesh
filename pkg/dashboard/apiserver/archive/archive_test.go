@@ -32,7 +32,7 @@ import (
 	"github.com/stretchr/testify/mock"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	config "github.com/chaos-mesh/chaos-mesh/pkg/config/dashboard"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/core"
 	pkgmock "github.com/chaos-mesh/chaos-mesh/pkg/mock"
@@ -79,12 +79,12 @@ func (m *MockExperimentStore) FindByUID(ctx context.Context, UID string) (*core.
 	var err error
 	switch UID {
 	case "testPodChaos":
-		chaos := v1alpha1.PodChaos{}
+		chaos := v1alpha2.PodChaos{}
 		jsonStr, _ := json.Marshal(chaos)
 		res = &core.Experiment{
 			ExperimentMeta: core.ExperimentMeta{
 				UID:        UID,
-				Kind:       v1alpha1.KindPodChaos,
+				Kind:       v1alpha2.KindPodChaos,
 				Name:       "testName",
 				Namespace:  "testNamespace",
 				Action:     "testAction",
@@ -95,12 +95,12 @@ func (m *MockExperimentStore) FindByUID(ctx context.Context, UID string) (*core.
 			Experiment: string(jsonStr),
 		}
 	case "testIOChaos":
-		chaos := v1alpha1.IOChaos{}
+		chaos := v1alpha2.IOChaos{}
 		jsonStr, _ := json.Marshal(chaos)
 		res = &core.Experiment{
 			ExperimentMeta: core.ExperimentMeta{
 				UID:        UID,
-				Kind:       v1alpha1.KindIOChaos,
+				Kind:       v1alpha2.KindIOChaos,
 				Name:       "testName",
 				Namespace:  "testNamespace",
 				Action:     "testAction",
@@ -111,12 +111,12 @@ func (m *MockExperimentStore) FindByUID(ctx context.Context, UID string) (*core.
 			Experiment: string(jsonStr),
 		}
 	case "testNetworkChaos":
-		chaos := v1alpha1.NetworkChaos{}
+		chaos := v1alpha2.NetworkChaos{}
 		jsonStr, _ := json.Marshal(chaos)
 		res = &core.Experiment{
 			ExperimentMeta: core.ExperimentMeta{
 				UID:        UID,
-				Kind:       v1alpha1.KindNetworkChaos,
+				Kind:       v1alpha2.KindNetworkChaos,
 				Name:       "testName",
 				Namespace:  "testNamespace",
 				Action:     "testAction",
@@ -127,12 +127,12 @@ func (m *MockExperimentStore) FindByUID(ctx context.Context, UID string) (*core.
 			Experiment: string(jsonStr),
 		}
 	case "testTimeChaos":
-		chaos := v1alpha1.TimeChaos{}
+		chaos := v1alpha2.TimeChaos{}
 		jsonStr, _ := json.Marshal(chaos)
 		res = &core.Experiment{
 			ExperimentMeta: core.ExperimentMeta{
 				UID:        UID,
-				Kind:       v1alpha1.KindTimeChaos,
+				Kind:       v1alpha2.KindTimeChaos,
 				Name:       "testName",
 				Namespace:  "testNamespace",
 				Action:     "testAction",
@@ -143,12 +143,12 @@ func (m *MockExperimentStore) FindByUID(ctx context.Context, UID string) (*core.
 			Experiment: string(jsonStr),
 		}
 	case "testKernelChaos":
-		chaos := v1alpha1.KernelChaos{}
+		chaos := v1alpha2.KernelChaos{}
 		jsonStr, _ := json.Marshal(chaos)
 		res = &core.Experiment{
 			ExperimentMeta: core.ExperimentMeta{
 				UID:        UID,
-				Kind:       v1alpha1.KindKernelChaos,
+				Kind:       v1alpha2.KindKernelChaos,
 				Name:       "testName",
 				Namespace:  "testNamespace",
 				Action:     "testAction",
@@ -159,12 +159,12 @@ func (m *MockExperimentStore) FindByUID(ctx context.Context, UID string) (*core.
 			Experiment: string(jsonStr),
 		}
 	case "testStressChaos":
-		chaos := v1alpha1.StressChaos{}
+		chaos := v1alpha2.StressChaos{}
 		jsonStr, _ := json.Marshal(chaos)
 		res = &core.Experiment{
 			ExperimentMeta: core.ExperimentMeta{
 				UID:        UID,
-				Kind:       v1alpha1.KindStressChaos,
+				Kind:       v1alpha2.KindStressChaos,
 				Name:       "testName",
 				Namespace:  "testNamespace",
 				Action:     "testAction",
@@ -273,12 +273,12 @@ func (m *MockScheduleStore) FindByUID(ctx context.Context, UID string) (*core.Sc
 	var err error
 	switch UID {
 	case "testPodChaos":
-		sch := v1alpha1.Schedule{}
+		sch := v1alpha2.Schedule{}
 		jsonStr, _ := json.Marshal(sch)
 		res = &core.Schedule{
 			ScheduleMeta: core.ScheduleMeta{
 				UID:        UID,
-				Kind:       v1alpha1.KindPodChaos,
+				Kind:       v1alpha2.KindPodChaos,
 				Name:       "testName",
 				Namespace:  "testNamespace",
 				Action:     "testAction",
@@ -386,11 +386,11 @@ var _ = Describe("event", func() {
 
 	Context("Detail", func() {
 		It("testPodChaos", func() {
-			chaos := &v1alpha1.PodChaos{}
+			chaos := &v1alpha2.PodChaos{}
 			response := Detail{
 				Archive: Archive{
 					UID:       "testPodChaos",
-					Kind:      v1alpha1.KindPodChaos,
+					Kind:      v1alpha2.KindPodChaos,
 					Namespace: "testNamespace",
 					Name:      "testName",
 					Created:   time.Time{}.Format(time.RFC3339),
@@ -419,11 +419,11 @@ var _ = Describe("event", func() {
 		})
 
 		It("testIOChaos", func() {
-			chaos := &v1alpha1.IOChaos{}
+			chaos := &v1alpha2.IOChaos{}
 			response := Detail{
 				Archive: Archive{
 					UID:       "testIOChaos",
-					Kind:      v1alpha1.KindIOChaos,
+					Kind:      v1alpha2.KindIOChaos,
 					Namespace: "testNamespace",
 					Name:      "testName",
 					Created:   time.Time{}.Format(time.RFC3339),
@@ -452,11 +452,11 @@ var _ = Describe("event", func() {
 		})
 
 		It("testNetworkChaos", func() {
-			chaos := &v1alpha1.NetworkChaos{}
+			chaos := &v1alpha2.NetworkChaos{}
 			response := Detail{
 				Archive: Archive{
 					UID:       "testNetworkChaos",
-					Kind:      v1alpha1.KindNetworkChaos,
+					Kind:      v1alpha2.KindNetworkChaos,
 					Namespace: "testNamespace",
 					Name:      "testName",
 					Created:   time.Time{}.Format(time.RFC3339),
@@ -485,11 +485,11 @@ var _ = Describe("event", func() {
 		})
 
 		It("testTimeChaos", func() {
-			chaos := &v1alpha1.TimeChaos{}
+			chaos := &v1alpha2.TimeChaos{}
 			response := Detail{
 				Archive: Archive{
 					UID:       "testTimeChaos",
-					Kind:      v1alpha1.KindTimeChaos,
+					Kind:      v1alpha2.KindTimeChaos,
 					Namespace: "testNamespace",
 					Name:      "testName",
 					Created:   time.Time{}.Format(time.RFC3339),
@@ -518,11 +518,11 @@ var _ = Describe("event", func() {
 		})
 
 		It("testKernelChaos", func() {
-			chaos := &v1alpha1.KernelChaos{}
+			chaos := &v1alpha2.KernelChaos{}
 			response := Detail{
 				Archive: Archive{
 					UID:       "testKernelChaos",
-					Kind:      v1alpha1.KindKernelChaos,
+					Kind:      v1alpha2.KindKernelChaos,
 					Namespace: "testNamespace",
 					Name:      "testName",
 					Created:   time.Time{}.Format(time.RFC3339),
@@ -551,11 +551,11 @@ var _ = Describe("event", func() {
 		})
 
 		It("testStressChaos", func() {
-			chaos := &v1alpha1.StressChaos{}
+			chaos := &v1alpha2.StressChaos{}
 			response := Detail{
 				Archive: Archive{
 					UID:       "testStressChaos",
-					Kind:      v1alpha1.KindStressChaos,
+					Kind:      v1alpha2.KindStressChaos,
 					Namespace: "testNamespace",
 					Name:      "testName",
 					Created:   time.Time{}.Format(time.RFC3339),
@@ -636,11 +636,11 @@ var _ = Describe("event", func() {
 
 	Context("DetailSchedule", func() {
 		It("testPodChaos", func() {
-			sch := &v1alpha1.Schedule{}
+			sch := &v1alpha2.Schedule{}
 			response := Detail{
 				Archive: Archive{
 					UID:       "testPodChaos",
-					Kind:      v1alpha1.KindPodChaos,
+					Kind:      v1alpha2.KindPodChaos,
 					Namespace: "testNamespace",
 					Name:      "testName",
 					Created:   time.Time{}.Format(time.RFC3339),

@@ -24,7 +24,7 @@ import (
 	compute "google.golang.org/api/compute/v1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/gcpchaos/utils"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 )
@@ -37,24 +37,24 @@ type Impl struct {
 	Log logr.Logger
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, chaos v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	gcpchaos, ok := chaos.(*v1alpha1.GCPChaos)
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, chaos v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	gcpchaos, ok := chaos.(*v1alpha2.GCPChaos)
 	if !ok {
 		err := errors.New("chaos is not gcpchaos")
 		impl.Log.Error(err, "chaos is not GCPChaos", "chaos", chaos)
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	computeService, err := utils.GetComputeService(ctx, impl.Client, gcpchaos)
 	if err != nil {
 		impl.Log.Error(err, "fail to get the compute service")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
-	var selected v1alpha1.GCPSelector
+	var selected v1alpha2.GCPSelector
 	json.Unmarshal([]byte(records[index].Id), &selected)
 	instance, err := computeService.Instances.Get(selected.Project, selected.Zone, selected.Instance).Do()
 	if err != nil {
 		impl.Log.Error(err, "fail to get the instance")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	var (
 		bytes      []byte
@@ -81,53 +81,53 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 	if len(notFound) != 0 {
 		err = errors.Errorf("instance (%s) does not have the disk (%s)", selected.Instance, notFound)
 		impl.Log.Error(err, "the instance does not have the disk")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	if len(marshalErr) != 0 {
 		err = errors.Errorf("instance (%s), marshal disk info error (%s)", selected.Instance, marshalErr)
 		impl.Log.Error(err, "marshal disk info error")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	for _, specDeviceName := range selected.DeviceNames {
 		_, err = computeService.Instances.DetachDisk(selected.Project, selected.Zone, selected.Instance, specDeviceName).Do()
 		if err != nil {
 			impl.Log.Error(err, "fail to detach the disk")
-			return v1alpha1.NotInjected, err
+			return v1alpha2.NotInjected, err
 		}
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, chaos v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	gcpchaos, ok := chaos.(*v1alpha1.GCPChaos)
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, chaos v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	gcpchaos, ok := chaos.(*v1alpha2.GCPChaos)
 	if !ok {
 		err := errors.New("chaos is not gcpchaos")
 		impl.Log.Error(err, "chaos is not GCPChaos", "chaos", chaos)
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 	computeService, err := utils.GetComputeService(ctx, impl.Client, gcpchaos)
 	if err != nil {
 		impl.Log.Error(err, "fail to get the compute service")
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 	var disk compute.AttachedDisk
-	var selected v1alpha1.GCPSelector
+	var selected v1alpha2.GCPSelector
 	json.Unmarshal([]byte(records[index].Id), &selected)
 	for _, attachedDiskString := range gcpchaos.Status.AttachedDisksStrings {
 		err = json.Unmarshal([]byte(attachedDiskString), &disk)
 		if err != nil {
 			impl.Log.Error(err, "fail to unmarshal the disk info")
-			return v1alpha1.Injected, err
+			return v1alpha2.Injected, err
 		}
 		_, err = computeService.Instances.AttachDisk(selected.Project, selected.Zone, selected.Instance, &disk).Do()
 		if err != nil {
 			impl.Log.Error(err, "fail to attach the disk to the instance")
-			return v1alpha1.Injected, err
+			return v1alpha2.Injected, err
 		}
 	}
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
 func NewImpl(c client.Client, log logr.Logger) *Impl {

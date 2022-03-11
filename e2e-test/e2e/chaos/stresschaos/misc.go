@@ -25,24 +25,24 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 func makeMemoryStressChaos(
 	namespace, name string,
 	podNs, podAppName string, memorySize string, worker int,
-) *v1alpha1.StressChaos {
-	return &v1alpha1.StressChaos{
+) *v1alpha2.StressChaos {
+	return &v1alpha2.StressChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: v1alpha1.StressChaosSpec{
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Mode: v1alpha1.AllMode,
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.StressChaosSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Mode: v1alpha2.AllMode,
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces: []string{podNs},
 							LabelSelectors: map[string]string{
 								"app": podAppName,
@@ -51,10 +51,10 @@ func makeMemoryStressChaos(
 					},
 				},
 			},
-			Stressors: &v1alpha1.Stressors{
-				MemoryStressor: &v1alpha1.MemoryStressor{
+			Stressors: &v1alpha2.Stressors{
+				MemoryStressor: &v1alpha2.MemoryStressor{
 					Size:     memorySize,
-					Stressor: v1alpha1.Stressor{Workers: worker},
+					Stressor: v1alpha2.Stressor{Workers: worker},
 				},
 			},
 		},
@@ -64,18 +64,18 @@ func makeMemoryStressChaos(
 func makeCPUStressChaos(
 	namespace, name string,
 	podNs, podAppName string, worker int, load int,
-) *v1alpha1.StressChaos {
-	return &v1alpha1.StressChaos{
+) *v1alpha2.StressChaos {
+	return &v1alpha2.StressChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: v1alpha1.StressChaosSpec{
-			ContainerSelector: v1alpha1.ContainerSelector{
-				PodSelector: v1alpha1.PodSelector{
-					Mode: v1alpha1.AllMode,
-					Selector: v1alpha1.PodSelectorSpec{
-						GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		Spec: v1alpha2.StressChaosSpec{
+			ContainerSelector: v1alpha2.ContainerSelector{
+				PodSelector: v1alpha2.PodSelector{
+					Mode: v1alpha2.AllMode,
+					Selector: v1alpha2.PodSelectorSpec{
+						GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 							Namespaces: []string{podNs},
 							LabelSelectors: map[string]string{
 								"app": podAppName,
@@ -84,10 +84,10 @@ func makeCPUStressChaos(
 					},
 				},
 			},
-			Stressors: &v1alpha1.Stressors{
-				CPUStressor: &v1alpha1.CPUStressor{
+			Stressors: &v1alpha2.Stressors{
+				CPUStressor: &v1alpha2.CPUStressor{
 					Load:     &load,
-					Stressor: v1alpha1.Stressor{Workers: worker},
+					Stressor: v1alpha2.Stressor{Workers: worker},
 				},
 			},
 		},

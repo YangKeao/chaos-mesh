@@ -28,7 +28,7 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/config"
@@ -49,14 +49,14 @@ type Impl struct {
 }
 
 // Apply applies KernelChaos
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	kernelChaos := obj.(*v1alpha1.KernelChaos)
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	kernelChaos := obj.(*v1alpha2.KernelChaos)
 	record := records[index]
 
 	log := impl.Log.WithValues("chaos", kernelChaos, "record", record)
 	podId, err := controller.ParseNamespacedName(record.Id)
 	if err != nil {
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	var pod v1.Pod
 	err = impl.Client.Get(ctx, podId, &pod)
@@ -64,24 +64,24 @@ func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Reco
 		log.Error(err, "fail to get pod by record")
 		// TODO: handle this error
 		if k8sError.IsNotFound(err) {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
 	log = log.WithValues("pod", pod)
 
 	if err = impl.applyPod(ctx, &pod, kernelChaos); err != nil {
 		log.Error(err, "failed to apply chaos on pod")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
 // Recover means the reconciler recovers the chaos action
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	kernelChaos := obj.(*v1alpha1.KernelChaos)
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	kernelChaos := obj.(*v1alpha2.KernelChaos)
 	record := records[index]
 
 	log := impl.Log.WithValues("chaos", kernelChaos, "record", record)
@@ -90,7 +90,7 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		errorInfo := fmt.Sprintf("kernelChaos recover error, record ID is %s", record.Id)
 		log.Error(err, errorInfo)
 		// This error is not expected to exist
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 	var pod v1.Pod
 	err = impl.Client.Get(ctx, podId, &pod)
@@ -98,24 +98,24 @@ func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Re
 		log.Error(err, "fail to get pod by record")
 		// TODO: handle this error
 		if k8sError.IsNotFound(err) {
-			return v1alpha1.NotInjected, nil
+			return v1alpha2.NotInjected, nil
 		}
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
 	log = log.WithValues("pod", pod)
 
 	if err = impl.recoverPod(ctx, &pod, kernelChaos); err != nil {
 		log.Error(err, "failed to recover chaos on pod")
-		return v1alpha1.Injected, err
+		return v1alpha2.Injected, err
 	}
 
-	return v1alpha1.NotInjected, nil
+	return v1alpha2.NotInjected, nil
 }
 
-func (impl *Impl) recoverPod(ctx context.Context, pod *v1.Pod, somechaos v1alpha1.InnerObject) error {
+func (impl *Impl) recoverPod(ctx context.Context, pod *v1.Pod, somechaos v1alpha2.InnerObject) error {
 	// judged type in `Recover` already so no need to judge again
-	chaos, _ := somechaos.(*v1alpha1.KernelChaos)
+	chaos, _ := somechaos.(*v1alpha2.KernelChaos)
 	impl.Log.Info("try to recover pod", "namespace", pod.Namespace, "name", pod.Name)
 
 	pbClient, err := impl.chaosDaemonClientBuilder.Build(ctx, pod, &types.NamespacedName{
@@ -169,7 +169,7 @@ func (impl *Impl) recoverPod(ctx context.Context, pod *v1.Pod, somechaos v1alpha
 	return err
 }
 
-func (impl *Impl) applyPod(ctx context.Context, pod *v1.Pod, chaos *v1alpha1.KernelChaos) error {
+func (impl *Impl) applyPod(ctx context.Context, pod *v1.Pod, chaos *v1alpha2.KernelChaos) error {
 	impl.Log.Info("Try to inject kernel on pod", "namespace", pod.Namespace, "name", pod.Name)
 
 	pbClient, err := impl.chaosDaemonClientBuilder.Build(ctx, pod, &types.NamespacedName{
@@ -241,13 +241,13 @@ func (impl *Impl) CreateBPFKIConnection(ctx context.Context, c client.Client, po
 func NewImpl(c client.Client, log logr.Logger, builder *chaosdaemon.ChaosDaemonClientBuilder) *impltypes.ChaosImplPair {
 	return &impltypes.ChaosImplPair{
 		Name:   "kernelchaos",
-		Object: &v1alpha1.KernelChaos{},
+		Object: &v1alpha2.KernelChaos{},
 		Impl: &Impl{
 			Client:                   c,
 			Log:                      log.WithName("kernelchaos"),
 			chaosDaemonClientBuilder: builder,
 		},
-		ObjectList: &v1alpha1.KernelChaosList{},
+		ObjectList: &v1alpha2.KernelChaosList{},
 	}
 }
 

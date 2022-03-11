@@ -35,7 +35,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/common/finalizers"
 	"github.com/chaos-mesh/chaos-mesh/pkg/clientpool"
 	config "github.com/chaos-mesh/chaos-mesh/pkg/config/dashboard"
@@ -124,7 +124,7 @@ func (s *Service) list(c *gin.Context) {
 	}
 
 	exps := make([]*Experiment, 0)
-	for k, chaosKind := range v1alpha1.AllKinds() {
+	for k, chaosKind := range v1alpha2.AllKinds() {
 		if kind != "" && k != kind {
 			continue
 		}
@@ -151,7 +151,7 @@ func (s *Service) list(c *gin.Context) {
 					UID:       string(item.GetUID()),
 					Created:   item.GetCreationTimestamp().Format(time.RFC3339),
 				},
-				Status: status.GetChaosStatus(item.(v1alpha1.InnerObject)),
+				Status: status.GetChaosStatus(item.(v1alpha2.InnerObject)),
 			})
 		}
 	}
@@ -187,7 +187,7 @@ func (s *Service) create(c *gin.Context) {
 	}
 	kind := exp["kind"].(string)
 
-	if chaosKind, ok := v1alpha1.AllKinds()[kind]; ok {
+	if chaosKind, ok := v1alpha2.AllKinds()[kind]; ok {
 		chaos := chaosKind.SpawnObject()
 		reflect.ValueOf(chaos).Elem().FieldByName("ObjectMeta").Set(reflect.ValueOf(metav1.ObjectMeta{}))
 
@@ -245,7 +245,7 @@ func (s *Service) get(c *gin.Context) {
 
 	ns, name, kind := exp.Namespace, exp.Name, exp.Kind
 
-	if chaosKind, ok := v1alpha1.AllKinds()[kind]; ok {
+	if chaosKind, ok := v1alpha2.AllKinds()[kind]; ok {
 		expDetail = s.findChaosInCluster(c, kubeCli, types.NamespacedName{Namespace: ns, Name: name}, chaosKind.SpawnObject())
 
 		if expDetail == nil {
@@ -285,7 +285,7 @@ func (s *Service) findChaosInCluster(c *gin.Context, kubeCli client.Client, name
 				UID:       reflect.ValueOf(chaos).MethodByName("GetUID").Call(nil)[0].String(),
 				Created:   reflect.ValueOf(chaos).MethodByName("GetCreationTimestamp").Call(nil)[0].Interface().(metav1.Time).Format(time.RFC3339),
 			},
-			Status: status.GetChaosStatus(chaos.(v1alpha1.InnerObject)),
+			Status: status.GetChaosStatus(chaos.(v1alpha2.InnerObject)),
 		},
 		KubeObject: core.KubeObjectDesc{
 			TypeMeta: metav1.TypeMeta{
@@ -405,12 +405,12 @@ func (s *Service) batchDelete(c *gin.Context) {
 
 func checkAndDeleteChaos(c *gin.Context, kubeCli client.Client, namespacedName types.NamespacedName, kind string, force string) bool {
 	var (
-		chaosKind *v1alpha1.ChaosKind
+		chaosKind *v1alpha2.ChaosKind
 		ok        bool
 		err       error
 	)
 
-	if chaosKind, ok = v1alpha1.AllKinds()[kind]; !ok {
+	if chaosKind, ok = v1alpha2.AllKinds()[kind]; !ok {
 		u.SetAPIError(c, u.ErrBadRequest.New("Kind "+kind+" is not supported"))
 
 		return false
@@ -488,7 +488,7 @@ func (s *Service) pause(c *gin.Context) {
 	}
 
 	annotations := map[string]string{
-		v1alpha1.PauseAnnotationKey: "true",
+		v1alpha2.PauseAnnotationKey: "true",
 	}
 	if err = patchExperiment(kubeCli, exp, annotations); err != nil {
 		u.SetAPImachineryError(c, err)
@@ -531,7 +531,7 @@ func (s *Service) start(c *gin.Context) {
 	}
 
 	annotations := map[string]string{
-		v1alpha1.PauseAnnotationKey: "false",
+		v1alpha2.PauseAnnotationKey: "false",
 	}
 	if err = patchExperiment(kubeCli, exp, annotations); err != nil {
 		u.SetAPImachineryError(c, err)
@@ -543,7 +543,7 @@ func (s *Service) start(c *gin.Context) {
 }
 
 func patchExperiment(kubeCli client.Client, exp *core.Experiment, annotations map[string]string) error {
-	chaos := v1alpha1.AllKinds()[exp.Kind].SpawnObject()
+	chaos := v1alpha2.AllKinds()[exp.Kind].SpawnObject()
 
 	if err := kubeCli.Get(context.Background(), types.NamespacedName{Namespace: exp.Namespace, Name: exp.Name}, chaos); err != nil {
 		return err
@@ -591,7 +591,7 @@ func (s *Service) state(c *gin.Context) {
 	var listOptions []client.ListOption
 	listOptions = append(listOptions, &client.ListOptions{Namespace: ns})
 
-	for _, chaosKind := range v1alpha1.AllKinds() {
+	for _, chaosKind := range v1alpha2.AllKinds() {
 		list := chaosKind.SpawnList()
 
 		g.Go(func() error {
@@ -601,7 +601,7 @@ func (s *Service) state(c *gin.Context) {
 			m.Lock()
 
 			for _, item := range list.GetItems() {
-				s := status.GetChaosStatus(item.(v1alpha1.InnerObject))
+				s := status.GetChaosStatus(item.(v1alpha2.InnerObject))
 
 				switch s {
 				case status.Injecting:

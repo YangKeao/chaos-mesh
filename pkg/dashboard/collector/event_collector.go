@@ -28,7 +28,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/core"
 )
 
@@ -55,7 +55,7 @@ func (r *EventCollector) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		}
 		return ctrl.Result{}, nil
 	}
-	chaosKind, ok := v1alpha1.AllKinds()[event.InvolvedObject.Kind]
+	chaosKind, ok := v1alpha2.AllKinds()[event.InvolvedObject.Kind]
 	if ok {
 		chaosObject := chaosKind.SpawnObject()
 
@@ -65,25 +65,25 @@ func (r *EventCollector) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.
 		}, chaosObject); err != nil {
 			return ctrl.Result{}, nil
 		}
-	} else if event.InvolvedObject.Kind == v1alpha1.KindSchedule {
+	} else if event.InvolvedObject.Kind == v1alpha2.KindSchedule {
 		if err = r.Get(ctx, types.NamespacedName{
 			Namespace: event.InvolvedObject.Namespace,
 			Name:      event.InvolvedObject.Name,
-		}, &v1alpha1.Schedule{}); err != nil {
+		}, &v1alpha2.Schedule{}); err != nil {
 			return ctrl.Result{}, nil
 		}
-	} else if event.InvolvedObject.Kind == v1alpha1.KindWorkflow {
+	} else if event.InvolvedObject.Kind == v1alpha2.KindWorkflow {
 		if err = r.Get(ctx, types.NamespacedName{
 			Namespace: event.InvolvedObject.Namespace,
 			Name:      event.InvolvedObject.Name,
-		}, &v1alpha1.Workflow{}); err != nil {
+		}, &v1alpha2.Workflow{}); err != nil {
 			return ctrl.Result{}, nil
 		}
-	} else if event.InvolvedObject.Kind == v1alpha1.KindWorkflowNode {
+	} else if event.InvolvedObject.Kind == v1alpha2.KindWorkflowNode {
 		if err = r.Get(ctx, types.NamespacedName{
 			Namespace: event.InvolvedObject.Namespace,
 			Name:      event.InvolvedObject.Name,
-		}, &v1alpha1.WorkflowNode{}); err != nil {
+		}, &v1alpha2.WorkflowNode{}); err != nil {
 			return ctrl.Result{}, nil
 		}
 	} else {
@@ -121,17 +121,17 @@ func (r *EventCollector) Setup(mgr ctrl.Manager, apiType client.Object) error {
 					return false
 				}
 				flag := false
-				_, ok = v1alpha1.AllKinds()[event.InvolvedObject.Kind]
+				_, ok = v1alpha2.AllKinds()[event.InvolvedObject.Kind]
 				if ok {
 					flag = true
 				}
-				if event.InvolvedObject.Kind == v1alpha1.KindSchedule {
+				if event.InvolvedObject.Kind == v1alpha2.KindSchedule {
 					flag = true
 				}
-				if event.InvolvedObject.Kind == v1alpha1.KindWorkflow {
+				if event.InvolvedObject.Kind == v1alpha2.KindWorkflow {
 					flag = true
 				}
-				if event.InvolvedObject.Kind == v1alpha1.KindWorkflowNode {
+				if event.InvolvedObject.Kind == v1alpha2.KindWorkflowNode {
 					flag = true
 				}
 				return flag

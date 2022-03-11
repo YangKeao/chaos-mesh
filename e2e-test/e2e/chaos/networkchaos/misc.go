@@ -30,7 +30,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/klog/v2"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 const (
@@ -110,15 +110,15 @@ func testNetworkDelay(c http.Client, port uint16, targetIP string) (int64, error
 
 func makeNetworkPartitionChaos(
 	namespace, name string, fromLabelSelectors, toLabelSelectors map[string]string,
-	fromPodMode, toPodMode v1alpha1.SelectorMode,
-	direction v1alpha1.Direction,
+	fromPodMode, toPodMode v1alpha2.SelectorMode,
+	direction v1alpha2.Direction,
 	duration *string,
-) *v1alpha1.NetworkChaos {
-	var target *v1alpha1.PodSelector
+) *v1alpha2.NetworkChaos {
+	var target *v1alpha2.PodSelector
 	if toLabelSelectors != nil {
-		target = &v1alpha1.PodSelector{
-			Selector: v1alpha1.PodSelectorSpec{
-				GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		target = &v1alpha2.PodSelector{
+			Selector: v1alpha2.PodSelectorSpec{
+				GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 					Namespaces:     []string{namespace},
 					LabelSelectors: toLabelSelectors,
 				},
@@ -127,19 +127,19 @@ func makeNetworkPartitionChaos(
 		}
 	}
 
-	return &v1alpha1.NetworkChaos{
+	return &v1alpha2.NetworkChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: v1alpha1.NetworkChaosSpec{
-			Action:    v1alpha1.PartitionAction,
+		Spec: v1alpha2.NetworkChaosSpec{
+			Action:    v1alpha2.PartitionAction,
 			Direction: direction,
 			Target:    target,
 			Duration:  duration,
-			PodSelector: v1alpha1.PodSelector{
-				Selector: v1alpha1.PodSelectorSpec{
-					GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			PodSelector: v1alpha2.PodSelector{
+				Selector: v1alpha2.PodSelectorSpec{
+					GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 						Namespaces:     []string{namespace},
 						LabelSelectors: fromLabelSelectors,
 					},
@@ -152,13 +152,13 @@ func makeNetworkPartitionChaos(
 
 func makeNetworkDelayChaos(
 	namespace, name string, fromLabelSelectors, toLabelSelectors map[string]string,
-	fromPodMode, toPodMode v1alpha1.SelectorMode, direction v1alpha1.Direction, tcparam v1alpha1.TcParameter, duration *string,
-) *v1alpha1.NetworkChaos {
-	var target *v1alpha1.PodSelector
+	fromPodMode, toPodMode v1alpha2.SelectorMode, direction v1alpha2.Direction, tcparam v1alpha2.TcParameter, duration *string,
+) *v1alpha2.NetworkChaos {
+	var target *v1alpha2.PodSelector
 	if toLabelSelectors != nil {
-		target = &v1alpha1.PodSelector{
-			Selector: v1alpha1.PodSelectorSpec{
-				GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+		target = &v1alpha2.PodSelector{
+			Selector: v1alpha2.PodSelectorSpec{
+				GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 					Namespaces:     []string{namespace},
 					LabelSelectors: toLabelSelectors,
 				},
@@ -167,20 +167,20 @@ func makeNetworkDelayChaos(
 		}
 	}
 
-	return &v1alpha1.NetworkChaos{
+	return &v1alpha2.NetworkChaos{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      name,
 			Namespace: namespace,
 		},
-		Spec: v1alpha1.NetworkChaosSpec{
-			Action:      v1alpha1.DelayAction,
+		Spec: v1alpha2.NetworkChaosSpec{
+			Action:      v1alpha2.DelayAction,
 			TcParameter: tcparam,
 			Duration:    duration,
 			Target:      target,
 			Direction:   direction,
-			PodSelector: v1alpha1.PodSelector{
-				Selector: v1alpha1.PodSelectorSpec{
-					GenericSelectorSpec: v1alpha1.GenericSelectorSpec{
+			PodSelector: v1alpha2.PodSelector{
+				Selector: v1alpha2.PodSelectorSpec{
+					GenericSelectorSpec: v1alpha2.GenericSelectorSpec{
 						Namespaces:     []string{namespace},
 						LabelSelectors: fromLabelSelectors,
 					},

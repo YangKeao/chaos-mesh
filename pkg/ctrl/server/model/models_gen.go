@@ -9,7 +9,7 @@ import (
 
 	v1 "k8s.io/api/core/v1"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type Cgroups struct {
@@ -36,17 +36,17 @@ type Namespace struct {
 	Ns              string                      `json:"ns"`
 	Component       []*v1.Pod                   `json:"component"`
 	Pod             []*v1.Pod                   `json:"pod"`
-	Stresschaos     []*v1alpha1.StressChaos     `json:"stresschaos"`
-	Iochaos         []*v1alpha1.IOChaos         `json:"iochaos"`
-	Podiochaos      []*v1alpha1.PodIOChaos      `json:"podiochaos"`
-	Httpchaos       []*v1alpha1.HTTPChaos       `json:"httpchaos"`
-	Podhttpchaos    []*v1alpha1.PodHttpChaos    `json:"podhttpchaos"`
-	Networkchaos    []*v1alpha1.NetworkChaos    `json:"networkchaos"`
-	Podnetworkchaos []*v1alpha1.PodNetworkChaos `json:"podnetworkchaos"`
+	Stresschaos     []*v1alpha2.StressChaos     `json:"stresschaos"`
+	Iochaos         []*v1alpha2.IOChaos         `json:"iochaos"`
+	Podiochaos      []*v1alpha2.PodIOChaos      `json:"podiochaos"`
+	Httpchaos       []*v1alpha2.HTTPChaos       `json:"httpchaos"`
+	Podhttpchaos    []*v1alpha2.PodHttpChaos    `json:"podhttpchaos"`
+	Networkchaos    []*v1alpha2.NetworkChaos    `json:"networkchaos"`
+	Podnetworkchaos []*v1alpha2.PodNetworkChaos `json:"podnetworkchaos"`
 }
 
 type PodStressChaos struct {
-	StressChaos   *v1alpha1.StressChaos `json:"stressChaos"`
+	StressChaos   *v1alpha2.StressChaos `json:"stressChaos"`
 	Pod           *v1.Pod               `json:"pod"`
 	Cgroups       *Cgroups              `json:"cgroups"`
 	ProcessStress []*ProcessStress      `json:"processStress"`

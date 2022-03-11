@@ -23,7 +23,7 @@ import (
 	v1 "k8s.io/api/core/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/utils"
 	"github.com/chaos-mesh/chaos-mesh/controllers/podnetworkchaos/netutils"
 	chaosdaemonclient "github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/client"
@@ -65,7 +65,7 @@ func SetIptablesChains(ctx context.Context, pbClient chaosdaemonclient.ChaosDaem
 }
 
 // GenerateName generates chain name for network chaos
-func GenerateName(direction pb.Chain_Direction, networkchaos *v1alpha1.NetworkChaos) (chainName string) {
+func GenerateName(direction pb.Chain_Direction, networkchaos *v1alpha2.NetworkChaos) (chainName string) {
 	switch direction {
 	case pb.Chain_INPUT:
 		chainName = "INPUT/" + netutils.CompressName(networkchaos.Name, 21, "")

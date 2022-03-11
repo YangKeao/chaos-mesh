@@ -23,7 +23,7 @@ import (
 	"github.com/pkg/errors"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/gcpchaos/utils"
 	impltypes "github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/types"
 )
@@ -36,31 +36,31 @@ type Impl struct {
 	Log logr.Logger
 }
 
-func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha1.Record, chaos v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	gcpchaos, ok := chaos.(*v1alpha1.GCPChaos)
+func (impl *Impl) Apply(ctx context.Context, index int, records []*v1alpha2.Record, chaos v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	gcpchaos, ok := chaos.(*v1alpha2.GCPChaos)
 	if !ok {
 		err := errors.New("chaos is not gcpchaos")
 		impl.Log.Error(err, "chaos is not GCPChaos", "chaos", chaos)
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 	computeService, err := utils.GetComputeService(ctx, impl.Client, gcpchaos)
 	if err != nil {
 		impl.Log.Error(err, "fail to get the compute service")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
-	var selected v1alpha1.GCPSelector
+	var selected v1alpha2.GCPSelector
 	json.Unmarshal([]byte(records[index].Id), &selected)
 	_, err = computeService.Instances.Reset(selected.Project, selected.Zone, selected.Instance).Do()
 	if err != nil {
 		impl.Log.Error(err, "fail to reset the instance")
-		return v1alpha1.NotInjected, err
+		return v1alpha2.NotInjected, err
 	}
 
-	return v1alpha1.Injected, nil
+	return v1alpha2.Injected, nil
 }
 
-func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha1.Record, chaos v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	return v1alpha1.NotInjected, nil
+func (impl *Impl) Recover(ctx context.Context, index int, records []*v1alpha2.Record, chaos v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	return v1alpha2.NotInjected, nil
 }
 
 func NewImpl(c client.Client, log logr.Logger) *Impl {

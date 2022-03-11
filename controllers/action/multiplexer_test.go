@@ -21,7 +21,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 )
 
 type mockApplyError struct {
@@ -41,13 +41,13 @@ func (it mockRecoverError) Error() string {
 type chaosImplMustFailed struct {
 }
 
-func (it *chaosImplMustFailed) Apply(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	return v1alpha1.NotInjected, &mockApplyError{}
+func (it *chaosImplMustFailed) Apply(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	return v1alpha2.NotInjected, &mockApplyError{}
 
 }
 
-func (it *chaosImplMustFailed) Recover(ctx context.Context, index int, records []*v1alpha1.Record, obj v1alpha1.InnerObject) (v1alpha1.Phase, error) {
-	return v1alpha1.Injected, mockRecoverError{}
+func (it *chaosImplMustFailed) Recover(ctx context.Context, index int, records []*v1alpha2.Record, obj v1alpha2.InnerObject) (v1alpha2.Phase, error) {
+	return v1alpha2.Injected, mockRecoverError{}
 }
 
 func TestMultiplexer_passthroughsError(t *testing.T) {
@@ -59,18 +59,18 @@ func TestMultiplexer_passthroughsError(t *testing.T) {
 	})
 
 	// Just use PodChaos as example, you could use any struct that contains Spec.Action for it.
-	chaos := v1alpha1.PodChaos{
-		Spec: v1alpha1.PodChaosSpec{
+	chaos := v1alpha2.PodChaos{
+		Spec: v1alpha2.PodChaosSpec{
 			Action: "must-failed",
 		},
 	}
-	_, err := multiplexer.Apply(context.Background(), 0, []*v1alpha1.Record{}, &chaos)
+	_, err := multiplexer.Apply(context.Background(), 0, []*v1alpha2.Record{}, &chaos)
 	applyError := &mockApplyError{}
 	if !errors.As(err, &applyError) {
 		t.Fatal("returned error is not mockApplyError")
 	}
 
-	_, err = multiplexer.Recover(context.Background(), 0, []*v1alpha1.Record{}, &chaos)
+	_, err = multiplexer.Recover(context.Background(), 0, []*v1alpha2.Record{}, &chaos)
 	recoverError := mockRecoverError{}
 	if !errors.As(err, &recoverError) {
 		t.Fatal("returned error is not recoverError")
@@ -84,12 +84,12 @@ func TestMultiplexer_unhandledAction(t *testing.T) {
 	multiplexer := NewMultiplexer(&adHoc{
 		// No fields here
 	})
-	chaos := v1alpha1.PodChaos{
-		Spec: v1alpha1.PodChaosSpec{
+	chaos := v1alpha2.PodChaos{
+		Spec: v1alpha2.PodChaosSpec{
 			Action: "not-exist",
 		},
 	}
-	_, err := multiplexer.Apply(context.Background(), 0, []*v1alpha1.Record{}, &chaos)
+	_, err := multiplexer.Apply(context.Background(), 0, []*v1alpha2.Record{}, &chaos)
 	unknownAction := ErrorUnknownAction{}
 	if !errors.As(err, &unknownAction) {
 		t.Fatal("should not return error")

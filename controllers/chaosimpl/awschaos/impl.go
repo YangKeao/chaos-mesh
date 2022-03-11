@@ -18,7 +18,7 @@ package awschaos
 import (
 	"go.uber.org/fx"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/controllers/action"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/awschaos/detachvolume"
 	"github.com/chaos-mesh/chaos-mesh/controllers/chaosimpl/awschaos/ec2restart"
@@ -38,7 +38,7 @@ func NewImpl(impl Impl) *types.ChaosImplPair {
 	delegate := action.NewMultiplexer(&impl)
 	return &types.ChaosImplPair{
 		Name:   "awschaos",
-		Object: &v1alpha1.AWSChaos{},
+		Object: &v1alpha2.AWSChaos{},
 		Impl:   &delegate,
 	}
 }

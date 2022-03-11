@@ -26,7 +26,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/dashboard/core"
 )
 
@@ -50,7 +50,7 @@ func (it *WorkflowCollector) Reconcile(ctx context.Context, request reconcile.Re
 		it.Log.Error(nil, "apiType has not been initialized")
 		return ctrl.Result{}, nil
 	}
-	workflow := v1alpha1.Workflow{}
+	workflow := v1alpha2.Workflow{}
 	err := it.kubeClient.Get(ctx, request.NamespacedName, &workflow)
 	if apierrors.IsNotFound(err) {
 		// target
@@ -75,7 +75,7 @@ func (it *WorkflowCollector) markAsArchived(ctx context.Context, namespace, name
 	return it.store.MarkAsArchived(ctx, namespace, name)
 }
 
-func (it *WorkflowCollector) persistentWorkflow(workflow *v1alpha1.Workflow) error {
+func (it *WorkflowCollector) persistentWorkflow(workflow *v1alpha2.Workflow) error {
 	newEntity, err := core.WorkflowCR2WorkflowEntity(workflow)
 	if err != nil {
 		return err

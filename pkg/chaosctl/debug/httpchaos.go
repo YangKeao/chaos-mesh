@@ -22,7 +22,7 @@ import (
 
 	"github.com/hasura/go-graphql-client"
 
-	"github.com/chaos-mesh/chaos-mesh/api/v1alpha1"
+	"github.com/chaos-mesh/chaos-mesh/api/v1alpha2"
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosctl/common"
 	ctrlclient "github.com/chaos-mesh/chaos-mesh/pkg/ctrl/client"
 )
@@ -53,7 +53,7 @@ func (d *httpDebugger) Collect(ctx context.Context, namespace, chaosName string)
 				Podhttp []struct {
 					Namespace string
 					Name      string
-					Spec      *v1alpha1.PodHttpChaosSpec
+					Spec      *v1alpha2.PodHttpChaosSpec
 					Pod       struct {
 						Iptables  string
 						Processes []struct {
