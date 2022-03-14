@@ -140,6 +140,7 @@ func (it *FakeImage) FindInjectedImage(program *ptrace.TracedProgram) (*mapreade
 	// minus tailing variable part
 	// every variable has 8 bytes
 	if it.fakeEntry != nil {
+		it.logger.Info("fake image already injected", "fakeEntry", it.fakeEntry)
 		content, err := program.ReadSlice(it.fakeEntry.StartAddress, it.fakeEntry.EndAddress-it.fakeEntry.StartAddress)
 		if err != nil {
 			return nil, err

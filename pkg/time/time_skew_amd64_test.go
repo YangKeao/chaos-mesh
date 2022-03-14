@@ -54,8 +54,6 @@ var _ = BeforeSuite(func(done Done) {
 var _ = Describe("ModifyTime", func() {
 
 	var t *timer.Timer
-	s, err := GetSkew()
-	Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
 
 	BeforeEach(func() {
 		var err error
@@ -71,6 +69,9 @@ var _ = Describe("ModifyTime", func() {
 
 	Context("Modify Time", func() {
 		It("should move forward successfully", func() {
+			s, err := GetSkew()
+			Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
+
 			Expect(t).NotTo(BeNil())
 
 			now, err := t.GetTime()
@@ -91,6 +92,9 @@ var _ = Describe("ModifyTime", func() {
 		})
 
 		It("should move backward successfully", func() {
+			s, err := GetSkew()
+			Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
+
 			Expect(t).NotTo(BeNil())
 
 			now, err := t.GetTime()
@@ -98,7 +102,8 @@ var _ = Describe("ModifyTime", func() {
 
 			sec := now.Unix()
 
-			err = s.Recover(tasks.SysPID(t.Pid()))
+			s.SkewConfig = NewConfig(-10000, 0, 1)
+			err = s.Inject(tasks.SysPID(t.Pid()))
 			Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
 
 			newTime, err := t.GetTime()
@@ -106,10 +111,17 @@ var _ = Describe("ModifyTime", func() {
 
 			newSec := newTime.Unix()
 
-			Expect(10000-(sec-newSec)).Should(BeNumerically("<=", 1), "sec %d newSec %d", sec, newSec)
+			Expect(sec-newSec).Should(BeNumerically(">=", 10000), "sec %d newSec %d", sec, newSec)
+
+			// recover to check whether the findEntry is available
+			err = s.Recover(tasks.SysPID(t.Pid()))
+			Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
 		})
 
 		It("should handle nsec overflow", func() {
+			s, err := GetSkew()
+			Expect(err).ShouldNot(HaveOccurred(), "error: %+v", err)
+
 			Expect(t).NotTo(BeNil())
 
 			now, err := t.GetTime()
