@@ -23,6 +23,7 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/tasks"
+	"github.com/chaos-mesh/chaos-mesh/pkg/log"
 )
 
 // clockGettimeSkewFakeImage is the filename of fake image after compiling
@@ -126,16 +127,21 @@ type Skew struct {
 	getTimeOfDay *FakeImage
 
 	locker sync.Mutex
-	logger           logr.Logger
+	logger logr.Logger
 }
 
 func GetSkew() (Skew, error) {
-	clockGetTimeImage, err := LoadFakeImageFromEmbedFs(clockGettimeSkewFakeImage, clockGettime)
+	logger, err := log.NewDefaultZapLogger()
+	if err != nil {
+		return Skew{}, err
+	}
+
+	clockGetTimeImage, err := LoadFakeImageFromEmbedFs(clockGettimeSkewFakeImage, clockGettime, logger)
 	if err != nil {
 		return Skew{}, errors.Wrap(err, "load fake image")
 	}
 
-	getTimeOfDayimage, err := LoadFakeImageFromEmbedFs(timeOfDaySkewFakeImage, getTimeOfDay)
+	getTimeOfDayimage, err := LoadFakeImageFromEmbedFs(timeOfDaySkewFakeImage, getTimeOfDay, logger)
 	if err != nil {
 		return Skew{}, errors.Wrap(err, "load fake image")
 	}
@@ -145,6 +151,7 @@ func GetSkew() (Skew, error) {
 		clockGetTime: clockGetTimeImage,
 		getTimeOfDay: getTimeOfDayimage,
 		locker:       sync.Mutex{},
+		logger:       logger,
 	}, nil
 }
 

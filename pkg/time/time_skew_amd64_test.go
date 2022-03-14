@@ -16,14 +16,13 @@
 package time
 
 import (
-	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/tasks"
 	"os"
 	"testing"
 
-	"github.com/go-logr/zapr"
+	"github.com/chaos-mesh/chaos-mesh/pkg/chaosdaemon/tasks"
+
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-	"go.uber.org/zap"
 	"sigs.k8s.io/controller-runtime/pkg/envtest/printer"
 
 	"github.com/chaos-mesh/chaos-mesh/test/pkg/timer"
@@ -45,12 +44,6 @@ var _ = BeforeSuite(func(done Done) {
 
 	err := os.Chdir("../../")
 	Expect(err).NotTo(HaveOccurred())
-
-	By("register logger")
-	zapLog, err := zap.NewDevelopment()
-	Expect(err).NotTo(HaveOccurred())
-	log := zapr.NewLogger(zapLog)
-	RegisterLogger(log)
 
 	close(done)
 })

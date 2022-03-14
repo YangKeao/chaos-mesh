@@ -19,6 +19,7 @@ import (
 	"bytes"
 	"runtime"
 
+	"github.com/go-logr/logr"
 	"github.com/pkg/errors"
 
 	"github.com/chaos-mesh/chaos-mesh/pkg/chaoserr"
@@ -45,10 +46,12 @@ type FakeImage struct {
 	OriginAddress uint64
 	// fakeEntry stores the fake entry
 	fakeEntry *mapreader.Entry
+
+	logger logr.Logger
 }
 
-func NewFakeImage(symbolName string, content []byte, offset map[string]int) *FakeImage {
-	return &FakeImage{symbolName: symbolName, content: content, offset: offset}
+func NewFakeImage(symbolName string, content []byte, offset map[string]int, logger logr.Logger) *FakeImage {
+	return &FakeImage{symbolName: symbolName, content: content, offset: offset, logger: logger}
 }
 
 // AttachToProcess would use ptrace to replace the VDSO ELF entry with FakeImage.
@@ -70,7 +73,7 @@ func (it *FakeImage) AttachToProcess(pid int, variables map[string]uint64) (err 
 	defer func() {
 		err = program.Detach()
 		if err != nil {
-			log.Error(err, "fail to detach program", "pid", program.Pid())
+			it.logger.Error(err, "fail to detach program", "pid", program.Pid())
 		}
 	}()
 
@@ -93,7 +96,7 @@ func (it *FakeImage) AttachToProcess(pid int, variables map[string]uint64) (err 
 			if err != nil {
 				errIn := it.TryReWriteFakeImage(program)
 				if errIn != nil {
-					log.Error(errIn, "rewrite fail, recover fail")
+					it.logger.Error(errIn, "rewrite fail, recover fail")
 				}
 				it.OriginFuncCode = nil
 				it.OriginAddress = 0
@@ -132,6 +135,8 @@ func FindVDSOEntry(program *ptrace.TracedProgram) (*mapreader.Entry, error) {
 }
 
 func (it *FakeImage) FindInjectedImage(program *ptrace.TracedProgram) (*mapreader.Entry, error) {
+	it.logger.Info("finding injected image")
+
 	// minus tailing variable part
 	// every variable has 8 bytes
 	if it.fakeEntry != nil {
@@ -139,7 +144,11 @@ func (it *FakeImage) FindInjectedImage(program *ptrace.TracedProgram) (*mapreade
 		if err != nil {
 			return nil, err
 		}
-		if bytes.Equal(*content, it.content) {
+		contentWithoutVariable := (*content)[:len(it.content)-16]
+		expectedContentWithoutVariable := it.content[:len(it.content)-16]
+		it.logger.Info("successfully read slice", "content", contentWithoutVariable, "expected content", expectedContentWithoutVariable)
+		if bytes.Equal(contentWithoutVariable, expectedContentWithoutVariable) {
+			it.logger.Info("found")
 			return it.fakeEntry, nil
 		}
 	}
@@ -167,7 +176,7 @@ func (it *FakeImage) InjectFakeImage(program *ptrace.TracedProgram,
 	if err != nil {
 		errIn := it.TryReWriteFakeImage(program)
 		if errIn != nil {
-			log.Error(errIn, "rewrite fail, recover fail")
+			it.logger.Error(errIn, "rewrite fail, recover fail")
 		}
 		return nil, errors.Wrapf(err, "override origin %s", it.symbolName)
 	}
@@ -204,7 +213,7 @@ func (it *FakeImage) Recover(pid int) error {
 	defer func() {
 		err = program.Detach()
 		if err != nil {
-			log.Error(err, "fail to detach program", "pid", program.Pid())
+			it.logger.Error(err, "fail to detach program", "pid", program.Pid())
 		}
 	}()
 

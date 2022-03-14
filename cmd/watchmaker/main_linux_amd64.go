@@ -66,7 +66,6 @@ func main() {
 	}
 	log := zapr.NewLogger(zapLog)
 	ptrace.RegisterLogger(log.WithName("ptrace"))
-	time.RegisterLogger(log.WithName("time"))
 
 	clkIds := strings.Split(clockIdsSlice, ",")
 	mask, err := utils.EncodeClkIds(clkIds)
@@ -82,6 +81,12 @@ func main() {
 		os.Exit(1)
 	}
 	s.SkewConfig = time.NewConfig(secDelta, nsecDelta, mask)
+	err = s.Inject(tasks.SysPID(pid))
+
+	if err != nil {
+		log.Error(err, "error while modifying time", "pid", pid, "secDelta", secDelta, "nsecDelta", nsecDelta, "mask", mask)
+	}
+
 	err = s.Inject(tasks.SysPID(pid))
 
 	if err != nil {

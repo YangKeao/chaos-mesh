@@ -110,6 +110,6 @@ func LoadFakeImageFromEmbedFs(filename string, symbolName string, logger logr.Lo
 		symbolName,
 		imageContent,
 		imageOffset,
-		logger,
+		logger.WithName("fakeimage"),
 	), nil
 }
